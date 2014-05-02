@@ -32,7 +32,8 @@ HEADERS  += widget.h \
     propertyInlineFunctions.h \
     classsettings.h \
     propertiesgroup.h \
-    propertiesgroupdata.h
+    propertiesgroupdata.h \
+    propertiesgroupInlineFunctions.h
 
 FORMS    += widget.ui \
     dialogset.ui \

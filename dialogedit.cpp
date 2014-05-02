@@ -255,6 +255,28 @@ void DialogEdit::on_comboBoxPropertyType_currentIndexChanged(int index)
 {
     Q_UNUSED(index)
     m_current.setType(ui->comboBoxPropertyType->currentText());
+    if (m_mode == NewProperty)
+    {
+        std::string stdstr = m_current.type().toStdString();
+        QVariant::Type typeId = QVariant::nameToType(stdstr.c_str());
+        switch (typeId)
+        {
+        case QVariant::Bool:
+            ui->lineEditPropertyDefaultValue->setText("true");
+            break;
+        case QVariant::Double:
+            ui->lineEditPropertyDefaultValue->setText("0.0");
+            break;
+        case QVariant::Int:
+        case QVariant::UInt:
+        case QVariant::LongLong:
+        case QVariant::ULongLong:
+            ui->lineEditPropertyDefaultValue->setText("0");
+            break;
+        default:
+            break;
+        }
+    }
 }
 
 void DialogEdit::on_lineEditPropertyTypeStringName_textChanged(

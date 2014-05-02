@@ -22,132 +22,25 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tabClass">
+     <widget class="QWidget" name="tabGroups">
       <attribute name="title">
-       <string>Class</string>
+       <string>Groups</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
          <item>
-          <widget class="QLabel" name="labelClassName">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
+          <widget class="QLabel" name="labelCurrentGroup">
            <property name="text">
-            <string>Name:</string>
-           </property>
-           <property name="buddy">
-            <cstring>lineEditClassName</cstring>
+            <string>CurrentGroup:</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEditClassName"/>
+          <widget class="QComboBox" name="comboBoxCurrentGroup"/>
          </item>
          <item>
-          <spacer name="horizontalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QLabel" name="labelClassInherits">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Inherits:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>lineEditClassInherits</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="lineEditClassInherits"/>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_5">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
-         <item>
-          <widget class="QLabel" name="labelClassTypeInformation">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Type inherits information:</string>
-           </property>
-           <property name="buddy">
-            <cstring>comboBoxClassTypeInformation</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="comboBoxClassTypeInformation">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <item>
-            <property name="text">
-             <string>None</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Inherits QObject</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Inherits QWidget</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Inherits QQuickItem</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_4">
+          <spacer name="horizontalSpacer_9">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -306,12 +199,159 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_2">
+     <widget class="QWidget" name="tabClass">
       <attribute name="title">
-       <string>Tab 2</string>
+       <string>Class</string>
       </attribute>
-      <zorder></zorder>
-      <zorder></zorder>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLabel" name="labelClassName">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Name:</string>
+           </property>
+           <property name="buddy">
+            <cstring>lineEditClassName</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEditClassName"/>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="labelClassInherits">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Inherits:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="buddy">
+            <cstring>lineEditClassInherits</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEditClassInherits"/>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_5">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QLabel" name="labelClassTypeInformation">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Type inherits information:</string>
+           </property>
+           <property name="buddy">
+            <cstring>comboBoxClassTypeInformation</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="comboBoxClassTypeInformation">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <item>
+            <property name="text">
+             <string>None</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Inherits QObject</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Inherits QWidget</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Inherits QQuickItem</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>494</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </widget>
     </widget>
    </item>

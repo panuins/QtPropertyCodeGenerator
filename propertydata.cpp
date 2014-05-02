@@ -96,7 +96,7 @@ PropertyData::PropertyData(const PropertyData &p) :
 PropertyData::~PropertyData()
 {
 #ifdef DEBUG_PROPERTYS_COW
-    std::cout << "PropertyData removed. id=" << id << std::endl;
+    std::cout << "PropertyData removed. id=" << m_id << std::endl;
 #endif
 }
 

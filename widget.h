@@ -40,10 +40,13 @@ protected:
     virtual void closeEvent(QCloseEvent *event);
 
 private slots:
+    void on_dialogEdit_accept();
+    void on_dialogEdit_rejected();
     void on_dialogSet_accept();
     void on_dialogSet_rejected();
     void on_pushButtonAddProperty_clicked();
     void on_pushButtonEditProperty_clicked();
+    void on_pushButtonExportClass_clicked();
     void on_pushButtonNewProject_clicked();
     void on_pushButtonOpenProject_clicked();
     void on_pushButtonRemoveProperty_clicked();
@@ -54,6 +57,7 @@ private slots:
 
     void generateCode();
     void updateUi();
+
 
 private:
     class PropertyItem

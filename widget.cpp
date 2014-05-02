@@ -93,6 +93,7 @@ Widget::Widget(QWidget *parent) :
 {
     ui->setupUi(this);
     m_dialogEdit = new DialogEdit(&m_propertiesGroup, this);
+    m_dialogSet = new DialogSet(this);
     //QTextCodec::setCodecForTr(QTextCodec::codecForName("utf-8"));
     Property p1("backColor", QVariant::typeToName(QVariant::Color));
     p1.setDocName(QString("背景色"));
@@ -113,8 +114,12 @@ Widget::Widget(QWidget *parent) :
     m_propertiesGroup.setStatementsAfterWriteProperty("    AfterWrite;\n");
     updateUi();
     connect(m_dialogEdit, SIGNAL(accepted()),
-            this, SLOT(on_dialogSet_accept()));
+            this, SLOT(on_dialogEdit_accept()));
     connect(m_dialogEdit, SIGNAL(rejected()),
+            this, SLOT(on_dialogEdit_rejected()));
+    connect(m_dialogSet, SIGNAL(accepted()),
+            this, SLOT(on_dialogSet_accept()));
+    connect(m_dialogSet, SIGNAL(rejected()),
             this, SLOT(on_dialogSet_rejected()));
 }
 
@@ -163,7 +168,7 @@ void Widget::closeEvent(QCloseEvent *event)
     }
 }
 
-void Widget::on_dialogSet_accept()
+void Widget::on_dialogEdit_accept()
 {
     switch (m_dialogEdit->currentMode())
     {
@@ -185,9 +190,19 @@ void Widget::on_dialogSet_accept()
     }
 }
 
-void Widget::on_dialogSet_rejected()
+void Widget::on_dialogEdit_rejected()
 {
     //updateUi();
+}
+
+void Widget::on_dialogSet_accept()
+{
+    updateUi();
+}
+
+void Widget::on_dialogSet_rejected()
+{
+    updateUi();
 }
 
 void Widget::on_pushButtonAddProperty_clicked()
@@ -201,6 +216,64 @@ void Widget::on_pushButtonEditProperty_clicked()
     {
         int propertyIndex = ui->tableWidgetProperties->currentRow();
         m_dialogEdit->editExist(propertyIndex);
+    }
+}
+
+void Widget::on_pushButtonExportClass_clicked()
+{
+    QString dirName = QFileDialog::getExistingDirectory(this,
+                                                        tr("Select Directory"),
+                                                        ".",
+                                                        QFileDialog::ShowDirsOnly);
+    if (!dirName.isEmpty())
+    {
+        QDir exportDir(dirName);
+        QString headerFileName = m_propertiesGroup.headerFileName();
+        QString sourceFileName = m_propertiesGroup.sourceFileName();
+        if (exportDir.exists(headerFileName))
+        {
+            int ret = QMessageBox::question(this,
+                                            tr("Header file exist"),
+                                            tr("Header file %1 exist, "
+                                               "all modify of this will be lose. "
+                                               "Are you sure?")
+                                            .arg(headerFileName),
+                                            QMessageBox::Yes
+                                            | QMessageBox::No);
+            if (ret != QMessageBox::Yes)
+            {
+                return;
+            }
+        }
+        if (exportDir.exists(sourceFileName))
+        {
+            int ret = QMessageBox::question(this,
+                                            tr("Source file exist"),
+                                            tr("Source file %1 exist, "
+                                               "all modify of this will be lose. "
+                                               "Are you sure?")
+                                            .arg(sourceFileName),
+                                            QMessageBox::Yes
+                                            | QMessageBox::No);
+            if (ret != QMessageBox::Yes)
+            {
+                return;
+            }
+        }
+        {
+            QFile f(exportDir.filePath(headerFileName));
+            if (f.open(QIODevice::WriteOnly))
+            {
+                f.write(m_propertiesGroup.headerFileContent().toUtf8());
+            }
+        }
+        {
+            QFile f(exportDir.filePath(sourceFileName));
+            if (f.open(QIODevice::WriteOnly))
+            {
+                f.write(m_propertiesGroup.sourceFileContent().toUtf8());
+            }
+        }
     }
 }
 
@@ -262,6 +335,7 @@ void Widget::on_pushButtonSaveProjectAs_clicked()
 
 void Widget::on_pushButtonSetProject_clicked()
 {
+    m_dialogSet->editExist(&m_propertiesGroup);
 }
 
 void Widget::on_pushButtonRemoveProperty_clicked()
@@ -318,7 +392,7 @@ void Widget::generateCode()
         }
     }*/
     //ui->textBrowserBatchSet->setText(qProperty);
-    QString strCppDeclares = QString("%1\n"
+    /*QString strCppDeclares = QString("%1\n"
                                      "public: \n%2\n"
                                      "public slots: \n%3\n"
                                      "signals: \n%4\n"
@@ -331,7 +405,11 @@ void Widget::generateCode()
     ui->textBrowserCppDeclares->setText(strCppDeclares);
     ui->textBrowserFunctions->setText(
                 m_propertiesGroup.generateReadFunctionDefine() + "\n"
-                + m_propertiesGroup.generateWriteFunctionDefine());
+                + m_propertiesGroup.generateWriteFunctionDefine());*/
+    QString strHeaderFileContent = m_propertiesGroup.headerFileContent();
+    QString strSourceFileContent = m_propertiesGroup.sourceFileContent();
+    ui->textBrowserCppDeclares->setText(strHeaderFileContent);
+    ui->textBrowserFunctions->setText(strSourceFileContent);
 }
 
 void Widget::updateUi()

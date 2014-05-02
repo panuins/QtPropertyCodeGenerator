@@ -75,6 +75,9 @@ public:
     QString signalDeclear() const;
     QString memberVariableDeclear() const;
 
+    QString initialToDefaultValueStatement() const;
+    QString initialToSpecifyValueStatement(const QString &str) const;
+
     QString readFunctionDefine(const QString &className,
                                bool isInline = true) const;
     QString writeFunctionDefine(const QString &className,

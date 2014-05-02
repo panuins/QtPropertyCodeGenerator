@@ -19,7 +19,7 @@ inline Property::Property(//const QString &className,
     m_d(new PropertyData(name, type, typeStringName))
 {
 #ifdef DEBUG_PROPERTYS_COW_DETAIL
-    std::cout << "Property: constructor(const QString &, "
+    std::cout << "Property:: constructor(const QString &, "
                  "const QString &, "
                  "const QString &). id=" << m_d->m_id << std::endl;
 #endif
@@ -373,6 +373,20 @@ inline QString Property::memberVariableDeclear() const
                 .arg(memberVariableName())
                 .arg(m_d->p_docName);
     }
+    return s;
+}
+
+inline QString Property::initialToDefaultValueStatement() const
+{
+    QString s("%1(%2)");
+    s = s.arg(memberVariableName()).arg(m_d->p_defaultValue.toString());
+    return s;
+}
+
+inline QString Property::initialToSpecifyValueStatement(const QString &str) const
+{
+    QString s("%1(%2)");
+    s = s.arg(memberVariableName()).arg(str);
     return s;
 }
 

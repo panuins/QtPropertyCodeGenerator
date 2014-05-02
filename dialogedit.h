@@ -63,7 +63,6 @@ private slots:
     void on_checkBoxPropertyEnabled_toggled(bool checked);
     void updateUi();
 
-
 private:
     Property m_current;
     QStringList m_qtTypeList;

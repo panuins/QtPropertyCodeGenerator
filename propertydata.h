@@ -41,7 +41,7 @@ public:
     QString p_typeStringName;
     int p_revision;
     int m_used;
-#ifdef DEBUG
+#ifdef DEBUG_PROPERTYS_COW
     int m_id;
 #endif
     bool p_constant;
