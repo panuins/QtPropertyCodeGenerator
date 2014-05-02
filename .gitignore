@@ -1,0 +1,16 @@
+*pro.user
+*pro.user*
+*.autosave
+*.[o]
+*~
+moc_*
+qrc_*
+ui_*
+*.lib
+*.dll
+*.a
+*.o
+*.so
+*.bin
+*.exe
+doc
