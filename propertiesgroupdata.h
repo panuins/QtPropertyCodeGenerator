@@ -1,6 +1,7 @@
 #ifndef PROPERTIESGROUPDATA_H
 #define PROPERTIESGROUPDATA_H
 
+#include "enumtype.h"
 #include "property.h"
 #include <QList>
 #include <QStringList>
@@ -16,6 +17,8 @@ public:
     //PropertiesGroupData &operator=(const PropertiesGroupData &v);
 
     QList<Property> m_properties;
+    QList<EnumType> m_enums;
+    QStringList p_typeOrder;
     QString p_className;
     QString p_inherits;
     QString p_statementsAfterWriteProperty;

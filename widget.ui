@@ -13,180 +13,16 @@
   <property name="windowTitle">
    <string>Widget</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_3">
+  <layout class="QVBoxLayout" name="verticalLayout_4">
    <item>
-    <widget class="QSplitter" name="splitter_2">
+    <widget class="QSplitter" name="splitterPrimary">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="QSplitter" name="splitter">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <widget class="QWidget" name="layoutWidget">
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QLabel" name="labelProperties">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Properties</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QTableWidget" name="tableWidgetProperties">
-          <property name="editTriggers">
-           <set>QAbstractItemView::NoEditTriggers</set>
-          </property>
-          <property name="selectionMode">
-           <enum>QAbstractItemView::SingleSelection</enum>
-          </property>
-          <property name="selectionBehavior">
-           <enum>QAbstractItemView::SelectRows</enum>
-          </property>
-          <column>
-           <property name="text">
-            <string>Name</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Type</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Type String Name</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Doc Name</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Doc Detail</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Member</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Read</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Write</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Reset</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Notify</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Revision</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Designable</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Scriptable</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Stored</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>User</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Constant</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Final</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Enabled</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Default Value</string>
-           </property>
-          </column>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="layoutWidget">
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <widget class="QLabel" name="labelOrder">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Property's type order</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QListWidget" name="listWidgetOrder"/>
-        </item>
-       </layout>
-      </widget>
-     </widget>
      <widget class="QWidget" name="layoutWidget">
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="1" column="1">
-        <widget class="QTextBrowser" name="textBrowserFunctions">
-         <property name="readOnly">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QTextBrowser" name="textBrowserCppDeclares">
-         <property name="readOnly">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLabel" name="labelFunctions">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QLabel" name="labelProperties">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -194,24 +30,172 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Functions:</string>
+          <string>Properties</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="labelCppDeclares">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+       <item>
+        <widget class="QTableWidget" name="tableWidgetProperties">
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
          </property>
-         <property name="text">
-          <string>C++ Declares:</string>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
          </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <column>
+          <property name="text">
+           <string>Name</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Type</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Type String Name</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Doc Name</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Doc Detail</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Member</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Read</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Write</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Reset</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Notify</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Revision</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Designable</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Scriptable</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Stored</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>User</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Constant</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Final</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Enabled</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Default Value</string>
+          </property>
+         </column>
         </widget>
        </item>
       </layout>
+     </widget>
+     <widget class="QSplitter" name="splitterGeneratedCode">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QWidget" name="">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QLabel" name="labelCppDeclares">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>C++ Declares:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTextBrowser" name="textBrowserCppDeclares">
+          <property name="readOnly">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="">
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <widget class="QLabel" name="labelFunctions">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Functions:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTextBrowser" name="textBrowserFunctions">
+          <property name="readOnly">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </widget>
    </item>
@@ -313,7 +297,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>tableWidgetProperties</tabstop>
-  <tabstop>listWidgetOrder</tabstop>
   <tabstop>textBrowserCppDeclares</tabstop>
   <tabstop>textBrowserFunctions</tabstop>
   <tabstop>pushButtonOpenProject</tabstop>

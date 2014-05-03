@@ -1,5 +1,6 @@
 #include "dialogset.h"
 #include "ui_dialogset.h"
+#include <QModelIndex>
 
 DialogSet::DialogSet(QWidget *parent) :
     QDialog(parent),
@@ -37,6 +38,28 @@ void DialogSet::editExist(PropertiesGroup *l)
                 l->statementsMiddleWriteProperty());
     ui->plainTextEditGroupWriteFunctionLast->setPlainText(
                 l->statementsAfterWriteProperty());
+    /*ui->listWidgetEnumTypeList->addItems(l->enumsName());
+    if (ui->listWidgetEnumTypeList->count() >= 1)
+    {
+        ui->listWidgetEnumTypeList->setCurrentIndex(QModelIndex(0, 0));
+        ui->lineEditEnumTypeName->setText(l->enums().at(0).name());
+        ui->lineEditEnumPrefix->setText(l->enums().at(0).prefix());
+        ui->lineEditEnumSuffix->setText(l->enums().at(0).suffix());
+        ui->plainTextEditEnumsVars->setPlainText(l->enums().at(0).varList().join("\n"));
+    }*/
+    QStringList typeList = m_current->existType();
+    QStringList typeOrderUi = ui->plainTextEditTypeOrder->toPlainText().split("\n");
+    typeOrderUi.removeAll(QString(""));
+    typeList.removeAll(QString(""));
+    foreach (QString var, typeList)
+    {
+        if (!typeOrderUi.contains(var))
+        {
+            typeOrderUi.append(var);
+        }
+    }
+    ui->plainTextEditTypeOrder->setPlainText(typeOrderUi.join("\n"));
+    m_current->setTypeOrder(typeOrderUi);
     QDialog::open();
 }
 
@@ -112,4 +135,27 @@ void DialogSet::on_plainTextEditGroupWriteFunctionLast_textChanged()
 {
     m_current->setStatementsAfterWriteProperty(
                 ui->plainTextEditGroupWriteFunctionLast->toPlainText());
+}
+
+void DialogSet::on_pushButtonEnumTypeNameAdd_clicked()
+{
+    //ui->listWidgetEnumTypeList->addItem("");
+    //m_current
+}
+
+void DialogSet::on_pushButtonEnumTypeNameRemove_clicked()
+{
+
+}
+
+void DialogSet::on_plainTextEditEnumDeclare_textChanged()
+{
+
+}
+
+void DialogSet::on_plainTextEditTypeOrder_textChanged()
+{
+    QStringList typeOrder = ui->plainTextEditTypeOrder->toPlainText().split("\n");
+    typeOrder.removeAll(QString(""));
+    m_current->setTypeOrder(typeOrder);
 }

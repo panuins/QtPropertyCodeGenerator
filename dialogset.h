@@ -3,6 +3,7 @@
 
 #include "propertiesgroup.h"
 #include <QDialog>
+#include <QStringList>
 
 namespace Ui {
 class DialogSet;
@@ -34,6 +35,11 @@ private slots:
     void on_plainTextEditGroupWriteFunctionStart_textChanged();
     void on_plainTextEditGroupWriteFunctionMiddle_textChanged();
     void on_plainTextEditGroupWriteFunctionLast_textChanged();
+    void on_pushButtonEnumTypeNameAdd_clicked();
+    void on_pushButtonEnumTypeNameRemove_clicked();
+    void on_plainTextEditEnumDeclare_textChanged();
+
+    void on_plainTextEditTypeOrder_textChanged();
 
 private:
     PropertiesGroup *m_current;

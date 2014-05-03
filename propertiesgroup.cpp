@@ -1,5 +1,27 @@
 #include "propertiesgroup.h"
 
+QStringList PropertiesGroup::enumsName() const
+{
+    QStringList list;
+    foreach (EnumType e, m_d->m_enums)
+    {
+        list.append(e.name());
+    }
+    return list;
+}
+
+QStringList PropertiesGroup::existType() const
+{
+    QStringList list;
+    foreach (Property p, m_d->m_properties)
+    {
+        list.append(p.realTypeName());
+    }
+    list.sort();
+    list.removeDuplicates();
+    return list;
+}
+
 int PropertiesGroup::find(const QString &name) const
 {
     int i = 0;
@@ -13,6 +35,40 @@ int PropertiesGroup::find(const QString &name) const
     return -1;
 }
 
+QString PropertiesGroup::parentClass() const
+{
+    QString strParent("");
+    switch (m_d->p_typeInderitsInfomation)
+    {
+    case 1:
+        strParent = "QObject";
+        break;
+    case 2:
+    case 4:
+        strParent = "QWidget";
+        break;
+    case 3:
+        strParent = "QQuickItem";
+        break;
+    default:
+        break;
+    }
+    return strParent;
+}
+
+QList<Property> PropertiesGroup::propertiesIsType(const QString &var) const
+{
+    QList<Property> listP;
+    foreach (Property p, m_d->m_properties)
+    {
+        if (p.realTypeName() == var)
+        {
+            listP.append(p);
+        }
+    }
+    return listP;
+}
+
 QStringList PropertiesGroup::propertiesName() const
 {
     QStringList list;
@@ -23,31 +79,95 @@ QStringList PropertiesGroup::propertiesName() const
     return list;
 }
 
+void PropertiesGroup::append(const Property &var)
+{
+    beforeWrite();
+    if (!m_d->p_typeOrder.contains(var.realTypeName()))
+    {
+        m_d->p_typeOrder.append(var.realTypeName());
+    }
+    m_d->m_properties.append(var);
+}
+
+void PropertiesGroup::append(const QList<Property> &var)
+{
+    beforeWrite();
+    foreach (Property p, var)
+    {
+        if (!m_d->p_typeOrder.contains(p.realTypeName()))
+        {
+            m_d->p_typeOrder.append(p.realTypeName());
+        }
+    }
+    m_d->m_properties.append(var);
+}
+
 void PropertiesGroup::sort()
 {
-    int i = 0, j = 0;
-    QStringList list = this->propertiesName();
-    QList<Property> listP;
-    list.sort();
-    list.removeDuplicates();
-    for (; i < list.size(); i++)
+    beforeWrite();
     {
-        bool found = false;
-        for (j = 0; (j < m_d->m_properties.size()) && (!found); j++)
+        int i = 0, j = 0;
+        QStringList list = this->propertiesName();
+        QList<Property> listP;
+        list.sort();
+        list.removeDuplicates();
+        for (; i < list.size(); i++)
         {
-            if (m_d->m_properties.at(j).name() == list.at(i))
+            bool found = false;
+            for (j = 0; (j < m_d->m_properties.size()) && (!found); j++)
             {
-                listP.append(m_d->m_properties.at(j));
-                found = true;
+                if (m_d->m_properties.at(j).name() == list.at(i))
+                {
+                    listP.append(m_d->m_properties.at(j));
+                    found = true;
+                }
             }
+            /*if (!found)
+            {
+                std::cout << "PropertiesGroup::sort: Can not find property "
+                          << list.at(i).toStdString() << std::endl;
+            }*/
         }
-        /*if (!found)
-        {
-            std::cout << "PropertiesGroup::sortProperties: Can not find property "
-                      << list.at(i).toStdString() << std::endl;
-        }*/
+        m_d->m_properties = listP;
     }
-    m_d->m_properties = listP;
+    {
+        int i = 0, j = 0;
+        QStringList list = this->enumsName();
+        QList<EnumType> listE;
+        list.sort();
+        list.removeDuplicates();
+        for (; i < list.size(); i++)
+        {
+            bool found = false;
+            for (j = 0; (j < m_d->m_enums.size()) && (!found); j++)
+            {
+                if (m_d->m_enums.at(j).name() == list.at(i))
+                {
+                    listE.append(m_d->m_enums.at(j));
+                    found = true;
+                }
+            }
+            /*if (!found)
+            {
+                std::cout << "PropertiesGroup::sort: Can not find enum type "
+                          << list.at(i).toStdString() << std::endl;
+            }*/
+        }
+        m_d->m_enums = listE;
+    }
+}
+
+QString PropertiesGroup::generateEnumsDeclear() const
+{
+    QString enums("");
+    foreach (EnumType e, m_d->m_enums)
+    {
+        if (e.enabled())
+        {
+            enums.append(e.declear() + "\n");
+        }
+    }
+    return enums;
 }
 
 QString PropertiesGroup::generateQPropertyDeclear() const
@@ -97,7 +217,7 @@ QString PropertiesGroup::generateSignalDeclear() const
     QString signalDeclear("");
     foreach (Property p, m_d->m_properties)
     {
-        if (p.enabled())
+        if (p.enabled() && p.notify())
         {
             signalDeclear.append(QString("    ")
                                  + p.signalDeclear());
@@ -109,12 +229,16 @@ QString PropertiesGroup::generateSignalDeclear() const
 QString PropertiesGroup::generateMemberVariableDeclear() const
 {
     QString memberVars("");
-    foreach (Property p, m_d->m_properties)
+    foreach (QString s, m_d->p_typeOrder)
     {
-        if (p.enabled())
+        QList<Property> listP = propertiesIsType(s);
+        foreach (Property p, listP)
         {
-            memberVars.append(QString("    ")
-                              + p.memberVariableDeclear());
+            if (p.enabled())
+            {
+                memberVars.append(QString("    ")
+                                  + p.memberVariableDeclear());
+            }
         }
     }
     return memberVars;
@@ -158,50 +282,8 @@ QString PropertiesGroup::generateWriteFunctionDefine() const
     return writeFunctions;
 }
 
-QString PropertiesGroup::parentClass() const
-{
-    QString strParent("");
-    switch (m_d->p_typeInderitsInfomation)
-    {
-    case 1:
-        strParent = "QObject";
-        break;
-    case 2:
-        strParent = "QWidget";
-        break;
-    case 3:
-        strParent = "QQuickItem";
-        break;
-    default:
-        break;
-    }
-    return strParent;
-}
-
-QString PropertiesGroup::headerFileName() const
-{
-    return QString("%1.h").arg(m_d->p_className);
-}
-
-QString PropertiesGroup::headerFileMarco() const
-{
-    return QString("%1_H").arg(m_d->p_className.toUpper());
-}
-
 QString PropertiesGroup::headerFileContent() const
 {
-    QString includeFile("");
-    if (!m_d->p_inherits.isEmpty())
-    {
-        if (m_d->p_inherits.startsWith("Q"))
-        {
-            includeFile = QString("#include <%1>\n\n").arg(m_d->p_inherits);
-        }
-        else
-        {
-            includeFile = QString("#include \"%1\"\n\n").arg(m_d->p_inherits);
-        }
-    }
     QString inlineFunctionsDefine;
     if (m_d->p_readFunctionIsInline)
     {
@@ -217,12 +299,14 @@ QString PropertiesGroup::headerFileContent() const
         {
             QString c("#ifndef %1\n"
                       "#define %1\n\n"
-                      "%2"
+                      "%2\n"
                       "class %3\n"
                       "{\n"
                       "public:\n"
                       "    %3();\n"
                       "    %3(const %3 &var);\n"
+                      "    ~%3();\n"
+                      "    %3 &operator=(const %3 &var);\n\n"
                       "%4\n"
                       "%5\n"
                       "private:\n"
@@ -231,7 +315,7 @@ QString PropertiesGroup::headerFileContent() const
                       "%7"
                       "#endif // %1");
             c = c.arg(headerFileMarco())
-                    .arg(includeFile)
+                    .arg(headerFileIncludeStatements())
                     .arg(m_d->p_className)
                     .arg(generateReadDeclear())
                     .arg(generateWriteDeclear())
@@ -243,12 +327,13 @@ QString PropertiesGroup::headerFileContent() const
         {
             QString c("#ifndef %1\n"
                       "#define %1\n\n"
-                      "%2"
+                      "%2\n"
                       "class %3 : public %4\n"
                       "{\n"
                       "public:\n"
                       "    %3();\n"
                       "    %3(const %3 &var);\n"
+                      "    ~%3();\n\n"
                       "%5\n"
                       "%6\n"
                       "private:\n"
@@ -257,7 +342,7 @@ QString PropertiesGroup::headerFileContent() const
                       "%8"
                       "#endif // %1");
             c = c.arg(headerFileMarco())
-                    .arg(includeFile)
+                    .arg(headerFileIncludeStatements())
                     .arg(m_d->p_className)
                     .arg(m_d->p_inherits)
                     .arg(generateReadDeclear())
@@ -267,17 +352,57 @@ QString PropertiesGroup::headerFileContent() const
             return c;
         }
     }
-    else
+    else if (m_d->p_typeInderitsInfomation == inherits_QWidget_associateWidthUiFile)
     {
         QString c("#ifndef %1\n"
                   "#define %1\n\n"
-                  "%2"
+                  "%2\n"
+                  "namespace Ui {\n"
+                  "class %3;\n"
+                  "}\n\n"
                   "class %3 : public %4\n"
                   "{\n"
                   "    Q_OBJECT\n"
                   "%6\n"
                   "public:\n"
                   "    explicit %3(%5 *parent = 0);\n"
+                  "    ~%3();\n\n"
+                  "%7\n"
+                  "public slots:\n"
+                  "%8\n"
+                  "signals:\n"
+                  "%9\n"
+                  "private:\n"
+                  "    Ui::%3 *ui;\n"
+                  "%10"
+                  "};\n\n"
+                  "%11"
+                  "#endif // %1");
+        c = c.arg(headerFileMarco())
+                .arg(headerFileIncludeStatements())
+                .arg(m_d->p_className)
+                .arg(m_d->p_inherits)
+                .arg(parentClass())
+                .arg(generateQPropertyDeclear())
+                .arg(generateReadDeclear())
+                .arg(generateWriteDeclear())
+                .arg(generateSignalDeclear())
+                .arg(generateMemberVariableDeclear())
+                .arg(inlineFunctionsDefine);
+        return c;
+    }
+    else
+    {
+        QString c("#ifndef %1\n"
+                  "#define %1\n\n"
+                  "%2\n"
+                  "class %3 : public %4\n"
+                  "{\n"
+                  "    Q_OBJECT\n"
+                  "%6\n"
+                  "public:\n"
+                  "    explicit %3(%5 *parent = 0);\n"
+                  "    ~%3();\n\n"
                   "%7\n"
                   "public slots:\n"
                   "%8\n"
@@ -289,7 +414,7 @@ QString PropertiesGroup::headerFileContent() const
                   "%11"
                   "#endif // %1");
         c = c.arg(headerFileMarco())
-                .arg(includeFile)
+                .arg(headerFileIncludeStatements())
                 .arg(m_d->p_className)
                 .arg(m_d->p_inherits)
                 .arg(parentClass())
@@ -303,120 +428,291 @@ QString PropertiesGroup::headerFileContent() const
     }
 }
 
-QString PropertiesGroup::sourceFileName() const
+QString PropertiesGroup::headerFileIncludeStatements() const
 {
-    return QString("%1.cpp").arg(m_d->p_className);
-}
-
-QString PropertiesGroup::sourceFileDefaultInitial() const
-{
-    QString memberInit("");
-    foreach (Property p, m_d->m_properties)
+    QStringList list;
+    QString type;
+    QString includes("");
+    if (!m_d->p_inherits.isEmpty())
     {
-        if (p.enabled())
+        if (m_d->p_inherits.startsWith("Q"))
         {
-            memberInit.append(QString(",\n    ")
-                              + p.initialToDefaultValueStatement());
+            list.append(m_d->p_inherits);
+        }
+        else
+        {
+            includes = QString("#include \"%1\"\n").arg(m_d->p_inherits);
         }
     }
-    return memberInit;
-}
-
-QString PropertiesGroup::sourceFileCopyInitial() const
-{
-    QString memberInit("");
-    foreach (Property p, m_d->m_properties)
+    foreach (type, m_d->p_typeOrder)
     {
-        if (p.enabled())
+        if (!type.isEmpty())
         {
-            memberInit.append(QString(",\n    ")
-                              + p.initialToSpecifyValueStatement(
-                                  QString("var.%1")
-                                  .arg(p.memberVariableName())));
+            if (type.startsWith("Q"))
+            {
+                list.append(type);
+            }
         }
     }
-    return memberInit;
+    list.sort();
+    list.removeDuplicates();
+    foreach (type, list)
+    {
+        includes += QString("#include <%1>\n").arg(type);
+    }
+    return includes;
+}
+
+QString PropertiesGroup::headerFileMarco() const
+{
+    return QString("%1_H").arg(m_d->p_className.toUpper());
+}
+
+QString PropertiesGroup::headerFileName() const
+{
+    return QString("%1.h").arg(m_d->p_className);
+}
+
+QString PropertiesGroup::sourceFileAssignmentOperator() const
+{
+    QString define;
+    if (m_d->p_typeInderitsInfomation == 0)
+    {
+        define = QString("/**\n"
+                         " * @brief 赋值运算符\n"
+                         " * @param var 要赋值的对象\n"
+                         " * @details 赋值运算符。\n"
+                         " */\n"
+                         "%1 &%1::operator=(const %1 &var)\n"
+                         "{\n"
+                         "%2"
+                         "    return *this;\n"
+                         "}\n")
+                .arg(m_d->p_className);
+        QString memberInit("");
+        foreach (QString s, m_d->p_typeOrder)
+        {
+            QList<Property> listP = propertiesIsType(s);
+            foreach (Property p, listP)
+            {
+                if (p.enabled())
+                {
+                    memberInit.append(QString("    %1 = var.%1;\n")
+                                      .arg(p.memberVariableName()));
+                }
+            }
+        }
+        define = define.arg(memberInit);
+        return define;
+    }
+    else
+    {
+        return QString("");
+    }
 }
 
 QString PropertiesGroup::sourceFileContent() const
 {
-    QString includeFile;
-    if (m_d->p_inherits.startsWith("Q"))
-    {
-        includeFile = QString("<%1>").arg(m_d->p_inherits);
-    }
-    else
-    {
-        includeFile = QString("\"%1\"").arg(m_d->p_inherits);
-    }
+    QString c("");
     if (m_d->p_typeInderitsInfomation == 0)
     {
-        QString c("#include \"%1\"\n\n"
-                  "/**\n"
-                  " * @brief 默认构造函数\n"
-                  " * @details 默认构造函数。\n"
-                  " */\n"
-                  "%2::%2()%3\n"
-                  "{\n"
-                  "};\n\n"
-                  "/**\n"
-                  " * @brief 拷贝构造函数\n"
-                  " * @param var 被拷贝的对象\n"
-                  " * @details 拷贝构造函数。\n"
-                  " */\n"
-                  "%2::%2(const %2 &var)%4\n"
-                  "{\n"
-                  "};\n\n");
-        QString strDefault = sourceFileDefaultInitial();
-        QString strCopy = sourceFileCopyInitial();
-        if (!strDefault.isEmpty())
-        {
-            strDefault.replace(0, 1, QString(" :"));
-        }
-        if (!strCopy.isEmpty())
-        {
-            strCopy.replace(0, 1, QString(" :"));
-        }
-        c = c.arg(headerFileName())
-                .arg(m_d->p_className)
-                .arg(strDefault)
-                .arg(strCopy);
-        if (!m_d->p_readFunctionIsInline)
-        {
-            c += generateReadFunctionDefine();
-        }
-        if (!m_d->p_writeFunctionIsInline)
-        {
-            c += generateWriteFunctionDefine();
-        }
-        return c;
+        c = QString("#include \"%1\"\n\n"
+                    "%2\n"
+                    "%3\n"
+                    "%4\n"
+                    "%5\n")
+                .arg(headerFileName())
+                .arg(sourceFileDefaultConstructor())
+                .arg(sourceFileCopyConstructor())
+                .arg(sourceFileAssignmentOperator())
+                .arg(sourceFileDestructor());
+    }
+    else if (m_d->p_typeInderitsInfomation == inherits_QWidget_associateWidthUiFile)
+    {
+        c = QString("#include \"%1\"\n"
+                    "#include \"ui_%2\"\n\n"
+                    "%3\n"
+                    "%4\n")
+                .arg(headerFileName())
+                .arg(headerFileName().toLower())
+                .arg(sourceFileDefaultConstructor())
+                .arg(sourceFileDestructor());
     }
     else
     {
-        QString c("#include \"%1\"\n\n"
-                  "/**\n"
-                  " * @brief 默认构造函数\n"
-                  " * @param parent 父对象\n"
-                  " * @details 默认构造函数\n"
-                  " */\n"
-                  "%2::%2(%3 *parent) :\n"
-                  "    %4(parent)%5\n"
-                  "{\n"
-                  "};\n\n");
-        c = c.arg(headerFileName())
-                .arg(m_d->p_className)
-                .arg(parentClass())
-                .arg(m_d->p_inherits)
-                .arg(sourceFileDefaultInitial());
-        if (!m_d->p_readFunctionIsInline)
+        c = QString("#include \"%1\"\n\n"
+                    "%2\n"
+                    "%3\n")
+                .arg(headerFileName())
+                .arg(sourceFileDefaultConstructor())
+                .arg(sourceFileDestructor());
+    }
+    if (!m_d->p_readFunctionIsInline)
+    {
+        c += generateReadFunctionDefine();
+    }
+    if (!m_d->p_writeFunctionIsInline)
+    {
+        c += generateWriteFunctionDefine();
+    }
+    return c;
+}
+
+QString PropertiesGroup::sourceFileCopyConstructor() const
+{
+    QString define;
+    if (m_d->p_typeInderitsInfomation == 0)
+    {
+        define = QString("/**\n"
+                         " * @brief 拷贝构造函数\n"
+                         " * @param var 被拷贝的对象\n"
+                         " * @details 拷贝构造函数。\n"
+                         " */\n"
+                         "%1::%1(const %1 &var)%2\n"
+                         "{\n"
+                         "}\n")
+                .arg(m_d->p_className);
+        QString memberInit("");
+        foreach (QString s, m_d->p_typeOrder)
         {
-            c += generateReadFunctionDefine();
+            QList<Property> listP = propertiesIsType(s);
+            foreach (Property p, listP)
+            {
+                if (p.enabled())
+                {
+                    memberInit.append(QString(",\n    %1(var.%1)")
+                                      .arg(p.memberVariableName()));
+                }
+            }
+            if (memberInit.startsWith(QString(",")))
+            {
+                memberInit.replace(0, 1, QString(" :"));
+            }
         }
-        if (!m_d->p_writeFunctionIsInline)
-        {
-            c += generateWriteFunctionDefine();
-        }
-        return c;
+        define = define.arg(memberInit);
+        return define;
+    }
+    else
+    {
+        return QString("");
     }
 }
 
+QString PropertiesGroup::sourceFileDefaultConstructor() const
+{
+    QString memberInit("");
+    QString define;
+    if (m_d->p_typeInderitsInfomation == 0)
+    {
+        define = QString("/**\n"
+                         " * @brief 默认构造函数\n"
+                         " * @details 默认构造函数。\n"
+                         " */\n"
+                         "%1::%1()%2\n"
+                         "{\n"
+                         "}\n")
+                .arg(m_d->p_className);
+    }
+    else if (m_d->p_typeInderitsInfomation == inherits_QWidget_associateWidthUiFile)
+    {
+        define = QString("/**\n"
+                         " * @brief 默认构造函数\n"
+                         " * @param parent 父对象\n"
+                         " * @details 默认构造函数\n"
+                         " */\n"
+                         "%1::%1(%2 *parent) :\n"
+                         "    %3(parent),\n"
+                         "    ui(new Ui::%1)%4\n"
+                         "{\n"
+                         "    ui->setupUi(this);\n"
+                         "}\n")
+                .arg(m_d->p_className)
+                .arg(parentClass())
+                .arg(m_d->p_inherits);
+    }
+    else
+    {
+        define = QString("/**\n"
+                         " * @brief 默认构造函数\n"
+                         " * @param parent 父对象\n"
+                         " * @details 默认构造函数\n"
+                         " */\n"
+                         "%1::%1(%2 *parent) :\n"
+                         "    %3(parent)%4\n"
+                         "{\n"
+                         "}\n")
+                .arg(m_d->p_className)
+                .arg(parentClass())
+                .arg(m_d->p_inherits);
+    }
+    foreach (QString s, m_d->p_typeOrder)
+    {
+        QList<Property> listP = propertiesIsType(s);
+        foreach (Property p, listP)
+        {
+            if (p.enabled())
+            {
+                if (!p.defaultValue().toString().isEmpty())
+                {
+                    memberInit.append(QString(",\n    %1(%2)")
+                                      .arg(p.memberVariableName())
+                                      .arg(p.defaultValue().toString()));
+                }
+            }
+        }
+        if (m_d->p_typeInderitsInfomation == 0)
+        {
+            if (memberInit.startsWith(QString(",")))
+            {
+                memberInit.replace(0, 1, QString(" :"));
+            }
+        }
+    }
+    define = define.arg(memberInit);
+    return define;
+}
+
+QString PropertiesGroup::sourceFileDestructor() const
+{
+    QString define;
+    if (m_d->p_typeInderitsInfomation == 0)
+    {
+        define = QString("/**\n"
+                         " * @brief 析构函数\n"
+                         " * @details 析构函数。\n"
+                         " */\n"
+                         "%1::~%1()\n"
+                         "{\n"
+                         "}\n")
+                .arg(m_d->p_className);
+    }
+    else if (m_d->p_typeInderitsInfomation == inherits_QWidget_associateWidthUiFile)
+    {
+        define = QString("/**\n"
+                         " * @brief 析构函数\n"
+                         " * @details 析构函数。\n"
+                         " */\n"
+                         "%1::~%1()\n"
+                         "{\n"
+                         "    delete ui;\n"
+                         "}\n")
+                .arg(m_d->p_className);
+    }
+    else
+    {
+        define = QString("/**\n"
+                         " * @brief 析构函数\n"
+                         " * @details 析构函数。\n"
+                         " */\n"
+                         "%1::~%1()\n"
+                         "{\n"
+                         "}\n")
+                .arg(m_d->p_className);
+    }
+    return define;
+}
+
+QString PropertiesGroup::sourceFileName() const
+{
+    return QString("%1.cpp").arg(m_d->p_className);
+}

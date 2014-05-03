@@ -98,9 +98,11 @@ Widget::Widget(QWidget *parent) :
     Property p1("backColor", QVariant::typeToName(QVariant::Color));
     p1.setDocName(QString("背景色"));
     p1.setDocDetail(QString("会重新绘图"));
+    p1.setDefaultValue(QString("Qt::black"));
     Property p2("width", QVariant::typeToName(QVariant::Double), "qreal");
     p2.setDocName(QString("宽度"));
     p2.setDocDetail(QString("会重新绘图"));
+    p2.setDefaultValue(QString("0.0"));
     m_propertiesGroup.append(p1);
     m_propertiesGroup.append(p2);
     m_propertiesGroup.setClassName("testClass");
@@ -420,6 +422,7 @@ void Widget::updateUi()
     }
     m_propertyItems.clear();
     //sortProperties();
+    m_propertiesGroup.sort();
     foreach (Property p, m_propertiesGroup.properties())
     {
         QSharedPointer<PropertyItem> item(new PropertyItem(p));
@@ -527,6 +530,7 @@ void Widget::saveProperties(const QString &fileName)
     settings.setValue("WriteFunctionLast",
                       m_propertiesGroup.statementsAfterWriteProperty());
     settings.endGroup();
+    settings.setValue("typeOrder", m_propertiesGroup.typeOrder());
     settings.beginWriteArray("properties");
     int i = 0;
     for (; i < m_propertiesGroup.size(); i++)

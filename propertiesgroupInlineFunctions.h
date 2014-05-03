@@ -84,49 +84,19 @@ inline Property &PropertiesGroup::operator[](int i)
     return m_d->m_properties[i];
 }
 
-inline void PropertiesGroup::append(const Property &var)
-{
-    beforeWrite();
-    m_d->m_properties.append(var);
-}
-
-inline void PropertiesGroup::append(const QList<Property> &var)
-{
-    beforeWrite();
-    m_d->m_properties.append(var);
-}
-
 inline Property PropertiesGroup::at(int var) const
 {
     return m_d->m_properties.at(var);
 }
 
-inline void PropertiesGroup::clear()
-{
-    beforeWrite();
-    m_d->m_properties.clear();
-}
-
-inline void PropertiesGroup::insert(int vari, const Property &varp)
-{
-    beforeWrite();
-    m_d->m_properties.insert(vari, varp);
-}
-
-inline void PropertiesGroup::removeAt(int var)
-{
-    beforeWrite();
-    m_d->m_properties.removeAt(var);
-}
-
-inline int PropertiesGroup::size() const
-{
-    return m_d->m_properties.size();
-}
-
 inline QString PropertiesGroup::className() const
 {
     return m_d->p_className;
+}
+
+inline QList<EnumType> PropertiesGroup::enums() const
+{
+    return m_d->m_enums;
 }
 
 inline QString PropertiesGroup::inherits() const
@@ -142,6 +112,11 @@ inline QList<Property> PropertiesGroup::properties() const
 inline bool PropertiesGroup::readFunctionIsInline() const
 {
     return m_d->p_readFunctionIsInline;
+}
+
+inline int PropertiesGroup::size() const
+{
+    return m_d->m_properties.size();
 }
 
 inline QString PropertiesGroup::statementsAfterWriteProperty() const
@@ -166,6 +141,11 @@ PropertiesGroup::typeInderitsInfomation() const
             (m_d->p_typeInderitsInfomation);
 }
 
+inline QStringList PropertiesGroup::typeOrder() const
+{
+    return m_d->p_typeOrder;
+}
+
 inline bool PropertiesGroup::writeFunctionEmitSignal() const
 {
     return m_d->p_writeFunctionEmitSignal;
@@ -176,10 +156,34 @@ inline bool PropertiesGroup::writeFunctionIsInline() const
     return m_d->p_writeFunctionIsInline;
 }
 
+inline void PropertiesGroup::clear()
+{
+    beforeWrite();
+    m_d->m_properties.clear();
+}
+
+inline void PropertiesGroup::insert(int vari, const Property &varp)
+{
+    beforeWrite();
+    m_d->m_properties.insert(vari, varp);
+}
+
+inline void PropertiesGroup::removeAt(int var)
+{
+    beforeWrite();
+    m_d->m_properties.removeAt(var);
+}
+
 inline void PropertiesGroup::setClassName(const QString &var)
 {
     beforeWrite();
     m_d->p_className = var;
+}
+
+inline void PropertiesGroup::setEnums(const QList<EnumType> &var)
+{
+    beforeWrite();
+    m_d->m_enums = var;
 }
 
 inline void PropertiesGroup::setInherits(const QString &var)
@@ -223,6 +227,12 @@ inline void PropertiesGroup::setTypeInderitsInfomation(
 {
     beforeWrite();
     m_d->p_typeInderitsInfomation = var;
+}
+
+inline void PropertiesGroup::setTypeOrder(const QStringList &var)
+{
+    beforeWrite();
+    m_d->p_typeOrder = var;
 }
 
 inline void PropertiesGroup::setWriteFunctionEmitSignal(const bool &var)

@@ -39,6 +39,7 @@ PropertiesGroupData::PropertiesGroupData(const QString &name,
 
 PropertiesGroupData::PropertiesGroupData(const PropertiesGroupData &v) :
     m_properties(v.m_properties),
+    m_enums(v.m_enums),
     p_className(v.p_className),
     p_inherits(v.p_inherits),
     p_statementsAfterWriteProperty(v.p_statementsAfterWriteProperty),

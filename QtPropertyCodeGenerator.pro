@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     dialogedit.cpp \
     classsettings.cpp \
     propertiesgroup.cpp \
-    propertiesgroupdata.cpp
+    propertiesgroupdata.cpp \
+    enumtype.cpp
 
 HEADERS  += widget.h \
     property.h \
@@ -33,7 +34,8 @@ HEADERS  += widget.h \
     classsettings.h \
     propertiesgroup.h \
     propertiesgroupdata.h \
-    propertiesgroupInlineFunctions.h
+    propertiesgroupInlineFunctions.h \
+    enumtype.h
 
 FORMS    += widget.ui \
     dialogset.ui \

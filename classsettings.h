@@ -12,6 +12,7 @@ public:
         inherits_QObject,
         inherits_QWidget,
         inherits_QQuickItem,
+        inherits_QWidget_associateWidthUiFile,
     };
 
     ClassSettings();

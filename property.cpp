@@ -292,7 +292,7 @@ QString Property::writeFunctionDefine(const QString &className,
         {
             s += QString("，") + m_d->p_docDetail;
         }
-        if (emitSignal)
+        if (emitSignal && m_d->p_notify)
         {
             s += "，并发射信号" + signalName();
         }
@@ -316,7 +316,7 @@ QString Property::writeFunctionDefine(const QString &className,
             .arg(memberVariableName())
             .arg(writeFunctionArgumentName())
             .arg(strBetweenSetValueAndEmit);
-    if (emitSignal)
+    if (emitSignal && m_d->p_notify)
     {
         s += QString("    emit %1();\n").arg(signalName());
     }
