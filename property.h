@@ -63,13 +63,14 @@ public:
     void setWrite(bool b);
 
     QString toString() const;
-    QString qPropertyString() const;
 
     QString readFunctionName() const;
+    QString writeFunctionArgumentName() const;
     QString writeFunctionName() const;
     QString signalName() const;
     QString memberVariableName() const;
 
+    QString qPropertyString() const;
     QString readDeclear() const;
     QString writeDeclear() const;
     QString signalDeclear() const;
@@ -89,13 +90,13 @@ public:
 
     static Property fromString(const QString &str);
 
-private:
-    void beforeWrite();
     static QString boolToStr(bool b);
     static bool strTobool(const QString &str);
     static QString replaceFisrtLetterToLower(const QString &str);
     static QString replaceFisrtLetterToUpper(const QString &str);
-    QString writeFunctionArgumentName() const;
+
+private:
+    void beforeWrite();
 
     PropertyData *m_d;
 };

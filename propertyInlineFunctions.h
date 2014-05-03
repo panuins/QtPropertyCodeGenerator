@@ -390,20 +390,6 @@ inline QString Property::initialToSpecifyValueStatement(const QString &str) cons
     return s;
 }
 
-inline void Property::beforeWrite()
-{
-    if (m_d->m_used > 1)
-    {
-        m_d->m_used--;
-        m_d = new PropertyData(*m_d);
-#ifdef DEBUG_PROPERTYS_COW_DETAIL
-    std::cout << "Property::beforeWrite copy. "
-                 "used=" << m_d->m_used
-              << " id=" << m_d->m_id << std::endl;
-#endif
-    }
-}
-
 inline QString Property::boolToStr(bool b)
 {
     return b ? QString("t") : QString("f");
@@ -441,6 +427,20 @@ inline QString Property::replaceFisrtLetterToUpper(const QString &str)
     else
     {
         return str;
+    }
+}
+
+inline void Property::beforeWrite()
+{
+    if (m_d->m_used > 1)
+    {
+        m_d->m_used--;
+        m_d = new PropertyData(*m_d);
+#ifdef DEBUG_PROPERTYS_COW_DETAIL
+    std::cout << "Property::beforeWrite copy. "
+                 "used=" << m_d->m_used
+              << " id=" << m_d->m_id << std::endl;
+#endif
     }
 }
 

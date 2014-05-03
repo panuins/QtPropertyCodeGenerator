@@ -73,10 +73,12 @@ public:
     QString generateReadFunctionDefine() const;
     QString generateWriteFunctionDefine() const;
 
+    QString argumentNameOfThisClass() const;
     QString headerFileContent() const;
     QString headerFileIncludeStatements() const;
     QString headerFileMarco() const;
     QString headerFileName() const;
+    QString qOjbectBasedParentArgumentName() const;
     QString sourceFileAssignmentOperator() const;
     QString sourceFileContent() const;
     QString sourceFileCopyConstructor() const;

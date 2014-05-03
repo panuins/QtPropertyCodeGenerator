@@ -195,7 +195,7 @@ QString Property::qPropertyString() const
 
     str = QString("Q_PROPERTY(%1 %2")
             .arg(realTypeName())
-            .arg(m_d->p_name);
+            .arg(replaceFisrtLetterToLower(m_d->p_name));
 #define AddBoolProperty(MEMBER, MARCO, QTNAME) \
     if (m_d->p_##MEMBER != PropertyDefault##MARCO) \
     { \

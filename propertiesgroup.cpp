@@ -282,6 +282,11 @@ QString PropertiesGroup::generateWriteFunctionDefine() const
     return writeFunctions;
 }
 
+QString PropertiesGroup::argumentNameOfThisClass() const
+{
+    return QString("var");
+}
+
 QString PropertiesGroup::headerFileContent() const
 {
     QString inlineFunctionsDefine;
@@ -304,19 +309,20 @@ QString PropertiesGroup::headerFileContent() const
                       "{\n"
                       "public:\n"
                       "    %3();\n"
-                      "    %3(const %3 &var);\n"
+                      "    %3(const %3 &%4);\n"
                       "    ~%3();\n"
-                      "    %3 &operator=(const %3 &var);\n\n"
-                      "%4\n"
+                      "    %3 &operator=(const %3 &%4);\n\n"
                       "%5\n"
+                      "%6\n"
                       "private:\n"
-                      "%6"
-                      "};\n\n"
                       "%7"
+                      "};\n\n"
+                      "%8"
                       "#endif // %1");
             c = c.arg(headerFileMarco())
                     .arg(headerFileIncludeStatements())
                     .arg(m_d->p_className)
+                    .arg(argumentNameOfThisClass())
                     .arg(generateReadDeclear())
                     .arg(generateWriteDeclear())
                     .arg(generateMemberVariableDeclear())
@@ -332,19 +338,21 @@ QString PropertiesGroup::headerFileContent() const
                       "{\n"
                       "public:\n"
                       "    %3();\n"
-                      "    %3(const %3 &var);\n"
+                      "    %3(const %3 &%5);\n"
                       "    ~%3();\n\n"
-                      "%5\n"
+                      "    %3 &operator=(const %3 &%5);\n\n"
                       "%6\n"
+                      "%7\n"
                       "private:\n"
-                      "%7"
-                      "};\n\n"
                       "%8"
+                      "};\n\n"
+                      "%9"
                       "#endif // %1");
             c = c.arg(headerFileMarco())
                     .arg(headerFileIncludeStatements())
                     .arg(m_d->p_className)
                     .arg(m_d->p_inherits)
+                    .arg(argumentNameOfThisClass())
                     .arg(generateReadDeclear())
                     .arg(generateWriteDeclear())
                     .arg(generateMemberVariableDeclear())
@@ -363,27 +371,28 @@ QString PropertiesGroup::headerFileContent() const
                   "class %3 : public %4\n"
                   "{\n"
                   "    Q_OBJECT\n"
-                  "%6\n"
+                  "%5\n"
                   "public:\n"
-                  "    explicit %3(%5 *parent = 0);\n"
+                  "    explicit %3(%6 *%7 = 0);\n"
                   "    ~%3();\n\n"
-                  "%7\n"
-                  "public slots:\n"
                   "%8\n"
-                  "signals:\n"
+                  "public slots:\n"
                   "%9\n"
+                  "signals:\n"
+                  "%10\n"
                   "private:\n"
                   "    Ui::%3 *ui;\n"
-                  "%10"
-                  "};\n\n"
                   "%11"
+                  "};\n\n"
+                  "%12"
                   "#endif // %1");
         c = c.arg(headerFileMarco())
                 .arg(headerFileIncludeStatements())
                 .arg(m_d->p_className)
                 .arg(m_d->p_inherits)
-                .arg(parentClass())
                 .arg(generateQPropertyDeclear())
+                .arg(parentClass())
+                .arg(qOjbectBasedParentArgumentName())
                 .arg(generateReadDeclear())
                 .arg(generateWriteDeclear())
                 .arg(generateSignalDeclear())
@@ -399,26 +408,27 @@ QString PropertiesGroup::headerFileContent() const
                   "class %3 : public %4\n"
                   "{\n"
                   "    Q_OBJECT\n"
-                  "%6\n"
+                  "%5\n"
                   "public:\n"
-                  "    explicit %3(%5 *parent = 0);\n"
+                  "    explicit %3(%6 *%7 = 0);\n"
                   "    ~%3();\n\n"
-                  "%7\n"
-                  "public slots:\n"
                   "%8\n"
-                  "signals:\n"
+                  "public slots:\n"
                   "%9\n"
+                  "signals:\n"
+                  "%10\n"
                   "private:\n"
-                  "%10"
-                  "};\n\n"
                   "%11"
+                  "};\n\n"
+                  "%12"
                   "#endif // %1");
         c = c.arg(headerFileMarco())
                 .arg(headerFileIncludeStatements())
                 .arg(m_d->p_className)
                 .arg(m_d->p_inherits)
-                .arg(parentClass())
                 .arg(generateQPropertyDeclear())
+                .arg(parentClass())
+                .arg(qOjbectBasedParentArgumentName())
                 .arg(generateReadDeclear())
                 .arg(generateWriteDeclear())
                 .arg(generateSignalDeclear())
@@ -470,7 +480,12 @@ QString PropertiesGroup::headerFileMarco() const
 
 QString PropertiesGroup::headerFileName() const
 {
-    return QString("%1.h").arg(m_d->p_className);
+    return QString("%1.h").arg(m_d->p_className.toLower());
+}
+
+QString PropertiesGroup::qOjbectBasedParentArgumentName() const
+{
+    return QString("parent");
 }
 
 QString PropertiesGroup::sourceFileAssignmentOperator() const
@@ -483,12 +498,13 @@ QString PropertiesGroup::sourceFileAssignmentOperator() const
                          " * @param var 要赋值的对象\n"
                          " * @details 赋值运算符。\n"
                          " */\n"
-                         "%1 &%1::operator=(const %1 &var)\n"
+                         "%1 &%1::operator=(const %1 &%2)\n"
                          "{\n"
-                         "%2"
+                         "%3"
                          "    return *this;\n"
                          "}\n")
-                .arg(m_d->p_className);
+                .arg(m_d->p_className)
+                .arg(argumentNameOfThisClass());
         QString memberInit("");
         foreach (QString s, m_d->p_typeOrder)
         {
@@ -497,8 +513,9 @@ QString PropertiesGroup::sourceFileAssignmentOperator() const
             {
                 if (p.enabled())
                 {
-                    memberInit.append(QString("    %1 = var.%1;\n")
-                                      .arg(p.memberVariableName()));
+                    memberInit.append(QString("    %1 = %2.%1;\n")
+                                      .arg(p.memberVariableName())
+                                      .arg(argumentNameOfThisClass()));
                 }
             }
         }
@@ -568,10 +585,11 @@ QString PropertiesGroup::sourceFileCopyConstructor() const
                          " * @param var 被拷贝的对象\n"
                          " * @details 拷贝构造函数。\n"
                          " */\n"
-                         "%1::%1(const %1 &var)%2\n"
+                         "%1::%1(const %1 &%2)%3\n"
                          "{\n"
                          "}\n")
-                .arg(m_d->p_className);
+                .arg(m_d->p_className)
+                .arg(argumentNameOfThisClass());
         QString memberInit("");
         foreach (QString s, m_d->p_typeOrder)
         {
@@ -580,8 +598,9 @@ QString PropertiesGroup::sourceFileCopyConstructor() const
             {
                 if (p.enabled())
                 {
-                    memberInit.append(QString(",\n    %1(var.%1)")
-                                      .arg(p.memberVariableName()));
+                    memberInit.append(QString(",\n    %1(%2.%1)")
+                                      .arg(p.memberVariableName())
+                                      .arg(argumentNameOfThisClass()));
                 }
             }
             if (memberInit.startsWith(QString(",")))
@@ -620,14 +639,15 @@ QString PropertiesGroup::sourceFileDefaultConstructor() const
                          " * @param parent 父对象\n"
                          " * @details 默认构造函数\n"
                          " */\n"
-                         "%1::%1(%2 *parent) :\n"
-                         "    %3(parent),\n"
-                         "    ui(new Ui::%1)%4\n"
+                         "%1::%1(%2 *%3) :\n"
+                         "    %4(%3),\n"
+                         "    ui(new Ui::%1)%5\n"
                          "{\n"
                          "    ui->setupUi(this);\n"
                          "}\n")
                 .arg(m_d->p_className)
                 .arg(parentClass())
+                .arg(qOjbectBasedParentArgumentName())
                 .arg(m_d->p_inherits);
     }
     else
@@ -637,12 +657,13 @@ QString PropertiesGroup::sourceFileDefaultConstructor() const
                          " * @param parent 父对象\n"
                          " * @details 默认构造函数\n"
                          " */\n"
-                         "%1::%1(%2 *parent) :\n"
-                         "    %3(parent)%4\n"
+                         "%1::%1(%2 *%3) :\n"
+                         "    %4(%3)%5\n"
                          "{\n"
                          "}\n")
                 .arg(m_d->p_className)
                 .arg(parentClass())
+                .arg(qOjbectBasedParentArgumentName())
                 .arg(m_d->p_inherits);
     }
     foreach (QString s, m_d->p_typeOrder)
@@ -714,5 +735,5 @@ QString PropertiesGroup::sourceFileDestructor() const
 
 QString PropertiesGroup::sourceFileName() const
 {
-    return QString("%1.cpp").arg(m_d->p_className);
+    return QString("%1.cpp").arg(m_d->p_className.toLower());
 }
