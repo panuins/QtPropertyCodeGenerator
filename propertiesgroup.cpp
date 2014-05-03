@@ -509,7 +509,7 @@ QString PropertiesGroup::sourceFileAssignmentOperator() const
     {
         define = QString("/**\n"
                          " * @brief 赋值运算符\n"
-                         " * @param var 要赋值的对象\n"
+                         " * @param %2 要赋值的对象\n"
                          " * @details 赋值运算符。\n"
                          " */\n"
                          "%1 &%1::operator=(const %1 &%2)\n"
@@ -596,7 +596,7 @@ QString PropertiesGroup::sourceFileCopyConstructor() const
     {
         define = QString("/**\n"
                          " * @brief 拷贝构造函数\n"
-                         " * @param var 被拷贝的对象\n"
+                         " * @param %2 被拷贝的对象\n"
                          " * @details 拷贝构造函数。\n"
                          " */\n"
                          "%1::%1(const %1 &%2)%3\n"
