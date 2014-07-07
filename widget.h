@@ -15,7 +15,7 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
-#include "propertiesgroup.h"
+#include "classsettings.h"
 #include "dialogedit.h"
 #include "dialogset.h"
 #include <QCloseEvent>
@@ -53,6 +53,7 @@ protected:
     virtual void closeEvent(QCloseEvent *event);
 
 private slots:
+    void on_comboBoxSelectPropertiesGroups_currentIndexChanged(const QString &arg1);
     void on_dialogEdit_accept();
     void on_dialogEdit_rejected();
     void on_dialogSet_accept();
@@ -69,8 +70,9 @@ private slots:
     void on_tableWidgetProperties_doubleClicked(const QModelIndex &index);
 
     void generateCode();
+    void updateGroupList();
+    void updatePropertiesTable();
     void updateUi();
-
 
 private:
     class PropertyItem
@@ -82,9 +84,11 @@ private:
 
         QTableWidgetItem *name;
         QTableWidgetItem *type;
-        QTableWidgetItem *typeStringName;
+        //QTableWidgetItem *typeStringName;
         QTableWidgetItem *docName;
         QTableWidgetItem *docDetail;
+        QTableWidgetItem *defaultValue;
+        QTableWidgetItem *enabled;
         QTableWidgetItem *member;
         QTableWidgetItem *read;
         QTableWidgetItem *write;
@@ -97,22 +101,26 @@ private:
         QTableWidgetItem *user;
         QTableWidgetItem *constant;
         QTableWidgetItem *final;
-        QTableWidgetItem *enabled;
-        QTableWidgetItem *defaultValue;
     };
 
     void loadProperties(const QString &fileName);
+    void loadSettings();
     void saveProperties(const QString &fileName);
+    void saveSettings();
     /*QStringList propertiesName() const;
     int findPropertyByName(const QString &name) const;
     void sortProperties();*/
 
-    PropertiesGroup m_propertiesGroup;
+    //PropertiesGroup m_propertiesGroup;
+    ClassSettings m_classSettings;
     QVector<QSharedPointer<PropertyItem> > m_propertyItems;
     QString m_currentFile;
+    QString m_startPath;
     Ui::Widget *ui;
     DialogEdit *m_dialogEdit;
     DialogSet *m_dialogSet;
+    int m_groupIndex;
+    //int m_propertyIndex;
     bool m_changed;
     //QSqlDatabase db;
 };

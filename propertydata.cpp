@@ -24,7 +24,7 @@ PropertyData::PropertyData() :
     p_name(""),
     p_type(QVariant::typeToName(QVariant::UserType)),
     p_typeStringName(""),
-    p_revision(PropertyDefaultRevision),
+    p_revision(0),
     m_used(1),
     p_constant(PropertyDefaultConstant),
     p_designable(PropertyDefaultDesignable),
@@ -46,17 +46,15 @@ PropertyData::PropertyData() :
 #endif
 }
 
-PropertyData::PropertyData(//const QString &className,
-                           const QString &name,
+PropertyData::PropertyData(const QString &name,
                            const QString &type,
                            const QString &typeStringName) :
-    //p_className(className),
     p_docDetail(""),
     p_docName(""),
     p_name(name),
     p_type(type),
     p_typeStringName(typeStringName),
-    p_revision(PropertyDefaultRevision),
+    p_revision(0),
     m_used(1),
     p_constant(PropertyDefaultConstant),
     p_designable(PropertyDefaultDesignable),

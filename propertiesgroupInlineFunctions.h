@@ -14,6 +14,7 @@
  *****************************************************************************/
 #ifndef PROPERTIESGROUPINLINEFUNCTIONS_H
 #define PROPERTIESGROUPINLINEFUNCTIONS_H
+#include <cassert>
 #ifdef DEBUG_PROPERTIESGROUPS_COW_DETAIL
 #include <iostream>
 #endif
@@ -26,9 +27,8 @@ inline PropertiesGroup::PropertiesGroup() :
 #endif
 }
 
-inline PropertiesGroup::PropertiesGroup(const QString &name,
-                                        const QString &inheritsClass) :
-    m_d(new PropertiesGroupData(name, inheritsClass))
+inline PropertiesGroup::PropertiesGroup(const QString &name) :
+    m_d(new PropertiesGroupData(name))
 {
 #ifdef DEBUG_PROPERTIESGROUPS_COW_DETAIL
     std::cout << "PropertiesGroup:: constructor(const QString &, "
@@ -94,31 +94,28 @@ inline PropertiesGroup &PropertiesGroup::operator=(const PropertiesGroup &p)
 
 inline Property &PropertiesGroup::operator[](int i)
 {
+    assert((i >= 0) && (i < m_d->m_properties.size()));
     beforeWrite();
     return m_d->m_properties[i];
 }
 
-inline Property PropertiesGroup::at(int var) const
+inline const Property &PropertiesGroup::at(int i) const
 {
-    return m_d->m_properties.at(var);
+    assert((i >= 0) && (i < m_d->m_properties.size()));
+    return m_d->m_properties.at(i);
 }
 
-inline QString PropertiesGroup::className() const
+inline bool PropertiesGroup::enabled() const
 {
-    return m_d->p_className;
+    return m_d->p_enabled;
 }
 
-inline QList<EnumType> PropertiesGroup::enums() const
+inline QString PropertiesGroup::name() const
 {
-    return m_d->m_enums;
+    return m_d->p_name;
 }
 
-inline QString PropertiesGroup::inherits() const
-{
-    return m_d->p_inherits;
-}
-
-inline QList<Property> PropertiesGroup::properties() const
+inline const QList<Property> &PropertiesGroup::properties() const
 {
     return m_d->m_properties;
 }
@@ -126,6 +123,11 @@ inline QList<Property> PropertiesGroup::properties() const
 inline bool PropertiesGroup::readFunctionIsInline() const
 {
     return m_d->p_readFunctionIsInline;
+}
+
+inline bool PropertiesGroup::resetFunctionIsInline() const
+{
+    return m_d->p_resetFunctionIsInline;
 }
 
 inline int PropertiesGroup::size() const
@@ -148,18 +150,6 @@ inline QString PropertiesGroup::statementsStartWriteProperty() const
     return m_d->p_statementsStartWriteProperty;
 }
 
-inline PropertiesGroup::TypeInheritsInformation
-PropertiesGroup::typeInderitsInfomation() const
-{
-    return (PropertiesGroup::TypeInheritsInformation)
-            (m_d->p_typeInderitsInfomation);
-}
-
-inline QStringList PropertiesGroup::typeOrder() const
-{
-    return m_d->p_typeOrder;
-}
-
 inline bool PropertiesGroup::writeFunctionEmitSignal() const
 {
     return m_d->p_writeFunctionEmitSignal;
@@ -178,6 +168,7 @@ inline void PropertiesGroup::clear()
 
 inline void PropertiesGroup::insert(int vari, const Property &varp)
 {
+    assert((vari >= 0) && (vari < m_d->m_properties.size()));
     beforeWrite();
     m_d->m_properties.insert(vari, varp);
 }
@@ -188,22 +179,16 @@ inline void PropertiesGroup::removeAt(int var)
     m_d->m_properties.removeAt(var);
 }
 
-inline void PropertiesGroup::setClassName(const QString &var)
+inline void PropertiesGroup::setEnabled(bool var)
 {
     beforeWrite();
-    m_d->p_className = var;
+    m_d->p_enabled = var;
 }
 
-inline void PropertiesGroup::setEnums(const QList<EnumType> &var)
+inline void PropertiesGroup::setName(const QString &var)
 {
     beforeWrite();
-    m_d->m_enums = var;
-}
-
-inline void PropertiesGroup::setInherits(const QString &var)
-{
-    beforeWrite();
-    m_d->p_inherits = var;
+    m_d->p_name = var;
 }
 
 inline void PropertiesGroup::setProperties(const QList<Property> &var)
@@ -216,6 +201,12 @@ inline void PropertiesGroup::setReadFunctionIsInline(const bool &var)
 {
     beforeWrite();
     m_d->p_readFunctionIsInline = var;
+}
+
+inline void PropertiesGroup::setResetFunctionIsInline(const bool &var)
+{
+    beforeWrite();
+    m_d->p_resetFunctionIsInline = var;
 }
 
 inline void PropertiesGroup::setStatementsAfterWriteProperty(const QString &var)
@@ -234,19 +225,6 @@ inline void PropertiesGroup::setStatementsStartWriteProperty(const QString &var)
 {
     beforeWrite();
     m_d->p_statementsStartWriteProperty = var;
-}
-
-inline void PropertiesGroup::setTypeInderitsInfomation(
-        const PropertiesGroup::TypeInheritsInformation &var)
-{
-    beforeWrite();
-    m_d->p_typeInderitsInfomation = var;
-}
-
-inline void PropertiesGroup::setTypeOrder(const QStringList &var)
-{
-    beforeWrite();
-    m_d->p_typeOrder = var;
 }
 
 inline void PropertiesGroup::setWriteFunctionEmitSignal(const bool &var)

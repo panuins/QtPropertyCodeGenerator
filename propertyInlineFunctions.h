@@ -14,6 +14,7 @@
  *****************************************************************************/
 #ifndef PROPERTYINLINEFUNCTIONS_H
 #define PROPERTYINLINEFUNCTIONS_H
+#include "paraments.h"
 #ifdef DEBUG_PROPERTYS_COW_DETAIL
 #include <iostream>
 #endif
@@ -26,8 +27,7 @@ inline Property::Property() :
 #endif
 }
 
-inline Property::Property(//const QString &className,
-                          const QString &name,
+inline Property::Property(const QString &name,
                           const QString &type,
                           const QString &typeStringName) :
     m_d(new PropertyData(name, type, typeStringName))
@@ -129,6 +129,7 @@ inline bool Property::final() const
 {
     return m_d->p_final;
 }
+
 inline bool Property::member() const
 {
     return m_d->p_member;
@@ -137,6 +138,11 @@ inline bool Property::member() const
 inline QString Property::name() const
 {
     return m_d->p_name;
+}
+
+inline bool Property::needWrite() const
+{
+    return write() || resetIsValid();
 }
 
 inline bool Property::notify() const
@@ -164,6 +170,13 @@ inline QString Property::realTypeName() const
 inline bool Property::reset() const
 {
     return m_d->p_reset;
+}
+
+inline bool Property::resetIsValid() const
+{
+    bool canReset = (m_d->p_defaultValue.canConvert(QMetaType::QString)
+                     && !m_d->p_defaultValue.toString().isEmpty());
+    return reset() && canReset;
 }
 
 inline int Property::revision() const
@@ -230,10 +243,10 @@ inline void Property::setDocName(const QString &name)
     m_d->p_docName = name;
 }
 
-inline void Property::setEnabled(bool b)
+inline void Property::setEnabled(bool var)
 {
     beforeWrite();
-    m_d->p_enabled = b;
+    m_d->p_enabled = var;
 }
 
 inline void Property::setFinal(bool b)
@@ -248,28 +261,28 @@ inline void Property::setName(const QString &name)
     m_d->p_name = name;
 }
 
-inline void Property::setMember(bool b)
+inline void Property::setMember(bool var)
 {
     beforeWrite();
-    m_d->p_member = b;
+    m_d->p_member = var;
 }
 
-inline void Property::setNotify(bool b)
+inline void Property::setNotify(bool var)
 {
     beforeWrite();
-    m_d->p_notify = b;
+    m_d->p_notify = var;
 }
 
-inline void Property::setRead(bool b)
+inline void Property::setRead(bool var)
 {
     beforeWrite();
-    m_d->p_read = b;
+    m_d->p_read = var;
 }
 
-inline void Property::setReset(bool b)
+inline void Property::setReset(bool var)
 {
     beforeWrite();
-    m_d->p_reset = b;
+    m_d->p_reset = var;
 }
 
 inline void Property::setRevision(int n)
@@ -308,140 +321,10 @@ inline void Property::setUser(bool b)
     m_d->p_user = b;
 }
 
-inline void Property::setWrite(bool b)
+inline void Property::setWrite(bool var)
 {
     beforeWrite();
-    m_d->p_write = b;
-}
-
-inline QString Property::writeFunctionArgumentName() const
-{
-    return QString("var");//typePrefix();
-}
-
-inline QString Property::readFunctionName() const
-{
-    return replaceFisrtLetterToLower(m_d->p_name);
-}
-
-inline QString Property::writeFunctionName() const
-{
-    QString s;
-    s = QString("set%1").arg(replaceFisrtLetterToUpper(m_d->p_name));
-    return s;
-}
-
-inline QString Property::signalName() const
-{
-    return QString("%1Changed").arg(readFunctionName());
-}
-
-inline QString Property::memberVariableName() const
-{
-    QString s;
-    s = QString("p_%1")
-            //.arg(typePrefix())
-            .arg(replaceFisrtLetterToLower(m_d->p_name));
-    return s;
-}
-
-inline QString Property::readDeclear() const
-{
-    QString s;
-    s = QString("%1 %2() const;\n")
-            .arg(realTypeName())
-            .arg(readFunctionName());
-    return s;
-}
-
-inline QString Property::writeDeclear() const
-{
-    QString s;
-    s = QString("void %1(const %2 &%3);\n")
-            .arg(writeFunctionName())
-            .arg(realTypeName())
-            .arg(writeFunctionArgumentName());
-    return s;
-}
-
-inline QString Property::signalDeclear() const
-{
-    QString s;
-    s = QString("void %1();\n").arg(signalName());
-    return s;
-}
-
-inline QString Property::memberVariableDeclear() const
-{
-    QString s;
-    if (m_d->p_docName.isEmpty())
-    {
-        s = QString("%1 %2;\n")
-                .arg(realTypeName())
-                .arg(memberVariableName());
-    }
-    else
-    {
-        s = QString("%1 %2;    /**< %3 */\n")
-                .arg(realTypeName())
-                .arg(memberVariableName())
-                .arg(m_d->p_docName);
-    }
-    return s;
-}
-
-inline QString Property::initialToDefaultValueStatement() const
-{
-    QString s("%1(%2)");
-    s = s.arg(memberVariableName()).arg(m_d->p_defaultValue.toString());
-    return s;
-}
-
-inline QString Property::initialToSpecifyValueStatement(const QString &str) const
-{
-    QString s("%1(%2)");
-    s = s.arg(memberVariableName()).arg(str);
-    return s;
-}
-
-inline QString Property::boolToStr(bool b)
-{
-    return b ? QString("t") : QString("f");
-}
-
-inline bool Property::strTobool(const QString &str)
-{
-    return (str == QString("t")) ? true : false;
-}
-
-inline QString Property::replaceFisrtLetterToLower(const QString &str)
-{
-    if (!str.isEmpty())
-    {
-        QString dest = str;
-        QString firstLetter = QString(dest.at(0).toLower());
-        dest.replace(0, 1, firstLetter);
-        return dest;
-    }
-    else
-    {
-        return str;
-    }
-}
-
-inline QString Property::replaceFisrtLetterToUpper(const QString &str)
-{
-    if (!str.isEmpty())
-    {
-        QString dest = str;
-        QString firstLetter = QString(dest.at(0).toUpper());
-        dest.replace(0, 1, firstLetter);
-        return dest;
-    }
-    else
-    {
-        return str;
-    }
+    m_d->p_write = var;
 }
 
 inline void Property::beforeWrite()

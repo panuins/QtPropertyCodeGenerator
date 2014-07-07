@@ -38,15 +38,12 @@ class PropertyData
 {
 public:
     PropertyData();
-    PropertyData(//const QString &className,
-                 const QString &name,
+    PropertyData(const QString &name,
                  const QString &type,
                  const QString &typeStringName = QString(""));
     PropertyData(const PropertyData &p);
     ~PropertyData();
-    //PropertyData &operator=(const PropertyData &p);
 
-    //QString p_className;
     QVariant p_defaultValue;
     QString p_docDetail;
     QString p_docName;

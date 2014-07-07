@@ -20,12 +20,11 @@
 #include <QVariant>
 #include <iostream>
 
-DialogEdit::DialogEdit(PropertiesGroup *list,
-                     QWidget *parent) :
+DialogEdit::DialogEdit(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::DialogEdit),
-    m_list(list),
-    m_index(-1)
+    ui(new Ui::DialogEdit)
+    //m_list(list),
+    //m_index(-1)
 {
     ui->setupUi(this);
     ui->comboBoxPropertyType->blockSignals(true);
@@ -120,7 +119,7 @@ DialogEdit::DialogEdit(PropertiesGroup *list,
         ui->lineEditPropertyName->setValidator(vName);
     }
     {
-        QRegExp exp(QString("[0-9a-zA-Z_ ]*"));
+        QRegExp exp(QString("[a-zA-Z_][0-9a-zA-Z_ *<>:]*"));
         QRegExpValidator *vType =
                 new QRegExpValidator(exp, ui->lineEditPropertyTypeStringName);
         ui->lineEditPropertyTypeStringName->setValidator(vType);
@@ -202,28 +201,40 @@ DialogEdit::~DialogEdit()
     delete ui;
 }
 
-void DialogEdit::changeIndex(int index)
+/*void DialogEdit::changeGroupIndex(int index)
 {
-    m_index = index;
+    m_groupIndex = index;
+    m_propertyIndex = -1;
+}
+
+void DialogEdit::changePropertyIndex(int index)
+{
+    m_propertyIndex = index;
     if ((index >= 0) && (index < m_list->size()))
     {
         m_current = m_list->at(index);
     }
     updateUi();
-}
+}*/
 
-void DialogEdit::editExist(int index)
+void DialogEdit::editExist(const Property &p)
 {
     this->setMode(EditExist);
-    changeIndex(index);
+    edit(p);
     QDialog::open();
 }
 
-void DialogEdit::editNew()
+void DialogEdit::editNew(const Property &p)
 {
     this->setMode(NewProperty);
-    changeIndex(-1);
+    edit(p);
     QDialog::open();
+}
+
+void DialogEdit::edit(const Property &p)
+{
+    m_current = p;
+    updateUi();
 }
 
 /*void DialogEdit::closeEvent(QCloseEvent *event)
@@ -231,44 +242,69 @@ void DialogEdit::editNew()
     QDialog::closeEvent(event);
 }*/
 
-void DialogEdit::on_pushButtonSaveProperty_clicked()
+void DialogEdit::on_checkBoxPropertyConstant_toggled(bool checked)
 {
-    if (m_current.name().isEmpty())
-    {
-        QMessageBox::critical(this,
-                              tr("Invalid name."),
-                              tr("Error: Must input a name."));
-        return;
-    }
-    emit accept();
-    this->close();
+    m_current.setConstant(checked);
 }
 
-void DialogEdit::on_pushButtonCloseProperty_clicked()
+void DialogEdit::on_checkBoxPropertyDesignable_toggled(bool checked)
 {
-    emit rejected();
-    this->close();
+    m_current.setDesignable(checked);
 }
 
-void DialogEdit::on_lineEditPropertyName_textChanged(const QString &arg1)
+void DialogEdit::on_checkBoxPropertyEnabled_toggled(bool checked)
 {
-    m_current.setName(arg1);
+    m_current.setEnabled(checked);
 }
 
-void DialogEdit::on_lineEditPropertyDocName_textChanged(const QString &arg1)
+void DialogEdit::on_checkBoxPropertyFinal_toggled(bool checked)
 {
-    m_current.setDocName(arg1);
+    m_current.setFinal(checked);
 }
 
-void DialogEdit::on_lineEditPropertyDocDetail_textChanged(const QString &arg1)
+void DialogEdit::on_checkBoxPropertyMember_toggled(bool checked)
 {
-    m_current.setDocDetail(arg1);
+    m_current.setMember(checked);
 }
 
-void DialogEdit::on_comboBoxPropertyType_currentIndexChanged(int index)
+void DialogEdit::on_checkBoxPropertyNotify_toggled(bool checked)
 {
-    Q_UNUSED(index)
-    m_current.setType(ui->comboBoxPropertyType->currentText());
+    m_current.setNotify(checked);
+}
+
+void DialogEdit::on_checkBoxPropertyRead_toggled(bool checked)
+{
+    m_current.setRead(checked);
+}
+
+void DialogEdit::on_checkBoxPropertyReset_toggled(bool checked)
+{
+    m_current.setReset(checked);
+}
+
+void DialogEdit::on_checkBoxPropertyScriptable_toggled(bool checked)
+{
+    m_current.setScriptable(checked);
+}
+
+void DialogEdit::on_checkBoxPropertyStored_toggled(bool checked)
+{
+    m_current.setStored(checked);
+}
+
+void DialogEdit::on_checkBoxPropertyUser_toggled(bool checked)
+{
+    m_current.setUser(checked);
+}
+
+void DialogEdit::on_checkBoxPropertyWrite_toggled(bool checked)
+{
+    m_current.setWrite(checked);
+}
+
+void DialogEdit::on_comboBoxPropertyType_currentIndexChanged(const QString &arg1)
+{
+    m_current.setType(arg1);
     if (m_mode == NewProperty)
     {
         std::string stdstr = m_current.type().toStdString();
@@ -291,6 +327,26 @@ void DialogEdit::on_comboBoxPropertyType_currentIndexChanged(int index)
             break;
         }
     }
+}
+
+void DialogEdit::on_lineEditPropertyDefaultValue_textChanged(const QString &arg1)
+{
+    m_current.setDefaultValue(arg1);
+}
+
+void DialogEdit::on_lineEditPropertyDocDetail_textChanged(const QString &arg1)
+{
+    m_current.setDocDetail(arg1);
+}
+
+void DialogEdit::on_lineEditPropertyDocName_textChanged(const QString &arg1)
+{
+    m_current.setDocName(arg1);
+}
+
+void DialogEdit::on_lineEditPropertyName_textChanged(const QString &arg1)
+{
+    m_current.setName(arg1);
 }
 
 void DialogEdit::on_lineEditPropertyTypeStringName_textChanged(
@@ -330,80 +386,38 @@ void DialogEdit::on_lineEditPropertyTypeStringName_textChanged(
         {
             typeId = QVariant::ULongLong;
         }
+        else
+        {
+            return;
+        }
         QString name(QVariant::typeToName(typeId));
         int typeIndex = ui->comboBoxPropertyType->findText(name);
         ui->comboBoxPropertyType->setCurrentIndex(typeIndex);
     }
 }
 
+void DialogEdit::on_pushButtonCloseProperty_clicked()
+{
+    emit rejected();
+    this->close();
+}
+
+void DialogEdit::on_pushButtonSaveProperty_clicked()
+{
+    if (m_current.name().isEmpty())
+    {
+        QMessageBox::critical(this,
+                              tr("Invalid name."),
+                              tr("Error: Must input a name."));
+        return;
+    }
+    emit accept();
+    this->close();
+}
+
 void DialogEdit::on_spinBoxPropertyRevision_valueChanged(int arg1)
 {
     m_current.setRevision(arg1);
-}
-
-void DialogEdit::on_lineEditPropertyDefaultValue_textChanged(const QString &arg1)
-{
-    m_current.setDefaultValue(arg1);
-}
-
-void DialogEdit::on_checkBoxPropertyMember_toggled(bool checked)
-{
-    m_current.setMember(checked);
-}
-
-void DialogEdit::on_checkBoxPropertyRead_toggled(bool checked)
-{
-    m_current.setRead(checked);
-}
-
-void DialogEdit::on_checkBoxPropertyWrite_toggled(bool checked)
-{
-    m_current.setWrite(checked);
-}
-
-void DialogEdit::on_checkBoxPropertyReset_toggled(bool checked)
-{
-    m_current.setReset(checked);
-}
-
-void DialogEdit::on_checkBoxPropertyNotify_toggled(bool checked)
-{
-    m_current.setNotify(checked);
-}
-
-void DialogEdit::on_checkBoxPropertyDesignable_toggled(bool checked)
-{
-    m_current.setDesignable(checked);
-}
-
-void DialogEdit::on_checkBoxPropertyScriptable_toggled(bool checked)
-{
-    m_current.setScriptable(checked);
-}
-
-void DialogEdit::on_checkBoxPropertyStored_toggled(bool checked)
-{
-    m_current.setStored(checked);
-}
-
-void DialogEdit::on_checkBoxPropertyUser_toggled(bool checked)
-{
-    m_current.setUser(checked);
-}
-
-void DialogEdit::on_checkBoxPropertyConstant_toggled(bool checked)
-{
-    m_current.setConstant(checked);
-}
-
-void DialogEdit::on_checkBoxPropertyFinal_toggled(bool checked)
-{
-    m_current.setFinal(checked);
-}
-
-void DialogEdit::on_checkBoxPropertyEnabled_toggled(bool checked)
-{
-    m_current.setEnabled(checked);
 }
 
 void DialogEdit::updateUi()
@@ -428,4 +442,5 @@ void DialogEdit::updateUi()
     ui->checkBoxPropertyConstant->setChecked(m_current.constant());
     ui->checkBoxPropertyFinal->setChecked(m_current.final());
     ui->checkBoxPropertyEnabled->setChecked(m_current.enabled());
+    ui->lineEditPropertyDefaultValue->setText(m_current.defaultValue().toString());
 }

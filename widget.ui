@@ -11,7 +11,10 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Widget</string>
+   <string>Qt Properties Code Generator</string>
+  </property>
+  <property name="locale">
+   <locale language="C" country="AnyCountry"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
    <item>
@@ -36,6 +39,9 @@
        </item>
        <item>
         <widget class="QTableWidget" name="tableWidgetProperties">
+         <property name="locale">
+          <locale language="C" country="AnyCountry"/>
+         </property>
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
@@ -57,17 +63,22 @@
          </column>
          <column>
           <property name="text">
-           <string>Type String Name</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
            <string>Doc Name</string>
           </property>
          </column>
          <column>
           <property name="text">
            <string>Doc Detail</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Default Value</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Enabled</string>
           </property>
          </column>
          <column>
@@ -130,16 +141,6 @@
            <string>Final</string>
           </property>
          </column>
-         <column>
-          <property name="text">
-           <string>Enabled</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Default Value</string>
-          </property>
-         </column>
         </widget>
        </item>
       </layout>
@@ -148,7 +149,7 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <widget class="QLabel" name="labelCppDeclares">
@@ -165,6 +166,9 @@
         </item>
         <item>
          <widget class="QTextBrowser" name="textBrowserCppDeclares">
+          <property name="undoRedoEnabled">
+           <bool>true</bool>
+          </property>
           <property name="readOnly">
            <bool>false</bool>
           </property>
@@ -172,7 +176,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
          <widget class="QLabel" name="labelFunctions">
@@ -189,6 +193,9 @@
         </item>
         <item>
          <widget class="QTextBrowser" name="textBrowserFunctions">
+          <property name="undoRedoEnabled">
+           <bool>true</bool>
+          </property>
           <property name="readOnly">
            <bool>false</bool>
           </property>
@@ -201,6 +208,9 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QComboBox" name="comboBoxSelectPropertiesGroups"/>
+     </item>
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">

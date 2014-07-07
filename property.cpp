@@ -12,12 +12,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *****************************************************************************/
+#include "paraments.h"
 #include "property.h"
 #include <QStringList>
-#define SaveSeperator "\t"
 
 bool Property::operator==(const Property &p) const
 {
+    if (m_d == p.m_d)
+    {
+        return true;
+    }
     return (m_d->p_name == p.m_d->p_name)
             && (m_d->p_docName == p.m_d->p_docName)
             && (m_d->p_docDetail == p.m_d->p_docDetail)
@@ -41,6 +45,10 @@ bool Property::operator==(const Property &p) const
 
 bool Property::operator!=(const Property &p) const
 {
+    if (m_d == p.m_d)
+    {
+        return false;
+    }
     return !((m_d->p_name == p.m_d->p_name)
              && (m_d->p_docName == p.m_d->p_docName)
              && (m_d->p_docDetail == p.m_d->p_docDetail)
@@ -90,7 +98,8 @@ QString Property::typePrefix() const
     }
     else if (typeId == QVariant::Int)
     {
-        if (m_d->p_typeStringName.isEmpty())
+        if (m_d->p_typeStringName.isEmpty()
+                || (m_d->p_typeStringName == QString("int")))
         {
             s = QString("n");
         }
@@ -129,128 +138,157 @@ QString Property::typePrefix() const
         {
             s = QString("unl");
         }
+        else
+        {
+            s = replaceFisrtLetterToLower(s);
+        }
+    }
+    else if (typeId == QVariant::List)
+    {
+        s = "qList";
+    }
+    else if (typeId == QVariant::Map)
+    {
+        s = "qMap";
+    }
+    else if (typeId == QVariant::Hash)
+    {
+        s = "qHash";
     }
     else
     {
+        if (s.endsWith("*"))
+        {
+            s.chop(1);
+        }
+        if (s.endsWith(" "))
+        {
+            s.chop(1);
+        }
+        int seat = s.indexOf(QChar('<'));
+        if (seat > 0)
+        {
+            s = s.left(seat);
+        }
         s = replaceFisrtLetterToLower(s);
     }
     return s;
 }
 
-QString Property::toString() const
+QString Property::doxygenCommentMemberVariable() const
 {
-    QString str;
-    str = QString("%1"SaveSeperator
-                  "%2"SaveSeperator
-                  "%3"SaveSeperator
-                  "%4"SaveSeperator
-                  "%5"SaveSeperator)
-            .arg(m_d->p_type)
-            .arg(m_d->p_name)
-            .arg(m_d->p_typeStringName)
-            .arg(m_d->p_docName)
-            .arg(m_d->p_docDetail);
-    str += boolToStr(m_d->p_member);
-    str += QString(SaveSeperator);
-    str += boolToStr(m_d->p_read);
-    str += QString(SaveSeperator);
-    str += boolToStr(m_d->p_write);
-    str += QString(SaveSeperator);
-    str += boolToStr(m_d->p_reset);
-    str += QString(SaveSeperator);
-    str += boolToStr(m_d->p_notify);
-    str += QString(SaveSeperator);
-    str += QString::number(m_d->p_revision);
-    str += QString(SaveSeperator);
-    str += boolToStr(m_d->p_designable);
-    str += QString(SaveSeperator);
-    str += boolToStr(m_d->p_scriptable);
-    str += QString(SaveSeperator);
-    str += boolToStr(m_d->p_stored);
-    str += QString(SaveSeperator);
-    str += boolToStr(m_d->p_user);
-    str += QString(SaveSeperator);
-    str += boolToStr(m_d->p_constant);
-    str += QString(SaveSeperator);
-    str += boolToStr(m_d->p_final);
-    str += QString(SaveSeperator);
-    str += boolToStr(m_d->p_enabled);
-    str += QString(SaveSeperator);
-    str += m_d->p_defaultValue.toString();
-    return str;
+    QString s;
+    if (!docName().isEmpty())
+    {
+        s = CODESCHEME_Doxygen_MemberVariable;
+        s = replacePercentToSepecialString(s);
+    }
+    else
+    {
+        s = QString("");
+    }
+    return s;
 }
 
-/*bool Property::writeToSql(QSqlQuery &query)
+QString Property::doxygenCommentPreventReentrantMemberVariable() const
 {
-    query.addBindValue(m_d->p_name);
-    query.addBindValue(m_d->p_type);
-    query.addBindValue(m_d->p_typeStringName);
-    query.addBindValue(m_d->p_docName);
-    query.addBindValue(m_d->p_docDetail);
-    query.addBindValue(m_d->p_member);
-    query.addBindValue(m_d->p_read);
-    query.addBindValue(m_d->p_write);
-    query.addBindValue(m_d->p_reset);
-    query.addBindValue(m_d->p_notify);
-    query.addBindValue(m_d->p_revision);
-    query.addBindValue(m_d->p_designable);
-    query.addBindValue(m_d->p_scriptable);
-    query.addBindValue(m_d->p_stored);
-    query.addBindValue(m_d->p_user);
-    query.addBindValue(m_d->p_constant);
-    query.addBindValue(m_d->p_final);
-    query.addBindValue(m_d->p_enabled);
-    return query.exec();
-}*/
+    QString s;
+    if (!docName().isEmpty())
+    {
+        s = CODESCHEME_Doxygen_PreventReentrantMemberVariable;
+        s = replacePercentToSepecialString(s);
+    }
+    else
+    {
+        s = QString("");
+    }
+    return s;
+}
+
+QString Property::doxygenCommentReadFunction() const
+{
+    QString s;
+    s = CODESCHEME_Doxygen_ReadFunction;
+    s = replacePercentToSepecialString(s);
+    return s;
+}
+
+QString Property::doxygenCommentResetFunction() const
+{
+    QString s;
+    s = CODESCHEME_Doxygen_ResetFunction;
+    s = replacePercentToSepecialString(s);
+    return s;
+}
+
+QString Property::doxygenCommentWriteFunction(bool emitSignal) const
+{
+    QString s;
+    QString customDetail(""), signalDetail("");
+    if (!docDetail().isEmpty())
+    {
+        customDetail = QString(CODESCHEME_DocComment_Comma) + docDetail();
+    }
+    if (emitSignal && notify())
+    {
+        signalDetail = QString(CODESCHEME_DocComment_Comma)
+                + CODESCHEME_DocComment_WriteFunction_SignalDetail;
+    }
+    s = CODESCHEME_Doxygen_WriteFunction;
+    s = replacePercentToSepecialString(s);
+    return s;
+}
 
 QString Property::qPropertyString() const
 {
     QString str;
-
     str = QString("Q_PROPERTY(%1 %2")
             .arg(realTypeName())
             .arg(replaceFisrtLetterToLower(m_d->p_name));
 #define AddBoolProperty(MEMBER, MARCO, QTNAME) \
-    if (m_d->p_##MEMBER != PropertyDefault##MARCO) \
+    if (MEMBER() != PropertyDefault##MARCO) \
     { \
     str += QString(" ") + #QTNAME + QString(" ") \
-    + ((m_d->p_##MEMBER) ? "true" : "false"); \
+    + ((MEMBER()) ? "true" : "false"); \
 }
-    AddBoolProperty(member, Member, MEMBER);
-    if (m_d->p_member)
+    if (member())
     {
         str += QString(" MEMBER ") + memberVariableName();
     }
-    if (m_d->p_read)
+    if (read())
     {
         str += QString(" READ ") + readFunctionName();
     }
-    if (m_d->p_write)
+    if (write())
     {
         str += QString(" WRITE ") + writeFunctionName();
     }
-    AddBoolProperty(reset, Reset, RESET);
-    if (m_d->p_notify)
+    if (reset() != PropertyDefaultReset)
+    {
+        str += QString(" RESET ") + ((reset()) ? "true" : "false");
+    }
+    //AddBoolProperty(reset, Reset, RESET);
+    if (notify())
     {
         str += QString(" NOTIFY ") + signalName();
     }
-    if (m_d->p_revision != PropertyDefaultRevision)
+    if (revision() != PropertyDefaultRevision)
     {
-        str += QString(" REVISION %1").arg(m_d->p_revision);
+        str += QString(" REVISION %1").arg(revision());
     }
     AddBoolProperty(designable, Designable, DESIGNABLE);
     AddBoolProperty(scriptable, Scriptable, SCRIPTABLE);
     AddBoolProperty(stored, Stored, STORED);
     AddBoolProperty(user, User, USER);
-    if (m_d->p_constant != PropertyDefaultConstant)
+    if (constant() != PropertyDefaultConstant)
     {
         str += QString(" CONSTANT");
     }
-    if (m_d->p_final != PropertyDefaultFinal)
+    if (final() != PropertyDefaultFinal)
     {
         str += QString(" FINAL");
     }
-    str += QString(")\n");
+    str += QString(")");
     return str;
 }
 
@@ -260,27 +298,29 @@ QString Property::readFunctionDefine(const QString &className,
     QString s("");
     if (!m_d->p_docName.isEmpty())
     {
-        s += QString("/**\n"
-                     " * @brief 返回属性%1的值\n"
-                     " * @return 属性%2的值\n"
-                     " * @details 返回属性%3的值\n"
-                     " */\n")
-                .arg(m_d->p_docName)
-                .arg(m_d->p_docName)
-                .arg(m_d->p_docName);
+        s += doxygenCommentReadFunction();
     }
     if (isInline)
     {
         s += "inline ";
     }
-    s += QString("%1 %2::%3() const\n"
-                 "{\n"
-                 "    return %4;\n"
-                 "}\n")
-            .arg(realTypeName())
-            .arg(className)
-            .arg(readFunctionName())
-            .arg(memberVariableName());
+    s += CODESCHEME_Property_ReadFunctionDefine;
+    return s;
+}
+
+QString Property::resetFunctionDefine(const QString &className,
+                                      bool isInline) const
+{
+    QString s("");
+    if (!m_d->p_docName.isEmpty())
+    {
+        s += doxygenCommentResetFunction();
+    }
+    if (isInline)
+    {
+        s += "inline ";
+    }
+    s += CODESCHEME_Property_ResetFunctionDefine;
     return s;
 }
 
@@ -289,91 +329,178 @@ QString Property::writeFunctionDefine(const QString &className,
                                       const QString &strBetweenSetValueAndEmit,
                                       const QString &strAfterEmit,
                                       bool emitSignal,
-                                      bool isInline) const
+                                      bool isInline,
+                                      bool preventReentrant) const
 {
     QString s("");
+    QString emitSignalStatement("");
+    if (emitSignal && notify())
+    {
+        emitSignalStatement = CODESCHEME_Property_WriteFunction_EmitSignalStatement;
+    }
     if (!m_d->p_docName.isEmpty())
     {
-        s += QString("/**\n"
-                     " * @brief 设置属性%1的值\n"
-                     " * @param %2 %3\n"
-                     " * @details 设置属性%4的值")
-                .arg(m_d->p_docName)
-                .arg(writeFunctionArgumentName())
-                .arg(m_d->p_docName)
-                .arg(m_d->p_docName);
-        if (!m_d->p_docDetail.isEmpty())
-        {
-            s += QString("，") + m_d->p_docDetail;
-        }
-        if (emitSignal && m_d->p_notify)
-        {
-            s += "，并发射信号" + signalName();
-        }
-        s += "。\n"
-                " */\n";
+        s += doxygenCommentWriteFunction(emitSignal);
     }
     if (isInline)
     {
         s += "inline ";
     }
-    s += QString("void %1::%2(const %3 &%4)\n"
-                 "{\n"
-                 "%5"
-                 "    %6 = %7;\n"
-                 "%8")
-            .arg(className)
-            .arg(writeFunctionName())
-            .arg(realTypeName())
-            .arg(writeFunctionArgumentName())
-            .arg(strBeforSetValue)
-            .arg(memberVariableName())
-            .arg(writeFunctionArgumentName())
-            .arg(strBetweenSetValueAndEmit);
-    if (emitSignal && m_d->p_notify)
+    if (preventReentrant)
     {
-        s += QString("    emit %1();\n").arg(signalName());
+        s += CODESCHEME_Property_WriteFunctionDefine_PreventReentrant;
     }
-    s += strAfterEmit;
-    s += QString("}\n");
+    else
+    {
+        s += CODESCHEME_Property_WriteFunctionDefine;
+    }
     return s;
 }
 
-Property Property::fromString(const QString &str)
+QString Property::doxygenComment(const QString &className) const
 {
-    QStringList list = str.split(QChar(SaveSeperator[0]));
-    Property p(list.at(1),
-               list.at(0),
-               list.at(2));
-    int i = 3;
-    p.setDocName(list.at(i));
-    i++;
-    p.setDocDetail(list.at(i));
-    i++;
-    p.setMember(strTobool(list.at(i)));
-    i++;
-    p.setRead(strTobool(list.at(i)));
-    i++;
-    p.setWrite(strTobool(list.at(i)));
-    i++;
-    p.setReset(strTobool(list.at(i)));
-    i++;
-    p.setNotify(strTobool(list.at(i)));
-    i++;
-    p.setRevision(list.at(i).toInt());
-    i++;
-    p.setDesignable(strTobool(list.at(i)));
-    i++;
-    p.setScriptable(strTobool(list.at(i)));
-    i++;
-    p.setStored(strTobool(list.at(i)));
-    i++;
-    p.setUser(strTobool(list.at(i)));
-    i++;
-    p.setConstant(strTobool(list.at(i)));
-    i++;
-    p.setFinal(strTobool(list.at(i)));
-    i++;
-    p.setEnabled(strTobool(list.at(i)));
-    return p;
+    QString s;
+    QString detail(""),rwOnly("");
+    bool readOnly = (!m_d->p_write) && m_d->p_read && (!m_d->p_member);
+    if (readOnly)
+    {
+        rwOnly = QString(CODESCHEME_DocComment_ReadOnlyProperty);
+    }
+    bool writeOnly = (!m_d->p_read) && m_d->p_write && (!m_d->p_member);
+    if (writeOnly)
+    {
+        rwOnly = QString(CODESCHEME_DocComment_WriteOnlyProperty);
+    }
+    if ((!rwOnly.isEmpty()) && (!docDetail().isEmpty()))
+    {
+        detail += QString("%1" CODESCHEME_DocComment_Comma "%2" CODESCHEME_DocComment_Period)
+                .arg(rwOnly).arg(docDetail());
+    }
+    else if ((rwOnly.isEmpty()) && (!docDetail().isEmpty()))
+    {
+        detail += QString("%1" CODESCHEME_DocComment_Period).arg(docDetail());
+    }
+    else if ((!rwOnly.isEmpty()) && (docDetail().isEmpty()))
+    {
+        detail += QString("%1" CODESCHEME_DocComment_Period).arg(rwOnly);
+    }
+    else if ((rwOnly.isEmpty()) && (docDetail().isEmpty()))
+    {
+        detail = QString("");
+    }
+    s = CODESCHEME_Doxygen_Property;
+    s = replacePercentToSepecialString(s);
+    return s;
 }
+
+QString Property::writeFunctionArgumentName() const
+{
+    QString s;
+    s = CODESCHEME_Property_WriteFunctionArgumentName;
+    return s;
+}
+
+QString Property::readFunctionName() const
+{
+    QString s;
+    s = CODESCHEME_Property_ReadFunctionName;
+    return s;
+}
+
+QString Property::resetFunctionName() const
+{
+    QString s;
+    s = CODESCHEME_Property_ResetFunctionName;
+    return s;
+}
+
+QString Property::writeFunctionName() const
+{
+    QString s;
+    s = CODESCHEME_Property_WriteFunctionName;
+    return s;
+}
+
+QString Property::signalName() const
+{
+    QString s;
+    s = CODESCHEME_Property_SignalName;
+    return s;
+}
+
+QString Property::memberVariableName() const
+{
+    QString s;
+    s = CODESCHEME_Property_MemberVariableName;
+    return s;
+}
+
+QString Property::preventReentrantVarName() const
+{
+    QString s;
+    s = CODESCHEME_Property_PreventReentrantVarName;
+    return s;
+}
+
+QString Property::readDeclear() const
+{
+    QString s;
+    s = CODESCHEME_Property_ReadDeclear;
+    return s;
+}
+
+QString Property::resetDeclear() const
+{
+    QString s;
+    s = CODESCHEME_Property_ResetDeclear;
+    return s;
+}
+
+QString Property::writeDeclear() const
+{
+    QString s;
+    s = CODESCHEME_Property_WriteDeclear;
+    return s;
+}
+
+QString Property::signalDeclear() const
+{
+    QString s;
+    s = CODESCHEME_Property_SignalDeclear;
+    return s;
+}
+
+QString Property::memberVariableDeclear() const
+{
+    QString s;
+    s = CODESCHEME_Property_MemberVariableDeclear;
+    return s;
+}
+
+QString Property::preventReentrantVarDeclear() const
+{
+    QString s;
+    s = CODESCHEME_Property_PreventReentrantVarDeclear;
+    return s;
+}
+
+/*QString Property::preventReentrantVarInitialStatement() const
+{
+    QString s;
+    s = CODESCHEME_Property_PreventReentrantVarInitialStatement;
+    return s;
+}
+
+QString Property::initialToDefaultValueStatement() const
+{
+    QString s;
+    s = CODESCHEME_Property_InitialToDefaultValueStatement;
+    return s;
+}
+
+QString Property::initialToSpecifyValueStatement(const QString &str) const
+{
+    QString s;
+    s = CODESCHEME_Property_InitialToSpecifyValueStatement;
+    return s;
+}*/

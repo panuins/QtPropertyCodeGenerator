@@ -17,22 +17,29 @@
 ClassSettings::ClassSettings() :
     p_className(),
     p_inherits(),
-    p_typeInderitsInfomation(inherits_None)
+    p_typeInderitsInfomation(inherits_None),
+    p_generatePreventReentrantCode(true),
+    p_sortAllProperties(true)
 {
+    m_propertiesGroups.append(PropertiesGroup(QString("primary")));
 }
 
 ClassSettings::ClassSettings(const QString &name, const QString &inheritsClass) :
     p_className(name),
     p_inherits(inheritsClass),
-    p_typeInderitsInfomation(inherits_None)
+    p_typeInderitsInfomation(inherits_None),
+    p_generatePreventReentrantCode(true),
+    p_sortAllProperties(true)
 {
+    m_propertiesGroups.append(PropertiesGroup(QString("primary")));
 }
 
 ClassSettings::ClassSettings(const ClassSettings &v) :
-    m_properties(v.m_properties),
+    m_propertiesGroups(v.m_propertiesGroups),
     p_className(v.p_className),
     p_inherits(v.p_inherits),
-    p_typeInderitsInfomation(v.p_typeInderitsInfomation)
+    p_typeInderitsInfomation(v.p_typeInderitsInfomation),
+    p_sortAllProperties(v.p_sortAllProperties)
 {
 }
 
@@ -42,107 +49,223 @@ ClassSettings::~ClassSettings()
 
 ClassSettings &ClassSettings::operator=(const ClassSettings &v)
 {
-    m_properties = v.m_properties;
+    m_propertiesGroups = v.m_propertiesGroups;
+    p_typeOrder = v.p_typeOrder;
     p_className = v.p_className;
+    p_docDetail = v.p_docDetail;
+    p_docName = v.p_docName;
     p_inherits = v.p_inherits;
     p_typeInderitsInfomation = v.p_typeInderitsInfomation;
+    p_generatePreventReentrantCode = v.p_generatePreventReentrantCode;
+    p_sortAllProperties = v.p_sortAllProperties;
     return *this;
 }
 
-/*QString ClassSettings::generateQPropertyDeclear() const
+/*ClassSettings::const_Iterator ClassSettings::begin() const
 {
-    QString qProperty("");
-    foreach (Property p, m_properties)
+    if (this->sortAllProperties())
     {
-        if (p.enabled())
+        QStringList names = propertiesName();
+        ClassSettings::const_Iterator i;
+        i.m_classSettings = this;
+        QList<QPair<QList<Property>::const_iterator, QList<PropertiesGroup>::const_iterator> > data;
+        foreach (QString name, names)
         {
-            qProperty.append(QString("    ")
-                             + p.qPropertyString());
-        }
-    }
-}
-
-QString ClassSettings::generateReadDeclear() const
-{
-    QString readDeclear("");
-    foreach (Property p, m_properties)
-    {
-        if (p.enabled())
-        {
-            readDeclear.append(QString("    ")
-                               + p.readDeclear());
-        }
-    }
-}
-
-QString ClassSettings::generateWriteDeclear() const
-{
-    QString writeDeclear("");
-    foreach (Property p, m_properties)
-    {
-        if (p.enabled())
-        {
-            writeDeclear.append(QString("    ")
-                                + p.writeDeclear());
-        }
-    }
-}
-
-QString ClassSettings::generateSignalDeclear() const
-{
-    QString signalDeclear("");
-    foreach (Property p, m_properties)
-    {
-        if (p.enabled())
-        {
-            signalDeclear.append(QString("    ")
-                                 + p.signalDeclear());
-        }
-    }
-}
-
-QString ClassSettings::generateMemberVariableDeclear() const
-{
-    QString memberVars("");
-    foreach (Property p, m_properties)
-    {
-        if (p.enabled())
-        {
-            memberVars.append(QString("    ")
-                              + p.memberVariableDeclear());
-        }
-    }
-}
-
-QString ClassSettings::generateReadFunctionDefine() const
-{
-    QString readFunctions("");
-    foreach (Property p, m_properties)
-    {
-        if (p.enabled())
-        {
-            readFunctions.append(p.readFunctionDefine(p_className,
-                                                      p_readFunctionIsInline)
-                                 + "\n");
-        }
-    }
-}
-
-QString ClassSettings::generateWriteFunctionDefine() const
-{
-    QString writeFunctions("");
-    foreach (Property p, m_properties)
-    {
-        if (p.enabled())
-        {
-            writeFunctions.append(p.writeFunctionDefine(
-                                      p_className,
-                                      p_statementsStartWriteProperty,
-                                      p_statementsMiddleWriteProperty,
-                                      p_statementsAfterWriteProperty,
-                                      p_writeFunctionEmitSignal,
-                                      p_writeFunctionIsInline)
-                                  + "\n");
+            QList<Property>::const_iterator i
         }
     }
 }*/
+
+QStringList ClassSettings::existType() const
+{
+    QStringList list;
+    foreach (PropertiesGroup g, m_propertiesGroups)
+    {
+        foreach (Property p, g.properties())
+        {
+            list.append(p.realTypeName());
+        }
+    }
+    list.sort();
+    list.removeDuplicates();
+    return list;
+}
+
+int ClassSettings::findGroup(const QString &name) const
+{
+    int i = 0;
+    for (; i < m_propertiesGroups.size(); i++)
+    {
+        if (m_propertiesGroups.at(i).name() == name)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int ClassSettings::findGroupByPropertyName(const QString &name) const
+{
+    int i = 0;
+    for (; i < m_propertiesGroups.size(); i++)
+    {
+        QList<Property> l = m_propertiesGroups.at(i).properties();
+        foreach (Property p, l)
+        {
+            if (p.name() == name)
+            {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
+
+//如果返回值的name属性为空，则表示没找到。
+Property ClassSettings::findProperty(const QString &name) const
+{
+    foreach (PropertiesGroup g, m_propertiesGroups)
+    {
+        foreach (Property p, g.properties())
+        {
+            if (p.name() == name)
+            {
+                return p;
+            }
+        }
+    }
+    return Property();
+}
+
+QString ClassSettings::parentClass() const
+{
+    QString strParent("");
+    switch (p_typeInderitsInfomation)
+    {
+    case 1:
+        strParent = "QObject";
+        break;
+    case 2:
+    case 4:
+        strParent = "QWidget";
+        break;
+    case 3:
+        strParent = "QQuickItem";
+        break;
+    default:
+        break;
+    }
+    return strParent;
+}
+
+QList<Property> ClassSettings::propertiesIsType(const QString &var) const
+{
+    QList<Property> listP;
+    foreach (PropertiesGroup g, m_propertiesGroups)
+    {
+        foreach (Property p, g.properties())
+        {
+            if (p.realTypeName() == var)
+            {
+                listP.append(p);
+            }
+        }
+    }
+    return listP;
+}
+
+QStringList ClassSettings::propertiesGroupsName() const
+{
+    QStringList list;
+    foreach (PropertiesGroup g, m_propertiesGroups)
+    {
+        list.append(g.name());
+    }
+    list.sort();
+    return list;
+}
+
+QStringList ClassSettings::propertiesName() const
+{
+    QStringList list;
+    foreach (PropertiesGroup g, m_propertiesGroups)
+    {
+        foreach (Property p, g.properties())
+        {
+            list.append(p.name());
+        }
+    }
+    list.removeDuplicates();
+    list.sort();
+    return list;
+}
+
+void ClassSettings::sort()
+{
+    {
+        int i = 0, j = 0;
+        QStringList list = this->propertiesGroupsName();
+        QList<PropertiesGroup> listP;
+        list.sort();
+        list.removeDuplicates();
+        for (; i < list.size(); i++)
+        {
+            bool found = false;
+            for (j = 0; (j < m_propertiesGroups.size()) && (!found); j++)
+            {
+                if (m_propertiesGroups.at(j).name() == list.at(i))
+                {
+                    m_propertiesGroups[j].sort();
+                    listP.append(m_propertiesGroups.at(j));
+                    found = true;
+                }
+            }
+            /*if (!found)
+            {
+                std::cout << "ClassSettings::sort: Can not find property "
+                          << list.at(i).toStdString() << std::endl;
+            }*/
+        }
+        m_propertiesGroups = listP;
+    }
+    /*{
+        int i = 0, j = 0;
+        QStringList list = this->enumsName();
+        QList<EnumType> listE;
+        list.sort();
+        list.removeDuplicates();
+        for (; i < list.size(); i++)
+        {
+            bool found = false;
+            for (j = 0; (j < m_enums.size()) && (!found); j++)
+            {
+                if (m_enums.at(j).name() == list.at(i))
+                {
+                    listE.append(m_enums.at(j));
+                    found = true;
+                }
+            }
+            if (!found)
+            {
+                std::cout << "ClassSettings::sort: Can not find enum type "
+                          << list.at(i).toStdString() << std::endl;
+            }
+        }
+        m_enums = listE;
+    }*/
+}
+
+void ClassSettings::updateTypeOrder()
+{
+    foreach (PropertiesGroup g, m_propertiesGroups)
+    {
+        foreach (Property p, g.properties())
+        {
+            if (!p_typeOrder.contains(p.realTypeName()))
+            {
+                p_typeOrder.append(p.realTypeName());
+            }
+        }
+    }
+}

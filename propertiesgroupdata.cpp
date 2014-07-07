@@ -19,11 +19,10 @@ static int id = -1;
 #endif
 
 PropertiesGroupData::PropertiesGroupData() :
-    p_className(),
-    p_inherits(),
-    p_typeInderitsInfomation(0),
     m_used(1),
+    p_enabled(true),
     p_readFunctionIsInline(true),
+    p_resetFunctionIsInline(false),
     p_writeFunctionEmitSignal(true),
     p_writeFunctionIsInline(false)
 {
@@ -34,13 +33,12 @@ PropertiesGroupData::PropertiesGroupData() :
 #endif
 }
 
-PropertiesGroupData::PropertiesGroupData(const QString &name,
-                                         const QString &inheritsClass) :
-    p_className(name),
-    p_inherits(inheritsClass),
-    p_typeInderitsInfomation(0),
+PropertiesGroupData::PropertiesGroupData(const QString &name) :
+    p_name(name),
     m_used(1),
+    p_enabled(true),
     p_readFunctionIsInline(true),
+    p_resetFunctionIsInline(false),
     p_writeFunctionEmitSignal(true),
     p_writeFunctionIsInline(false)
 {
@@ -53,15 +51,13 @@ PropertiesGroupData::PropertiesGroupData(const QString &name,
 
 PropertiesGroupData::PropertiesGroupData(const PropertiesGroupData &v) :
     m_properties(v.m_properties),
-    m_enums(v.m_enums),
-    p_className(v.p_className),
-    p_inherits(v.p_inherits),
     p_statementsAfterWriteProperty(v.p_statementsAfterWriteProperty),
     p_statementsMiddleWriteProperty(v.p_statementsMiddleWriteProperty),
     p_statementsStartWriteProperty(v.p_statementsStartWriteProperty),
-    p_typeInderitsInfomation(v.p_typeInderitsInfomation),
     m_used(1),
+    p_enabled(v.p_enabled),
     p_readFunctionIsInline(v.p_readFunctionIsInline),
+    p_resetFunctionIsInline(v.p_resetFunctionIsInline),
     p_writeFunctionEmitSignal(v.p_writeFunctionEmitSignal),
     p_writeFunctionIsInline(v.p_writeFunctionIsInline)
 {

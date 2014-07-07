@@ -12,6 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *****************************************************************************/
+#include "paraments.h"
 #include "widget.h"
 #include "ui_widget.h"
 #include <QFileDialog>
@@ -30,9 +31,11 @@ inline QString boolToStr(bool b)
 Widget::PropertyItem::PropertyItem() :
     name(NULL),
     type(NULL),
-    typeStringName(NULL),
+    //typeStringName(NULL),
     docName(NULL),
     docDetail(NULL),
+    defaultValue(NULL),
+    enabled(NULL),
     member(NULL),
     read(NULL),
     write(NULL),
@@ -44,18 +47,18 @@ Widget::PropertyItem::PropertyItem() :
     stored(NULL),
     user(NULL),
     constant(NULL),
-    final(NULL),
-    enabled(NULL),
-    defaultValue(NULL)
+    final(NULL)
 {
 }
 
 Widget::PropertyItem::PropertyItem(const Property &p) :
     name(new QTableWidgetItem(p.name())),
-    type(new QTableWidgetItem(p.type())),
-    typeStringName(new QTableWidgetItem(p.typeStringName())),
+    type(new QTableWidgetItem(p.realTypeName())),
+    //typeStringName(new QTableWidgetItem(p.typeStringName())),
     docName(new QTableWidgetItem(p.docName())),
     docDetail(new QTableWidgetItem(p.docDetail())),
+    defaultValue(new QTableWidgetItem(p.defaultValue().toString())),
+    enabled(new QTableWidgetItem(boolToStr(p.enabled()))),
     member(new QTableWidgetItem(boolToStr(p.member()))),
     read(new QTableWidgetItem(boolToStr(p.read()))),
     write(new QTableWidgetItem(boolToStr(p.write()))),
@@ -67,9 +70,7 @@ Widget::PropertyItem::PropertyItem(const Property &p) :
     stored(new QTableWidgetItem(boolToStr(p.stored()))),
     user(new QTableWidgetItem(boolToStr(p.user()))),
     constant(new QTableWidgetItem(boolToStr(p.constant()))),
-    final(new QTableWidgetItem(boolToStr(p.final()))),
-    enabled(new QTableWidgetItem(boolToStr(p.enabled()))),
-    defaultValue(new QTableWidgetItem(p.defaultValue().toString()))
+    final(new QTableWidgetItem(boolToStr(p.final())))
 {
 }
 
@@ -106,28 +107,88 @@ Widget::Widget(QWidget *parent) :
     m_changed(false)
 {
     ui->setupUi(this);
-    m_dialogEdit = new DialogEdit(&m_propertiesGroup, this);
+    m_dialogEdit = new DialogEdit(this);
     m_dialogSet = new DialogSet(this);
     //QTextCodec::setCodecForTr(QTextCodec::codecForName("utf-8"));
-    Property p1("backColor", QVariant::typeToName(QVariant::Color));
-    p1.setDocName(QString("背景色"));
-    p1.setDocDetail(QString("会重新绘图"));
-    p1.setDefaultValue(QString("Qt::black"));
-    Property p2("width", QVariant::typeToName(QVariant::Double), "qreal");
-    p2.setDocName(QString("宽度"));
-    p2.setDocDetail(QString("会重新绘图"));
-    p2.setDefaultValue(QString("0.0"));
-    m_propertiesGroup.append(p1);
-    m_propertiesGroup.append(p2);
-    m_propertiesGroup.setClassName("testClass");
-    m_propertiesGroup.setInherits("QObject");
-    m_propertiesGroup.setTypeInderitsInfomation(PropertiesGroup::inherits_QObject);
-    m_propertiesGroup.setReadFunctionIsInline(true);
-    m_propertiesGroup.setWriteFunctionIsInline(false);
-    m_propertiesGroup.setWriteFunctionEmitSignal(true);
-    m_propertiesGroup.setStatementsStartWriteProperty("    StartWrite;\n");
-    m_propertiesGroup.setStatementsMiddleWriteProperty("    MiddleWrite;\n");
-    m_propertiesGroup.setStatementsAfterWriteProperty("    AfterWrite;\n");
+    m_classSettings.clear();
+    {
+        PropertiesGroup g;
+        {
+            Property p("height", QVariant::typeToName(QVariant::Double), "qreal");
+            p.setDocName(QString("height"));
+            p.setDocDetail(QString("will replot"));
+            p.setDefaultValue(QString("0.0"));
+            g.append(p);
+        }
+        {
+            Property p("width", QVariant::typeToName(QVariant::Double), "qreal");
+            p.setDocName(QString("width"));
+            p.setDocDetail(QString("will replot"));
+            p.setDefaultValue(QString("0.0"));
+            g.append(p);
+        }
+        {
+            Property p("pro", QVariant::typeToName(QVariant::Double), "qreal");
+            p.setDocName(QString("pro"));
+            p.setDocDetail(QString("read only property test"));
+            p.setDefaultValue(QString("0.0"));
+            p.setWrite(false);
+            g.append(p);
+        }
+        {
+            Property p("pwo", QVariant::typeToName(QVariant::Double), "qreal");
+            p.setDocName(QString("pwo"));
+            p.setDocDetail(QString("write only property test"));
+            p.setDefaultValue(QString("0.0"));
+            p.setRead(false);
+            g.append(p);
+        }
+        {
+            Property p("nn", QVariant::typeToName(QVariant::Double), "qreal");
+            p.setDocName(QString("nn"));
+            p.setDocDetail(QString("not notify property test"));
+            p.setDefaultValue(QString("0.0"));
+            p.setNotify(false);
+            g.append(p);
+        }
+        g.setName("size");
+        g.setReadFunctionIsInline(true);
+        g.setWriteFunctionIsInline(false);
+        g.setWriteFunctionEmitSignal(true);
+        g.setStatementsStartWriteProperty("        StartWrite;\n");
+        g.setStatementsMiddleWriteProperty("        MiddleWrite;\n");
+        g.setStatementsAfterWriteProperty("        AfterWrite;\n");
+        m_classSettings.append(g);
+    }
+    {
+        PropertiesGroup g;
+        {
+            Property p("backColor", QVariant::typeToName(QVariant::Color));
+            p.setDocName(QString("back color"));
+            p.setDocDetail(QString("will replot"));
+            p.setDefaultValue(QString("Qt::grey"));
+            g.append(p);
+        }
+        {
+            Property p("bordercolor", QVariant::typeToName(QVariant::Color));
+            p.setDocName(QString("border color"));
+            p.setDocDetail(QString("will replot"));
+            p.setDefaultValue(QString("Qt::black"));
+            g.append(p);
+        }
+        g.setName("style");
+        g.setReadFunctionIsInline(true);
+        g.setWriteFunctionIsInline(false);
+        g.setWriteFunctionEmitSignal(true);
+        g.setStatementsStartWriteProperty("        StartWrite;\n");
+        g.setStatementsMiddleWriteProperty("        MiddleWrite;\n");
+        g.setStatementsAfterWriteProperty("        AfterWrite;\n");
+        m_classSettings.append(g);
+    }
+    m_classSettings.setClassName("testClass");
+    m_classSettings.setDocName("test class");
+    m_classSettings.setInherits("QObject");
+    m_classSettings.setTypeInderitsInfomation(ClassSettings::inherits_QObject);
     updateUi();
     connect(m_dialogEdit, SIGNAL(accepted()),
             this, SLOT(on_dialogEdit_accept()));
@@ -137,10 +198,12 @@ Widget::Widget(QWidget *parent) :
             this, SLOT(on_dialogSet_accept()));
     connect(m_dialogSet, SIGNAL(rejected()),
             this, SLOT(on_dialogSet_rejected()));
+    loadSettings();
 }
 
 Widget::~Widget()
 {
+    saveSettings();
     delete ui;
 }
 
@@ -149,12 +212,11 @@ bool Widget::saveChanged()
 {
     if (m_changed)
     {
-        int ret = QMessageBox::question(this,
-                                        tr("Save changed?"),
-                                        tr("Save changed?"),
-                                        QMessageBox::Yes
-                                        | QMessageBox::No
-                                        | QMessageBox::Cancel);
+        int ret = QMessageBox::question(
+                    this,
+                    tr("Save changed?"),
+                    tr("Save changed?"),
+                    QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
         if ((ret == QMessageBox::Yes))
         {
             on_pushButtonSaveProject_clicked();
@@ -184,26 +246,38 @@ void Widget::closeEvent(QCloseEvent *event)
     }
 }
 
+void Widget::on_comboBoxSelectPropertiesGroups_currentIndexChanged(const QString &arg1)
+{
+    m_groupIndex = m_classSettings.findGroup(arg1);
+    updatePropertiesTable();
+    //m_propertyIndex = -1;
+}
+
 void Widget::on_dialogEdit_accept()
 {
     switch (m_dialogEdit->currentMode())
     {
     case DialogEdit::EditExist:
     {
-        int index = m_dialogEdit->currentIndex();
-        m_propertiesGroup[index] = m_dialogEdit->currentProperty();
+        int propertyIndex = ui->tableWidgetProperties->currentRow();
+        m_classSettings[m_groupIndex][propertyIndex] = m_dialogEdit->currentProperty();
+        //m_classSettings[m_groupIndex].sort();
         m_changed = true;
-        updateUi();
+        updatePropertiesTable();
+        generateCode();
         break;
     }
     case DialogEdit::NewProperty:
-        m_propertiesGroup.append(m_dialogEdit->currentProperty());
+        m_classSettings[m_groupIndex].append(m_dialogEdit->currentProperty());
+        //m_classSettings[m_groupIndex].sort();
         m_changed = true;
-        updateUi();
+        updatePropertiesTable();
+        generateCode();
         break;
     default:
         break;
     }
+    m_classSettings.updateTypeOrder();
 }
 
 void Widget::on_dialogEdit_rejected()
@@ -223,7 +297,7 @@ void Widget::on_dialogSet_rejected()
 
 void Widget::on_pushButtonAddProperty_clicked()
 {
-    m_dialogEdit->editNew();
+    m_dialogEdit->editNew(m_dialogEdit->currentProperty());
 }
 
 void Widget::on_pushButtonEditProperty_clicked()
@@ -231,31 +305,32 @@ void Widget::on_pushButtonEditProperty_clicked()
     if (!ui->tableWidgetProperties->selectedItems().isEmpty())
     {
         int propertyIndex = ui->tableWidgetProperties->currentRow();
-        m_dialogEdit->editExist(propertyIndex);
+        m_dialogEdit->editExist(m_classSettings.at(m_groupIndex).at(propertyIndex));
     }
 }
 
 void Widget::on_pushButtonExportClass_clicked()
 {
-    QString dirName = QFileDialog::getExistingDirectory(this,
-                                                        tr("Select Directory"),
-                                                        ".",
-                                                        QFileDialog::ShowDirsOnly);
+    QDir dir(m_currentFile);
+    QString dirName = QFileDialog::getExistingDirectory(
+                this,
+                tr("Select Directory"),
+                dir.path(),
+                QFileDialog::ShowDirsOnly);
     if (!dirName.isEmpty())
     {
         QDir exportDir(dirName);
-        QString headerFileName = m_propertiesGroup.headerFileName();
-        QString sourceFileName = m_propertiesGroup.sourceFileName();
+        QString headerFileName = m_classSettings.headerFileName();
+        QString sourceFileName = m_classSettings.sourceFileName();
         if (exportDir.exists(headerFileName))
         {
-            int ret = QMessageBox::question(this,
-                                            tr("Header file exist"),
-                                            tr("Header file %1 exist, "
-                                               "all modify of this will be lose. "
-                                               "Are you sure?")
-                                            .arg(headerFileName),
-                                            QMessageBox::Yes
-                                            | QMessageBox::No);
+            int ret = QMessageBox::question(
+                        this,
+                        tr("Header file exist"),
+                        tr("Header file %1 exist, all modify of this will be lose. "
+                           "Are you sure?")
+                        .arg(headerFileName),
+                        QMessageBox::Yes | QMessageBox::No);
             if (ret != QMessageBox::Yes)
             {
                 return;
@@ -263,14 +338,13 @@ void Widget::on_pushButtonExportClass_clicked()
         }
         if (exportDir.exists(sourceFileName))
         {
-            int ret = QMessageBox::question(this,
-                                            tr("Source file exist"),
-                                            tr("Source file %1 exist, "
-                                               "all modify of this will be lose. "
-                                               "Are you sure?")
-                                            .arg(sourceFileName),
-                                            QMessageBox::Yes
-                                            | QMessageBox::No);
+            int ret = QMessageBox::question(
+                        this,
+                        tr("Source file exist"),
+                        tr("Source file %1 exist, all modify of this will be lose. "
+                           "Are you sure?")
+                        .arg(sourceFileName),
+                        QMessageBox::Yes | QMessageBox::No);
             if (ret != QMessageBox::Yes)
             {
                 return;
@@ -280,14 +354,14 @@ void Widget::on_pushButtonExportClass_clicked()
             QFile f(exportDir.filePath(headerFileName));
             if (f.open(QIODevice::WriteOnly))
             {
-                f.write(m_propertiesGroup.headerFileContent().toUtf8());
+                f.write(m_classSettings.headerFileContent().toUtf8());
             }
         }
         {
             QFile f(exportDir.filePath(sourceFileName));
             if (f.open(QIODevice::WriteOnly))
             {
-                f.write(m_propertiesGroup.sourceFileContent().toUtf8());
+                f.write(m_classSettings.sourceFileContent().toUtf8());
             }
         }
     }
@@ -298,25 +372,22 @@ void Widget::on_pushButtonNewProject_clicked()
     if (saveChanged())
     {
         m_currentFile.clear();
-        m_propertiesGroup.clear();
+        m_classSettings = ClassSettings();
         updateUi();
     }
 }
 
 void Widget::on_pushButtonOpenProject_clicked()
 {
-    //QFileDialog dialog;
-    QString fileName = QFileDialog::getOpenFileName(this,
-                                                    tr("Open File"),
-                                                    ".",
-                                                    tr("Ini File (*.ini)"));
+    QString fileName = QFileDialog::getOpenFileName(
+                this,
+                tr("Open File"),
+                m_startPath,
+                tr("Ini File (*.ini)"));
     if (QFile::exists(fileName))
     {
         loadProperties(fileName);
         m_currentFile = fileName;
-        /*db.close();
-        db.setDatabaseName(fileName);
-        db.open();*/
     }
 }
 
@@ -334,10 +405,11 @@ void Widget::on_pushButtonSaveProject_clicked()
 
 void Widget::on_pushButtonSaveProjectAs_clicked()
 {
-    QString fileName = QFileDialog::getSaveFileName(this,
-                                                    tr("Save File"),
-                                                    ".",
-                                                    tr("Ini File (*.ini)"));
+    QString fileName = QFileDialog::getSaveFileName(
+                this,
+                tr("Save File"),
+                m_startPath + QDir::separator() + m_classSettings.className(),
+                tr("Ini File (*.ini)"));
     if (!fileName.isEmpty())
     {
         if (!fileName.endsWith(".ini"))
@@ -351,7 +423,7 @@ void Widget::on_pushButtonSaveProjectAs_clicked()
 
 void Widget::on_pushButtonSetProject_clicked()
 {
-    m_dialogSet->editExist(&m_propertiesGroup);
+    m_dialogSet->editExist(&m_classSettings);
 }
 
 void Widget::on_pushButtonRemoveProperty_clicked()
@@ -359,139 +431,141 @@ void Widget::on_pushButtonRemoveProperty_clicked()
     if (!ui->tableWidgetProperties->selectedItems().isEmpty())
     {
         int propertyIndex = ui->tableWidgetProperties->currentRow();
-        m_propertiesGroup.removeAt(propertyIndex);
+        m_classSettings[m_groupIndex].removeAt(propertyIndex);
         m_changed = true;
-        updateUi();
+        updatePropertiesTable();
+        generateCode();
     }
 }
 
 void Widget::on_tableWidgetProperties_doubleClicked(const QModelIndex &index)
 {
     int propertyIndex = index.row();
-    m_dialogEdit->editExist(propertyIndex);
+    m_dialogEdit->editExist(m_classSettings[m_groupIndex][propertyIndex]);
 }
 
 void Widget::generateCode()
 {
-    /*QString qProperty("");
-    QString readDeclear("");
-    QString writeDeclear("");
-    QString signalDeclear("");
-    QString memberVars("");
-    QString readFunctions("");
-    QString writeFunctions("");
-    foreach (Property p, m_propertiesGroup.properties())
-    {
-        if (p.enabled())
-        {
-            qProperty.append(QString("    ")
-                             + p.qPropertyString());
-            readDeclear.append(QString("    ")
-                               + p.readDeclear());
-            writeDeclear.append(QString("    ")
-                                + p.writeDeclear());
-            signalDeclear.append(QString("    ")
-                                 + p.signalDeclear());
-            memberVars.append(QString("    ")
-                              + p.memberVariableDeclear());
-            readFunctions.append(p.readFunctionDefine(m_className,
-                                                      m_readFunctionIsInline)
-                                 + "\n");
-            writeFunctions.append(p.writeFunctionDefine(
-                                      m_className,
-                                      m_statementsStartWriteProperty,
-                                      m_statementsMiddleWriteProperty,
-                                      m_statementsAfterWriteProperty,
-                                      m_writeFunctionEmitSignal,
-                                      m_writeFunctionIsInline)
-                                  + "\n");
-        }
-    }*/
-    //ui->textBrowserBatchSet->setText(qProperty);
-    /*QString strCppDeclares = QString("%1\n"
-                                     "public: \n%2\n"
-                                     "public slots: \n%3\n"
-                                     "signals: \n%4\n"
-                                     "private: \n%5")
-            .arg(m_propertiesGroup.generateQPropertyDeclear())
-            .arg(m_propertiesGroup.generateReadDeclear())
-            .arg(m_propertiesGroup.generateWriteDeclear())
-            .arg(m_propertiesGroup.generateSignalDeclear())
-            .arg(m_propertiesGroup.generateMemberVariableDeclear());
-    ui->textBrowserCppDeclares->setText(strCppDeclares);
-    ui->textBrowserFunctions->setText(
-                m_propertiesGroup.generateReadFunctionDefine() + "\n"
-                + m_propertiesGroup.generateWriteFunctionDefine());*/
-    QString strHeaderFileContent = m_propertiesGroup.headerFileContent();
-    QString strSourceFileContent = m_propertiesGroup.sourceFileContent();
+    QString strHeaderFileContent = m_classSettings.headerFileContent();
+    QString strSourceFileContent = m_classSettings.sourceFileContent();
     ui->textBrowserCppDeclares->setText(strHeaderFileContent);
     ui->textBrowserFunctions->setText(strSourceFileContent);
 }
 
-void Widget::updateUi()
+void Widget::updateGroupList()
+{
+    m_classSettings.sort();
+    QString current = ui->comboBoxSelectPropertiesGroups->currentText();
+    ui->comboBoxSelectPropertiesGroups->blockSignals(true);
+    ui->comboBoxSelectPropertiesGroups->clear();
+    foreach (QString name, m_classSettings.propertiesGroupsName())
+    {
+        ui->comboBoxSelectPropertiesGroups->addItem(name);
+    }
+    ui->comboBoxSelectPropertiesGroups->blockSignals(false);
+    int i = ui->comboBoxSelectPropertiesGroups->findText(current);
+    if (i >= 0)
+    {
+        ui->comboBoxSelectPropertiesGroups->setCurrentIndex(i);
+    }
+    else if (ui->comboBoxSelectPropertiesGroups->count() > 0)
+    {
+        ui->comboBoxSelectPropertiesGroups->setCurrentIndex(0);
+    }
+}
+
+void Widget::updatePropertiesTable()
 {
     while (ui->tableWidgetProperties->rowCount() != 0)
     {
         ui->tableWidgetProperties->removeRow(0);
     }
     m_propertyItems.clear();
-    //sortProperties();
-    m_propertiesGroup.sort();
-    foreach (Property p, m_propertiesGroup.properties())
+    m_classSettings.sort();
+    m_classSettings.updateTypeOrder();
+    foreach (Property p, m_classSettings.at(m_groupIndex).properties())
     {
         QSharedPointer<PropertyItem> item(new PropertyItem(p));
         m_propertyItems.append(item);
         int i = ui->tableWidgetProperties->rowCount();
         ui->tableWidgetProperties->insertRow(i);
-        ui->tableWidgetProperties->setItem(i, 0, item->name);
-        ui->tableWidgetProperties->setItem(i, 1, item->type);
-        ui->tableWidgetProperties->setItem(i, 2, item->typeStringName);
-        ui->tableWidgetProperties->setItem(i, 3, item->docName);
-        ui->tableWidgetProperties->setItem(i, 4, item->docDetail);
-        ui->tableWidgetProperties->setItem(i, 5, item->member);
-        ui->tableWidgetProperties->setItem(i, 6, item->read);
-        ui->tableWidgetProperties->setItem(i, 7, item->write);
-        ui->tableWidgetProperties->setItem(i, 8, item->reset);
-        ui->tableWidgetProperties->setItem(i, 9, item->notify);
-        ui->tableWidgetProperties->setItem(i, 10, item->revision);
-        ui->tableWidgetProperties->setItem(i, 11, item->designable);
-        ui->tableWidgetProperties->setItem(i, 12, item->scriptable);
-        ui->tableWidgetProperties->setItem(i, 13, item->stored);
-        ui->tableWidgetProperties->setItem(i, 14, item->user);
-        ui->tableWidgetProperties->setItem(i, 15, item->constant);
-        ui->tableWidgetProperties->setItem(i, 16, item->final);
-        ui->tableWidgetProperties->setItem(i, 17, item->enabled);
-        ui->tableWidgetProperties->setItem(i, 18, item->defaultValue);
+        int j = 0;
+        ui->tableWidgetProperties->setItem(i, j, item->name);
+        j++;
+        ui->tableWidgetProperties->setItem(i, j, item->type);
+        j++;
+        /*ui->tableWidgetProperties->setItem(i, j, item->typeStringName);
+        j++;*/
+        ui->tableWidgetProperties->setItem(i, j, item->docName);
+        j++;
+        ui->tableWidgetProperties->setItem(i, j, item->docDetail);
+        j++;
+        ui->tableWidgetProperties->setItem(i, j, item->defaultValue);
+        j++;
+        ui->tableWidgetProperties->setItem(i, j, item->enabled);
+        j++;
+        ui->tableWidgetProperties->setItem(i, j, item->member);
+        j++;
+        ui->tableWidgetProperties->setItem(i, j, item->read);
+        j++;
+        ui->tableWidgetProperties->setItem(i, j, item->write);
+        j++;
+        ui->tableWidgetProperties->setItem(i, j, item->reset);
+        j++;
+        ui->tableWidgetProperties->setItem(i, j, item->notify);
+        j++;
+        ui->tableWidgetProperties->setItem(i, j, item->revision);
+        j++;
+        ui->tableWidgetProperties->setItem(i, j, item->designable);
+        j++;
+        ui->tableWidgetProperties->setItem(i, j, item->scriptable);
+        j++;
+        ui->tableWidgetProperties->setItem(i, j, item->stored);
+        j++;
+        ui->tableWidgetProperties->setItem(i, j, item->user);
+        j++;
+        ui->tableWidgetProperties->setItem(i, j, item->constant);
+        j++;
+        ui->tableWidgetProperties->setItem(i, j, item->final);
     }
+}
+
+void Widget::updateUi()
+{
+    updateGroupList();
+    updatePropertiesTable();
     generateCode();
 }
 
 void Widget::loadProperties(const QString &fileName)
 {
-    QSettings settings(fileName, QSettings::IniFormat);
+    /*QSettings settings(fileName, QSettings::IniFormat);
     settings.setIniCodec("UTF-8");
-    m_propertiesGroup.setClassName(settings.value("className").toString());
-    m_propertiesGroup.setInherits(settings.value("Inherits").toString());
-    m_propertiesGroup.setTypeInderitsInfomation(
+    m_classSettings.setClassName(settings.value("className").toString());
+    m_classSettings.setDocName(settings.value("docName").toString());
+    m_classSettings.setDocDetail(settings.value("docDetail").toString());
+    m_classSettings.setInherits(settings.value("Inherits").toString());
+    m_classSettings.setTypeInderitsInfomation(
                 (PropertiesGroup::TypeInheritsInformation)
                 settings.value("TypeInformation").toInt());
+    m_classSettings.setTypeOrder(settings.value("typeOrder").toStringList());
     settings.beginGroup("FunctionsPolicy");
-    m_propertiesGroup.setReadFunctionIsInline(
+    m_classSettings.setReadFunctionIsInline(
                 settings.value("ReadFunctionIsInline").toBool());
-    m_propertiesGroup.setWriteFunctionIsInline(
+    m_classSettings.setWriteFunctionIsInline(
                 settings.value("WriteFunctionIsInline").toBool());
-    m_propertiesGroup.setWriteFunctionEmitSignal(
+    m_classSettings.setWriteFunctionEmitSignal(
                 settings.value("WriteFunctionEmitSignal").toBool());
-    m_propertiesGroup.setStatementsStartWriteProperty(
+    m_classSettings.setStatementsStartWriteProperty(
                 settings.value("WriteFunctionStart").toString());
-    m_propertiesGroup.setStatementsMiddleWriteProperty(
+    m_classSettings.setStatementsMiddleWriteProperty(
                 settings.value("WriteFunctionMiddle").toString());
-    m_propertiesGroup.setStatementsAfterWriteProperty(
+    m_classSettings.setStatementsAfterWriteProperty(
                 settings.value("WriteFunctionLast").toString());
     settings.endGroup();
     int size = settings.beginReadArray("properties");
     int i = 0;
-    m_propertiesGroup.clear();
+    m_classSettings.clear();
     for (; i < size; i++)
     {
         settings.setArrayIndex(i);
@@ -515,113 +589,79 @@ void Widget::loadProperties(const QString &fileName)
         p.setFinal(settings.value("final").toBool());
         p.setEnabled(settings.value("enabled").toBool());
         p.setDefaultValue(settings.value("defaultValue"));
-        m_propertiesGroup.append(p);
+        m_classSettings.append(p);
     }
     settings.endArray();
     updateUi();
-    m_changed = false;
+    m_changed = false;*/
+}
+
+void Widget::loadSettings()
+{
+    /*QSettings settings(QCoreApplication::applicationDirPath() + QDir::separator()
+                       + QString("settings.ini"),
+                       QSettings::IniFormat);
+    m_startPath = settings.value("StartPath", START_DIR).toString();*/
 }
 
 void Widget::saveProperties(const QString &fileName)
 {
-    QSettings settings(fileName, QSettings::IniFormat);
+    /*QSettings settings(fileName, QSettings::IniFormat);
     settings.setIniCodec("UTF-8");
-    settings.setValue("className", m_propertiesGroup.className());
-    settings.setValue("Inherits", m_propertiesGroup.inherits());
+    settings.setValue("className", m_classSettings.className());
+    settings.setValue("docName", m_classSettings.docName());
+    settings.setValue("docDetail", m_classSettings.docDetail());
+    settings.setValue("Inherits", m_classSettings.inherits());
     settings.setValue("TypeInformation",
-                      (int)m_propertiesGroup.typeInderitsInfomation());
+                      (int)m_classSettings.typeInderitsInfomation());
+    settings.setValue("typeOrder", m_classSettings.typeOrder());
     settings.beginGroup("FunctionsPolicy");
     settings.setValue("ReadFunctionIsInline",
-                      m_propertiesGroup.readFunctionIsInline());
+                      m_classSettings.readFunctionIsInline());
     settings.setValue("WriteFunctionIsInline",
-                      m_propertiesGroup.writeFunctionIsInline());
+                      m_classSettings.writeFunctionIsInline());
     settings.setValue("WriteFunctionEmitSignal",
-                      m_propertiesGroup.writeFunctionEmitSignal());
+                      m_classSettings.writeFunctionEmitSignal());
     settings.setValue("WriteFunctionStart",
-                      m_propertiesGroup.statementsStartWriteProperty());
+                      m_classSettings.statementsStartWriteProperty());
     settings.setValue("WriteFunctionMiddle",
-                      m_propertiesGroup.statementsMiddleWriteProperty());
+                      m_classSettings.statementsMiddleWriteProperty());
     settings.setValue("WriteFunctionLast",
-                      m_propertiesGroup.statementsAfterWriteProperty());
+                      m_classSettings.statementsAfterWriteProperty());
     settings.endGroup();
-    settings.setValue("typeOrder", m_propertiesGroup.typeOrder());
     settings.beginWriteArray("properties");
     int i = 0;
-    for (; i < m_propertiesGroup.size(); i++)
+    for (; i < m_classSettings.size(); i++)
     {
         settings.setArrayIndex(i);
-        settings.setValue("name", m_propertiesGroup.at(i).name());
-        settings.setValue("type", m_propertiesGroup.at(i).type());
+        settings.setValue("name", m_classSettings.at(i).name());
+        settings.setValue("type", m_classSettings.at(i).type());
         settings.setValue("typeStringName",
-                          m_propertiesGroup.at(i).typeStringName());
-        settings.setValue("docName", m_propertiesGroup.at(i).docName());
-        settings.setValue("docDetail", m_propertiesGroup.at(i).docDetail());
-        settings.setValue("member", m_propertiesGroup.at(i).member());
-        settings.setValue("read", m_propertiesGroup.at(i).read());
-        settings.setValue("write", m_propertiesGroup.at(i).write());
-        settings.setValue("reset", m_propertiesGroup.at(i).reset());
-        settings.setValue("notify", m_propertiesGroup.at(i).notify());
-        settings.setValue("revision", m_propertiesGroup.at(i).revision());
-        settings.setValue("designable", m_propertiesGroup.at(i).designable());
-        settings.setValue("scriptable", m_propertiesGroup.at(i).scriptable());
-        settings.setValue("stored", m_propertiesGroup.at(i).stored());
-        settings.setValue("user", m_propertiesGroup.at(i).user());
-        settings.setValue("constant", m_propertiesGroup.at(i).constant());
-        settings.setValue("final", m_propertiesGroup.at(i).final());
-        settings.setValue("enabled", m_propertiesGroup.at(i).enabled());
-        settings.setValue("defaultValue", m_propertiesGroup.at(i).defaultValue());
+                          m_classSettings.at(i).typeStringName());
+        settings.setValue("docName", m_classSettings.at(i).docName());
+        settings.setValue("docDetail", m_classSettings.at(i).docDetail());
+        settings.setValue("member", m_classSettings.at(i).member());
+        settings.setValue("read", m_classSettings.at(i).read());
+        settings.setValue("write", m_classSettings.at(i).write());
+        settings.setValue("reset", m_classSettings.at(i).reset());
+        settings.setValue("notify", m_classSettings.at(i).notify());
+        settings.setValue("revision", m_classSettings.at(i).revision());
+        settings.setValue("designable", m_classSettings.at(i).designable());
+        settings.setValue("scriptable", m_classSettings.at(i).scriptable());
+        settings.setValue("stored", m_classSettings.at(i).stored());
+        settings.setValue("user", m_classSettings.at(i).user());
+        settings.setValue("constant", m_classSettings.at(i).constant());
+        settings.setValue("final", m_classSettings.at(i).final());
+        settings.setValue("enabled", m_classSettings.at(i).enabled());
+        settings.setValue("defaultValue", m_classSettings.at(i).defaultValue());
     }
     settings.endArray();
-    m_changed = false;
+    m_changed = false;*/
 }
 
-/*QStringList Widget::propertiesName() const
+void Widget::saveSettings()
 {
-    QStringList list;
-    foreach (Property p, m_properties)
-    {
-        list.append(p.name());
-    }
-    return list;
+    /*QSettings settings(QCoreApplication::applicationDirPath() + QDir::separator()
+                       + QString("settings.ini"),
+                       QSettings::IniFormat);*/
 }
-
-int Widget::findPropertyByName(const QString &name) const
-{
-    int i = 0;
-    for (; i < m_properties.size(); i++)
-    {
-        if (m_properties.at(i).name() == name)
-        {
-            return i;
-        }
-    }
-    return -1;
-}
-
-void Widget::sortProperties()
-{
-    int i = 0, j = 0;
-    bool found = false;
-    QStringList list = propertiesName();
-    QList<Property> listP;
-    list.sort();
-    list.removeDuplicates();
-    for (; i < list.size(); i++)
-    {
-        found = false;
-        for (j = 0; j < m_properties.size(); j++)
-        {
-            if (m_properties.at(j).name() == list.at(i))
-            {
-                listP.append(m_properties.at(j));
-                found = true;
-            }
-        }
-        if (!found)
-        {
-            std::cout << "Widget::sortProperties: Can not find property "
-                      << list.at(i).toStdString() << std::endl;
-        }
-    }
-    m_properties = listP;
-}*/

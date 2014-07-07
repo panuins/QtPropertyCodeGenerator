@@ -15,8 +15,42 @@
 #ifndef SHAREDFUNCTIONS_H
 #define SHAREDFUNCTIONS_H
 
+#include "paraments.h"
+#include <QChar>
+#include <QDateTime>
 #include <QRegExp>
+#include <QString>
+#include <QStringList>
 #include <iostream>
+
+inline QStringList allTypes(const QString &type)
+{
+    if (type.indexOf(QChar(':')) < 0)
+    {
+        QRegExp regExp("[ *<>]");
+        QStringList list = type.split(regExp);
+        list.sort();
+        list.removeDuplicates();
+        if (list.length() > 0)
+        {
+            if (list.at(0).isEmpty())
+            {
+                list.removeAt(0);
+            }
+        }
+        return list;
+    }
+    else
+    {
+        return QStringList();
+    }
+}
+
+inline QString currentDateTimeString()
+{
+    QDateTime dateTime = QDateTime::currentDateTime();
+    return dateTime.toString(CODESCHEME_DateTimeFormat);
+}
 
 inline bool nameIsCIndentifier(const QString &name)
 {
@@ -32,6 +66,68 @@ inline bool nameIsCIndentifier(const QString &name)
     {
         return true;
     }
+}
+
+inline QString primaryType(const QString &type)
+{
+    QString ret = type;
+    if (ret.contains(QChar('<')))
+    {
+        ret = ret.left(ret.indexOf(QChar('<')));
+    }
+    if (ret.contains(QChar(' ')))
+    {
+        ret = ret.left(ret.indexOf(QChar(' ')));
+    }
+    if (ret.contains(QChar('*')))
+    {
+        ret = ret.left(ret.indexOf(QChar('*')));
+    }
+    return ret;
+}
+
+inline QString replaceFisrtLetterToLower(const QString &str)
+{
+    if (!str.isEmpty())
+    {
+        QString dest = str;
+        QString firstLetter = QString(dest.at(0).toLower());
+        dest.replace(0, 1, firstLetter);
+        return dest;
+    }
+    else
+    {
+        return str;
+    }
+}
+
+inline QString replaceFisrtLetterToUpper(const QString &str)
+{
+    if (!str.isEmpty())
+    {
+        QString dest = str;
+        QString firstLetter = QString(dest.at(0).toUpper());
+        dest.replace(0, 1, firstLetter);
+        return dest;
+    }
+    else
+    {
+        return str;
+    }
+}
+
+inline QString replacePercentToSepecialString(const QString &str)
+{
+    QString s = str;
+    s.replace(QString("%"), QString("_____PercentNotation_____"));
+    return s;
+}
+
+inline QString replaceSepecialStringToPercent(const QString &str)
+{
+    QString s = str;
+    s.replace(QString("_____PercentNotation_____"), QString("%"));
+    return s;
 }
 
 #endif // SHAREDFUNCTIONS_H

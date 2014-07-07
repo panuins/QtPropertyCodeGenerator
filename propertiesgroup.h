@@ -15,7 +15,7 @@
 #ifndef PROPERTIESGROUP_H
 #define PROPERTIESGROUP_H
 #include "propertiesgroupdata.h"
-#define DEBUG_PROPERTIESGROUPS_COW_DETAIL
+//#define DEBUG_PROPERTIESGROUPS_COW_DETAIL
 
 class PropertiesGroup
 {
@@ -30,31 +30,25 @@ public:
     };
 
     PropertiesGroup();
-    PropertiesGroup(const QString &name, const QString &inheritsClass);
+    PropertiesGroup(const QString &name);
     PropertiesGroup(const PropertiesGroup &v);
     PropertiesGroup(const PropertiesGroupData &v);
     ~PropertiesGroup();
     PropertiesGroup &operator=(const PropertiesGroup &v);
     Property &operator[](int i);
 
-    Property at(int var) const;
-    QString className() const;
-    QList<EnumType> enums() const;
-    QStringList enumsName() const;
-    QStringList existType() const;
+    const Property &at(int i) const;
+    bool enabled() const;
     int find(const QString &name) const;
-    QString inherits() const;
-    QString parentClass() const;
-    QList<Property> properties() const;
-    QList<Property> propertiesIsType(const QString &var) const;
+    QString name() const;
+    const QList<Property> &properties() const;
     QStringList propertiesName() const;
     bool readFunctionIsInline() const;
+    bool resetFunctionIsInline() const;
     int size() const;
     QString statementsAfterWriteProperty() const;
     QString statementsMiddleWriteProperty() const;
     QString statementsStartWriteProperty() const;
-    TypeInheritsInformation typeInderitsInfomation() const;
-    QStringList typeOrder() const;
     bool writeFunctionEmitSignal() const;
     bool writeFunctionIsInline() const;
 
@@ -63,32 +57,38 @@ public:
     void clear();
     void insert(int vari, const Property &varp);
     void removeAt(int var);
-    void setClassName(const QString &var);
-    void setEnums(const QList<EnumType> &var);
-    void setInherits(const QString &var);
+    void setEnabled(bool var);
+    void setName(const QString &var);
     void setProperties(const QList<Property> &var);
     void setReadFunctionIsInline(const bool &var);
+    void setResetFunctionIsInline(const bool &var);
     void setStatementsAfterWriteProperty(const QString &var);
     void setStatementsMiddleWriteProperty(const QString &var);
     void setStatementsStartWriteProperty(const QString &var);
-    void setTypeInderitsInfomation(const TypeInheritsInformation &var);
-    void setTypeOrder(const QStringList &var);
     void setWriteFunctionEmitSignal(const bool &var);
     void setWriteFunctionIsInline(const bool &var);
     void sort();
 
-    QString generateEnumsDeclear() const;
+    /*QString generateEnumsDeclear() const;
     QString generateQPropertyDeclear() const;
     QString generateReadDeclear() const;
     QString generateWriteDeclear() const;
     QString generateSignalDeclear() const;
     QString generateMemberVariableDeclear() const;
+    QString generateDoxygenPropertiesComment() const;
 
     QString generateReadFunctionDefine() const;
     QString generateWriteFunctionDefine() const;
 
     QString argumentNameOfThisClass() const;
+    QString doxygenClassComment() const;
+    QString doxygenFileHeader(const QString &fileName,
+                              const QString &version,
+                              const QString &author,
+                              const QString &brief = QString(""),
+                              const QString &detail = QString("")) const;
     QString headerFileContent() const;
+    QString headerFileDoxygenHeader() const;
     QString headerFileIncludeStatements() const;
     QString headerFileMarco() const;
     QString headerFileName() const;
@@ -98,7 +98,8 @@ public:
     QString sourceFileCopyConstructor() const;
     QString sourceFileDefaultConstructor() const;
     QString sourceFileDestructor() const;
-    QString sourceFileName() const;
+    QString sourceFileDoxygenHeader() const;
+    QString sourceFileName() const;*/
 
 private:
     void beforeWrite();

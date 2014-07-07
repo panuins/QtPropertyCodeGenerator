@@ -21,29 +21,34 @@
 #include <QStringList>
 #define DEBUG_PROPERTIESGROUPS_COW
 
+#define PropertyGroupDefaultRevision 0
+#define PropertyGroupDefaultDesignable true
+#define PropertyGroupDefaultScriptable true
+#define PropertyGroupDefaultStored true
+#define PropertyGroupDefaultUser false
+#define PropertyGroupDefaultConstant false
+#define PropertyGroupDefaultFinal false
+
 class PropertiesGroupData
 {
 public:
     PropertiesGroupData();
-    PropertiesGroupData(const QString &name, const QString &inheritsClass);
+    PropertiesGroupData(const QString &name);
     PropertiesGroupData(const PropertiesGroupData &v);
     ~PropertiesGroupData();
-    //PropertiesGroupData &operator=(const PropertiesGroupData &v);
 
     QList<Property> m_properties;
-    QList<EnumType> m_enums;
-    QStringList p_typeOrder;
-    QString p_className;
-    QString p_inherits;
+    QString p_name;
     QString p_statementsAfterWriteProperty;
     QString p_statementsMiddleWriteProperty;
     QString p_statementsStartWriteProperty;
-    int p_typeInderitsInfomation;
     int m_used;
 #ifdef DEBUG_PROPERTIESGROUPS_COW
     int m_id;
 #endif
+    bool p_enabled;
     bool p_readFunctionIsInline;
+    bool p_resetFunctionIsInline;
     bool p_writeFunctionEmitSignal;
     bool p_writeFunctionIsInline;
 };

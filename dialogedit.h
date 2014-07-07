@@ -15,7 +15,7 @@
 #ifndef DIALOGEDIT_H
 #define DIALOGEDIT_H
 
-#include "propertiesgroup.h"
+#include "classsettings.h"
 #include <QDialog>
 #include <QList>
 #include <QStringList>
@@ -35,16 +35,19 @@ public:
         EditExist,
     };
 
-    explicit DialogEdit(PropertiesGroup *list, QWidget *parent = 0);
+    explicit DialogEdit(QWidget *parent = 0);
     ~DialogEdit();
 
-    void changeIndex(int index);
-    void editExist(int index);
-    void editNew();
+    /*void changeGroupIndex(int index);
+    void changePropertyIndex(int index);*/
+    void editExist(const Property &p);
+    void editNew(const Property &p);
 
-    int currentIndex() const;
+    /*int currentGroupIndex() const;
+    int currentPropertyIndex() const;
     Property currentProperty() const;
-    void setPropertiesList(PropertiesGroup *l);
+    void setClassSettings(ClassSettings *l);*/
+    Property currentProperty() const;
     EditMode currentMode() const;
     void setMode(EditMode m);
 
@@ -54,27 +57,29 @@ protected:
     //void closeEvent(QCloseEvent *event);
 
 private slots:
-    void on_pushButtonSaveProperty_clicked();
-    void on_pushButtonCloseProperty_clicked();
-    void on_lineEditPropertyName_textChanged(const QString &arg1);
-    void on_lineEditPropertyDocName_textChanged(const QString &arg1);
-    void on_lineEditPropertyDocDetail_textChanged(const QString &arg1);
-    void on_comboBoxPropertyType_currentIndexChanged(int index);
-    void on_lineEditPropertyTypeStringName_textChanged(const QString &arg1);
-    void on_spinBoxPropertyRevision_valueChanged(int arg1);
-    void on_lineEditPropertyDefaultValue_textChanged(const QString &arg1);
-    void on_checkBoxPropertyMember_toggled(bool checked);
-    void on_checkBoxPropertyRead_toggled(bool checked);
-    void on_checkBoxPropertyWrite_toggled(bool checked);
-    void on_checkBoxPropertyReset_toggled(bool checked);
-    void on_checkBoxPropertyNotify_toggled(bool checked);
+    void edit(const Property &p);
+
+    void on_checkBoxPropertyConstant_toggled(bool checked);
     void on_checkBoxPropertyDesignable_toggled(bool checked);
+    void on_checkBoxPropertyEnabled_toggled(bool checked);
+    void on_checkBoxPropertyFinal_toggled(bool checked);
+    void on_checkBoxPropertyMember_toggled(bool checked);
+    void on_checkBoxPropertyNotify_toggled(bool checked);
+    void on_checkBoxPropertyRead_toggled(bool checked);
+    void on_checkBoxPropertyReset_toggled(bool checked);
     void on_checkBoxPropertyScriptable_toggled(bool checked);
     void on_checkBoxPropertyStored_toggled(bool checked);
     void on_checkBoxPropertyUser_toggled(bool checked);
-    void on_checkBoxPropertyConstant_toggled(bool checked);
-    void on_checkBoxPropertyFinal_toggled(bool checked);
-    void on_checkBoxPropertyEnabled_toggled(bool checked);
+    void on_checkBoxPropertyWrite_toggled(bool checked);
+    void on_comboBoxPropertyType_currentIndexChanged(const QString &arg1);
+    void on_lineEditPropertyDefaultValue_textChanged(const QString &arg1);
+    void on_lineEditPropertyDocName_textChanged(const QString &arg1);
+    void on_lineEditPropertyDocDetail_textChanged(const QString &arg1);
+    void on_lineEditPropertyName_textChanged(const QString &arg1);
+    void on_lineEditPropertyTypeStringName_textChanged(const QString &arg1);
+    void on_pushButtonCloseProperty_clicked();
+    void on_pushButtonSaveProperty_clicked();
+    void on_spinBoxPropertyRevision_valueChanged(int arg1);
     void updateUi();
 
 private:
@@ -87,25 +92,32 @@ private:
     QStringList m_longLongAliasList;
     QStringList m_ulongLongAliasList;
     Ui::DialogEdit *ui;
-    PropertiesGroup *m_list;
     EditMode m_mode;
-    int m_index;
+    /*ClassSettings *m_list;
+    //PropertiesGroup *m_list;
+    int m_groupIndex;
+    int m_propertyIndex;*/
 };
 
-inline int DialogEdit::currentIndex() const
+/*inline int DialogEdit::changeGroupIndex() const
 {
-    return m_index;
+    return m_groupIndex;
 }
+
+inline int DialogEdit::changePropertyIndex() const
+{
+    return m_propertyIndex;
+}*/
 
 inline Property DialogEdit::currentProperty() const
 {
-    return m_current;//m_list->at(m_index);
+    return m_current;
 }
 
-inline void DialogEdit::setPropertiesList(PropertiesGroup *l)
+/*inline void DialogEdit::setClassSettings(ClassSettings *l)
 {
     m_list = l;
-}
+}*/
 
 inline DialogEdit::EditMode DialogEdit::currentMode() const
 {

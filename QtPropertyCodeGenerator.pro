@@ -18,6 +18,7 @@
 # ------------------------------------------------------------------------------
 
 QT       += core gui
+CONFIG   += c++11
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -34,7 +35,9 @@ SOURCES += main.cpp\
     classsettings.cpp \
     propertiesgroup.cpp \
     propertiesgroupdata.cpp \
-    enumtype.cpp
+    enumtype.cpp \
+    classsettingsIterators.cpp \
+    classsettingsGeneratorFunctions.cpp
 
 HEADERS  += widget.h \
     property.h \
@@ -47,7 +50,9 @@ HEADERS  += widget.h \
     propertiesgroup.h \
     propertiesgroupdata.h \
     propertiesgroupInlineFunctions.h \
-    enumtype.h
+    enumtype.h \
+    paraments.h \
+    classsettingsInlineFunctions.h
 
 FORMS    += widget.ui \
     dialogset.ui \
