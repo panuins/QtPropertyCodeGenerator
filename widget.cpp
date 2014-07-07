@@ -104,6 +104,7 @@ Widget::Widget(QWidget *parent) :
     QWidget(parent),
     m_currentFile(QString("")),
     ui(new Ui::Widget),
+    m_groupIndex(0),
     m_changed(false)
 {
     ui->setupUi(this);
