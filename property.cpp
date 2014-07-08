@@ -289,9 +289,6 @@ QString Property::docCommentResetFunction(const QString &className,
 
 QString Property::docCommentWriteFunction(
         const QString &className,
-        const QString &strBeforSetValue,
-        const QString &strBetweenSetValueAndEmit,
-        const QString &strAfterEmit,
         bool emitSignal,
         bool isInline,
         bool preventReentrant) const
@@ -404,9 +401,6 @@ QString Property::writeFunctionDefine(const QString &className,
     if (preventReentrant)
     {
         s = docCommentWriteFunction(className,
-                                    strBeforSetValue,
-                                    strBetweenSetValueAndEmit,
-                                    strAfterEmit,
                                     emitSignal,
                                     isInline,
                                     preventReentrant)
@@ -415,9 +409,6 @@ QString Property::writeFunctionDefine(const QString &className,
     else
     {
         s = docCommentWriteFunction(className,
-                                    strBeforSetValue,
-                                    strBetweenSetValueAndEmit,
-                                    strAfterEmit,
                                     emitSignal,
                                     isInline,
                                     preventReentrant)
@@ -537,3 +528,15 @@ QString Property::initialToSpecifyValueStatement(const QString &str) const
     s = CODESCHEME_Property_InitialToSpecifyValueStatement;
     return s;
 }*/
+
+Property Property::invalid()
+{
+    Property p;
+    p.setDocBrief(QString::null);
+    p.setDocDetail(QString::null);
+    p.setDocName(QString::null);
+    p.setName(QString::null);
+    p.setType(QString::null);
+    p.setTypeStringName(QString::null);
+    return p;
+}

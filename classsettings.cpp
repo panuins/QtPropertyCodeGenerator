@@ -143,7 +143,7 @@ Property ClassSettings::findProperty(const QString &name) const
             }
         }
     }
-    return Property();
+    return Property::invalid();
 }
 
 QString ClassSettings::parentClass() const

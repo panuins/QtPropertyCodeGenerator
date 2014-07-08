@@ -404,7 +404,7 @@ void DialogEdit::on_lineEditPropertyTypeStringName_textChanged(
 void DialogEdit::on_pushButtonCloseProperty_clicked()
 {
     emit rejected();
-    this->close();
+    //this->close();
 }
 
 void DialogEdit::on_pushButtonSaveProperty_clicked()
@@ -417,7 +417,7 @@ void DialogEdit::on_pushButtonSaveProperty_clicked()
         return;
     }
     emit accept();
-    this->close();
+    //this->close();
 }
 
 void DialogEdit::on_spinBoxPropertyRevision_valueChanged(int arg1)

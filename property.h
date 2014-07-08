@@ -97,9 +97,6 @@ public:
     QString docCommentResetFunction(const QString &className = QString(""),
                                     bool isInline = true) const;
     QString docCommentWriteFunction(const QString &className,
-                                    const QString &strBeforSetValue = QString(""),
-                                    const QString &strBetweenSetValueAndEmit = QString(""),
-                                    const QString &strAfterEmit = QString(""),
                                     bool emitSignal = true,
                                     bool isInline = false,
                                     bool preventReentrant = true) const;
@@ -127,6 +124,8 @@ public:
                                 bool emitSignal = true,
                                 bool isInline = false,
                                 bool preventReentrant = true) const;
+
+    static Property invalid();
 
 private:
     void beforeWrite();

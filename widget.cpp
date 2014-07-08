@@ -267,6 +267,22 @@ void Widget::on_dialogEdit_accept()
     case DialogEdit::EditExist:
     {
         int propertyIndex = ui->tableWidgetProperties->currentRow();
+        if (m_classSettings.at(m_groupIndex).at(propertyIndex).name()
+                != m_dialogEdit->currentProperty().name())
+        {
+            Property p = m_classSettings.findProperty(
+                        m_dialogEdit->currentProperty().name());
+            if (p.name() == m_dialogEdit->currentProperty().name())
+            {
+                QMessageBox::critical(
+                            this,
+                            tr("Name already exist."),
+                            tr("Error: Name %1 already exist.")
+                            .arg(m_dialogEdit->currentProperty().name()));
+                m_dialogEdit->show();
+                return;
+            }
+        }
         m_classSettings[m_groupIndex][propertyIndex] = m_dialogEdit->currentProperty();
         //m_classSettings[m_groupIndex].sort();
         m_changed = true;
@@ -275,21 +291,36 @@ void Widget::on_dialogEdit_accept()
         break;
     }
     case DialogEdit::NewProperty:
+    {
+        Property p = m_classSettings.findProperty(
+                    m_dialogEdit->currentProperty().name());
+        if (p.name() == m_dialogEdit->currentProperty().name())
+        {
+            QMessageBox::critical(
+                        this,
+                        tr("Name already exist."),
+                        tr("Error: Name %1 already exist.")
+                        .arg(m_dialogEdit->currentProperty().name()));
+            m_dialogEdit->show();
+            return;
+        }
         m_classSettings[m_groupIndex].append(m_dialogEdit->currentProperty());
         //m_classSettings[m_groupIndex].sort();
         m_changed = true;
         updatePropertiesTable();
         generateCode();
         break;
+    }
     default:
         break;
     }
     m_classSettings.updateTypeOrder();
+    m_dialogEdit->close();
 }
 
 void Widget::on_dialogEdit_rejected()
 {
-    //updateUi();
+    m_dialogEdit->close();
 }
 
 void Widget::on_dialogSet_accept()
@@ -336,7 +367,7 @@ void Widget::on_pushButtonExportClass_clicked()
             int ret = QMessageBox::question(
                         this,
                         tr("Header file exist"),
-                        tr("Header file %1 exist, all modify of this will be lose. "
+                        tr("Header file %1 exist, all modify of this file will be lose. "
                            "Are you sure?")
                         .arg(headerFileName),
                         QMessageBox::Yes | QMessageBox::No);
@@ -350,7 +381,7 @@ void Widget::on_pushButtonExportClass_clicked()
             int ret = QMessageBox::question(
                         this,
                         tr("Source file exist"),
-                        tr("Source file %1 exist, all modify of this will be lose. "
+                        tr("Source file %1 exist, all modify of this file will be lose. "
                            "Are you sure?")
                         .arg(sourceFileName),
                         QMessageBox::Yes | QMessageBox::No);
