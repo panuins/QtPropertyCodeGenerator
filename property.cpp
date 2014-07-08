@@ -23,6 +23,7 @@ bool Property::operator==(const Property &p) const
         return true;
     }
     return (m_d->p_name == p.m_d->p_name)
+            && (m_d->p_docBrief == p.m_d->p_docBrief)
             && (m_d->p_docName == p.m_d->p_docName)
             && (m_d->p_docDetail == p.m_d->p_docDetail)
             && (m_d->p_typeStringName == p.m_d->p_typeStringName)
@@ -50,6 +51,7 @@ bool Property::operator!=(const Property &p) const
         return false;
     }
     return !((m_d->p_name == p.m_d->p_name)
+             && (m_d->p_docBrief == p.m_d->p_docBrief)
              && (m_d->p_docName == p.m_d->p_docName)
              && (m_d->p_docDetail == p.m_d->p_docDetail)
              && (m_d->p_typeStringName == p.m_d->p_typeStringName)
@@ -175,54 +177,129 @@ QString Property::typePrefix() const
     return s;
 }
 
-QString Property::doxygenCommentMemberVariable() const
+QString Property::docComment(const QString &className) const
 {
     QString s;
-    if (!docName().isEmpty())
+    s = CODESCHEME_Doxygen_Property;
+    s = replacePercentToSepecialString(s);
+    return s;
+}
+
+QString Property::docCommentBrief() const
+{
+    QString s("");
+    if (!docBrief().isEmpty())
     {
-        s = CODESCHEME_Doxygen_MemberVariable;
-        s = replacePercentToSepecialString(s);
-    }
-    else
-    {
-        s = QString("");
+        s = CODESCHEME_Doxygen_Property_Brief;
     }
     return s;
 }
 
-QString Property::doxygenCommentPreventReentrantMemberVariable() const
+QString Property::docCommentDetail() const
 {
+    QString detail(""),rwOnly("");
+    bool readOnly = (!m_d->p_write) && m_d->p_read && (!m_d->p_member);
+    if (readOnly)
+    {
+        rwOnly = CODESCHEME_DocComment_ReadOnlyProperty;
+    }
+    bool writeOnly = (!m_d->p_read) && m_d->p_write && (!m_d->p_member);
+    if (writeOnly)
+    {
+        rwOnly = CODESCHEME_DocComment_WriteOnlyProperty;
+    }
+
+    if ((!rwOnly.isEmpty()) && (!docDetail().isEmpty()))
+    {
+        detail += QString("%1" CODESCHEME_DocComment_Comma "%2" CODESCHEME_DocComment_Period)
+                .arg(rwOnly).arg(docDetail());
+    }
+    else if ((rwOnly.isEmpty()) && (!docDetail().isEmpty()))
+    {
+        if (docDetail().at(0).isLetter())
+        {
+            detail += QString("%1" CODESCHEME_DocComment_Period)
+                    .arg(replaceFisrtLetterToUpper(docDetail()));
+        }
+        else
+        {
+            detail += QString("%1" CODESCHEME_DocComment_Period).arg(docDetail());
+        }
+    }
+    else if ((!rwOnly.isEmpty()) && (docDetail().isEmpty()))
+    {
+        detail += QString("%1" CODESCHEME_DocComment_Period).arg(rwOnly);
+    }
+    else if ((rwOnly.isEmpty()) && (docDetail().isEmpty()))
+    {
+        detail = QString("");
+    }
+    return detail;
+}
+
+QString Property::docCommentMemberVariable() const
+{
+    if (docName().isEmpty())
+    {
+        return QString("");
+    }
     QString s;
-    if (!docName().isEmpty())
-    {
-        s = CODESCHEME_Doxygen_PreventReentrantMemberVariable;
-        s = replacePercentToSepecialString(s);
-    }
-    else
-    {
-        s = QString("");
-    }
+    s = CODESCHEME_Doxygen_MemberVariable;
+    s = replacePercentToSepecialString(s);
     return s;
 }
 
-QString Property::doxygenCommentReadFunction() const
+QString Property::docCommentPreventReentrantMemberVariable() const
 {
+    if (docName().isEmpty())
+    {
+        return QString("");
+    }
+    QString s;
+    s = CODESCHEME_Doxygen_PreventReentrantMemberVariable;
+    s = replacePercentToSepecialString(s);
+    return s;
+}
+
+QString Property::docCommentReadFunction(const QString &className,
+                                         bool isInline) const
+{
+    if (docName().isEmpty())
+    {
+        return QString("");
+    }
     QString s;
     s = CODESCHEME_Doxygen_ReadFunction;
     s = replacePercentToSepecialString(s);
     return s;
 }
 
-QString Property::doxygenCommentResetFunction() const
+QString Property::docCommentResetFunction(const QString &className,
+                                          bool isInline) const
 {
+    if (docName().isEmpty())
+    {
+        return QString("");
+    }
     QString s;
     s = CODESCHEME_Doxygen_ResetFunction;
     s = replacePercentToSepecialString(s);
     return s;
 }
 
-QString Property::doxygenCommentWriteFunction(bool emitSignal) const
+QString Property::docCommentWriteFunction(
+        const QString &className,
+        const QString &strBeforSetValue,
+        const QString &strBetweenSetValueAndEmit,
+        const QString &strAfterEmit,
+        bool emitSignal,
+        bool isInline,
+        bool preventReentrant) const
 {
+    if (docName().isEmpty())
+    {
+        return QString("");
+    }
     QString s;
     QString customDetail(""), signalDetail("");
     if (!docDetail().isEmpty())
@@ -296,15 +373,8 @@ QString Property::readFunctionDefine(const QString &className,
                                      bool isInline) const
 {
     QString s("");
-    if (!m_d->p_docName.isEmpty())
-    {
-        s += doxygenCommentReadFunction();
-    }
-    if (isInline)
-    {
-        s += "inline ";
-    }
-    s += CODESCHEME_Property_ReadFunctionDefine;
+    s = docCommentReadFunction(className, isInline)
+            + CODESCHEME_Property_ReadFunctionDefine;
     return s;
 }
 
@@ -312,15 +382,8 @@ QString Property::resetFunctionDefine(const QString &className,
                                       bool isInline) const
 {
     QString s("");
-    if (!m_d->p_docName.isEmpty())
-    {
-        s += doxygenCommentResetFunction();
-    }
-    if (isInline)
-    {
-        s += "inline ";
-    }
-    s += CODESCHEME_Property_ResetFunctionDefine;
+    s = docCommentResetFunction(className, isInline)
+            + CODESCHEME_Property_ResetFunctionDefine;
     return s;
 }
 
@@ -338,58 +401,28 @@ QString Property::writeFunctionDefine(const QString &className,
     {
         emitSignalStatement = CODESCHEME_Property_WriteFunction_EmitSignalStatement;
     }
-    if (!m_d->p_docName.isEmpty())
-    {
-        s += doxygenCommentWriteFunction(emitSignal);
-    }
-    if (isInline)
-    {
-        s += "inline ";
-    }
     if (preventReentrant)
     {
-        s += CODESCHEME_Property_WriteFunctionDefine_PreventReentrant;
+        s = docCommentWriteFunction(className,
+                                    strBeforSetValue,
+                                    strBetweenSetValueAndEmit,
+                                    strAfterEmit,
+                                    emitSignal,
+                                    isInline,
+                                    preventReentrant)
+                + CODESCHEME_Property_WriteFunctionDefine_PreventReentrant;
     }
     else
     {
-        s += CODESCHEME_Property_WriteFunctionDefine;
+        s = docCommentWriteFunction(className,
+                                    strBeforSetValue,
+                                    strBetweenSetValueAndEmit,
+                                    strAfterEmit,
+                                    emitSignal,
+                                    isInline,
+                                    preventReentrant)
+                + CODESCHEME_Property_WriteFunctionDefine;
     }
-    return s;
-}
-
-QString Property::doxygenComment(const QString &className) const
-{
-    QString s;
-    QString detail(""),rwOnly("");
-    bool readOnly = (!m_d->p_write) && m_d->p_read && (!m_d->p_member);
-    if (readOnly)
-    {
-        rwOnly = QString(CODESCHEME_DocComment_ReadOnlyProperty);
-    }
-    bool writeOnly = (!m_d->p_read) && m_d->p_write && (!m_d->p_member);
-    if (writeOnly)
-    {
-        rwOnly = QString(CODESCHEME_DocComment_WriteOnlyProperty);
-    }
-    if ((!rwOnly.isEmpty()) && (!docDetail().isEmpty()))
-    {
-        detail += QString("%1" CODESCHEME_DocComment_Comma "%2" CODESCHEME_DocComment_Period)
-                .arg(rwOnly).arg(docDetail());
-    }
-    else if ((rwOnly.isEmpty()) && (!docDetail().isEmpty()))
-    {
-        detail += QString("%1" CODESCHEME_DocComment_Period).arg(docDetail());
-    }
-    else if ((!rwOnly.isEmpty()) && (docDetail().isEmpty()))
-    {
-        detail += QString("%1" CODESCHEME_DocComment_Period).arg(rwOnly);
-    }
-    else if ((rwOnly.isEmpty()) && (docDetail().isEmpty()))
-    {
-        detail = QString("");
-    }
-    s = CODESCHEME_Doxygen_Property;
-    s = replacePercentToSepecialString(s);
     return s;
 }
 

@@ -51,6 +51,7 @@ PropertiesGroupData::PropertiesGroupData(const QString &name) :
 
 PropertiesGroupData::PropertiesGroupData(const PropertiesGroupData &v) :
     m_properties(v.m_properties),
+    p_name(v.p_name),
     p_statementsAfterWriteProperty(v.p_statementsAfterWriteProperty),
     p_statementsMiddleWriteProperty(v.p_statementsMiddleWriteProperty),
     p_statementsStartWriteProperty(v.p_statementsStartWriteProperty),

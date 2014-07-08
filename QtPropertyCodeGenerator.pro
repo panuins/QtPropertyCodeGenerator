@@ -52,7 +52,15 @@ HEADERS  += widget.h \
     propertiesgroupInlineFunctions.h \
     enumtype.h \
     paraments.h \
-    classsettingsInlineFunctions.h
+    classsettingsInlineFunctions.h \
+    paraments_DocComment_Doxygen.h \
+    paraments_NameScheme.h \
+    paraments_CodeFormat.h \
+    codescheme/paraments_CodeFormat.h \
+    codescheme/paraments_DocComment_Doxygen.h \
+    codescheme/paraments_NameScheme.h \
+    paraments.h \
+    codescheme/paraments_Base.h
 
 FORMS    += widget.ui \
     dialogset.ui \

@@ -27,7 +27,7 @@
 #include <QWidget>
 
 namespace Ui {
-class Widget;
+class WidgetMain;
 }
 
 class Widget : public QWidget
@@ -86,6 +86,7 @@ private:
         QTableWidgetItem *type;
         //QTableWidgetItem *typeStringName;
         QTableWidgetItem *docName;
+        QTableWidgetItem *docBrief;
         QTableWidgetItem *docDetail;
         QTableWidgetItem *defaultValue;
         QTableWidgetItem *enabled;
@@ -104,6 +105,7 @@ private:
     };
 
     void loadProperties(const QString &fileName);
+    ClassSettings loadOldIniProperties(const QString &fileName);
     void loadSettings();
     void saveProperties(const QString &fileName);
     void saveSettings();
@@ -116,7 +118,7 @@ private:
     QVector<QSharedPointer<PropertyItem> > m_propertyItems;
     QString m_currentFile;
     QString m_startPath;
-    Ui::Widget *ui;
+    Ui::WidgetMain *ui;
     DialogEdit *m_dialogEdit;
     DialogSet *m_dialogSet;
     int m_groupIndex;

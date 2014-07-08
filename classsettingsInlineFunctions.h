@@ -14,23 +14,30 @@
  *****************************************************************************/
 #ifndef CLASSSETTINGSINLINEFUNCTIONS_H
 #define CLASSSETTINGSINLINEFUNCTIONS_H
-#include <cassert>
+//#include <cassert>
 
 inline PropertiesGroup &ClassSettings::operator[](int i)
 {
-    assert((i >= 0) && (i < m_propertiesGroups.size()));
+    //assert(i >= 0);
+    //assert(i < m_propertiesGroups.size());
     return m_propertiesGroups[i];
 }
 
 inline const PropertiesGroup &ClassSettings::at(int i) const
 {
-    assert((i >= 0) && (i < m_propertiesGroups.size()));
+    //assert(i >= 0);
+    //assert(i < m_propertiesGroups.size());
     return m_propertiesGroups.at(i);
 }
 
 inline QString ClassSettings::className() const
 {
     return p_className;
+}
+
+inline QString ClassSettings::docBrief() const
+{
+    return p_docBrief;
 }
 
 inline QString ClassSettings::docDetail() const
@@ -96,13 +103,18 @@ inline void ClassSettings::clear()
 
 inline void ClassSettings::removeAt(int i)
 {
-    assert((i >= 0) && (i < m_propertiesGroups.size()));
+    //assert((i >= 0) && (i < m_propertiesGroups.size()));
     m_propertiesGroups.removeAt(i);
 }
 
 inline void ClassSettings::setClassName(const QString &var)
 {
     p_className = var;
+}
+
+inline void ClassSettings::setDocBrief(const QString &var)
+{
+    p_docBrief = var;
 }
 
 inline void ClassSettings::setDocDetail(const QString &var)

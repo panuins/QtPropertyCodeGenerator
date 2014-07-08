@@ -36,9 +36,15 @@ ClassSettings::ClassSettings(const QString &name, const QString &inheritsClass) 
 
 ClassSettings::ClassSettings(const ClassSettings &v) :
     m_propertiesGroups(v.m_propertiesGroups),
+    m_enums(v.m_enums),
+    p_typeOrder(v.p_typeOrder),
     p_className(v.p_className),
+    p_docBrief(v.p_docBrief),
+    p_docDetail(v.p_docDetail),
+    p_docName(v.p_docName),
     p_inherits(v.p_inherits),
     p_typeInderitsInfomation(v.p_typeInderitsInfomation),
+    p_generatePreventReentrantCode(v.p_generatePreventReentrantCode),
     p_sortAllProperties(v.p_sortAllProperties)
 {
 }
@@ -50,8 +56,10 @@ ClassSettings::~ClassSettings()
 ClassSettings &ClassSettings::operator=(const ClassSettings &v)
 {
     m_propertiesGroups = v.m_propertiesGroups;
+    m_enums = v.m_enums;
     p_typeOrder = v.p_typeOrder;
     p_className = v.p_className;
+    p_docBrief = v.p_docBrief;
     p_docDetail = v.p_docDetail;
     p_docName = v.p_docName;
     p_inherits = v.p_inherits;
@@ -143,14 +151,14 @@ QString ClassSettings::parentClass() const
     QString strParent("");
     switch (p_typeInderitsInfomation)
     {
-    case 1:
+    case inherits_QObject:
         strParent = "QObject";
         break;
-    case 2:
-    case 4:
+    case inherits_QWidget:
+    case inherits_QWidget_AssociateWithUiFile:
         strParent = "QWidget";
         break;
-    case 3:
+    case inherits_QQuickItem:
         strParent = "QQuickItem";
         break;
     default:

@@ -334,6 +334,11 @@ void DialogEdit::on_lineEditPropertyDefaultValue_textChanged(const QString &arg1
     m_current.setDefaultValue(arg1);
 }
 
+void DialogEdit::on_lineEditPropertyDocBrief_textChanged(const QString &arg1)
+{
+    m_current.setDocBrief(arg1);
+}
+
 void DialogEdit::on_lineEditPropertyDocDetail_textChanged(const QString &arg1)
 {
     m_current.setDocDetail(arg1);
@@ -424,6 +429,7 @@ void DialogEdit::updateUi()
 {
     ui->lineEditPropertyName->setText(m_current.name());
     ui->lineEditPropertyDocName->setText(m_current.docName());
+    ui->lineEditPropertyDocBrief->setText(m_current.docBrief());
     ui->lineEditPropertyDocDetail->setText(m_current.docDetail());
     QString typeId = m_current.type();
     int typeIndex = ui->comboBoxPropertyType->findText(typeId);

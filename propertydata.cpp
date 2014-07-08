@@ -78,6 +78,7 @@ PropertyData::PropertyData(const QString &name,
 
 PropertyData::PropertyData(const PropertyData &p) :
     p_defaultValue(p.p_defaultValue),
+    p_docBrief(p.p_docBrief),
     p_docDetail(p.p_docDetail),
     p_docName(p.p_docName),
     p_name(p.p_name),

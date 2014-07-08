@@ -32,13 +32,16 @@ public:
     explicit DialogSet(QWidget *parent = 0);
     ~DialogSet();
 
-    void editExist(ClassSettings *l);
-    void setClassSettings(ClassSettings *l);
+    ClassSettings classSettings() const;
+    void editExist(const ClassSettings &l);
+    void setClassSettings(const ClassSettings &l);
 
 private slots:
     void on_checkBoxClassGeneratePreventReentrantCode_toggled(bool checked);
+    void on_checkBoxClassSortAllProperties_toggled(bool checked);
     void on_comboBoxClassTypeInformation_currentIndexChanged(int index);
     void on_lineEditClassName_textChanged(const QString &arg1);
+    void on_lineEditClassDocBrief_textChanged(const QString &arg1);
     void on_lineEditClassDocDetail_textChanged(const QString &arg1);
     void on_lineEditClassDocName_textChanged(const QString &arg1);
     void on_lineEditClassInherits_textChanged(const QString &arg1);
@@ -64,15 +67,23 @@ private slots:
 
     void on_plainTextEditTypeOrder_textChanged();
 
+    void on_pushButtonSetSave_clicked();
+    void on_pushButtonSetClose_clicked();
+
 private:
     int propertiesGroupComboboxAt() const;
     void updateUi();
 
-    ClassSettings *m_current;
+    ClassSettings m_current;
     Ui::DialogSet *ui;
 };
 
-inline void DialogSet::setClassSettings(ClassSettings *l)
+inline ClassSettings DialogSet::classSettings() const
+{
+    return m_current;
+}
+
+inline void DialogSet::setClassSettings(const ClassSettings &l)
 {
     m_current = l;
 }

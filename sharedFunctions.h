@@ -52,6 +52,35 @@ inline QString currentDateTimeString()
     return dateTime.toString(CODESCHEME_DateTimeFormat);
 }
 
+inline QString indentCode(const QString &source, int indentCount)
+{
+    QStringList list = source.split(QChar('\n'));
+    QString indented("");
+    foreach (QString code, list)
+    {
+        int i = 0;
+        for (; i < indentCount; i++)
+        {
+            indented += QString(CODESCHEME_Indent);
+        }
+        indented += code;
+        indented += "\n";
+    }
+    return indented;
+}
+
+inline QString inlineNotation(bool b)
+{
+    if (b)
+    {
+        return QString(CODESCHEME_InlineNotation);
+    }
+    else
+    {
+        return QString("");
+    }
+}
+
 inline bool nameIsCIndentifier(const QString &name)
 {
     QRegExp exp(QString("[0-9a-zA-Z_]*"));

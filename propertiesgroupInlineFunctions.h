@@ -14,7 +14,7 @@
  *****************************************************************************/
 #ifndef PROPERTIESGROUPINLINEFUNCTIONS_H
 #define PROPERTIESGROUPINLINEFUNCTIONS_H
-#include <cassert>
+//#include <cassert>
 #ifdef DEBUG_PROPERTIESGROUPS_COW_DETAIL
 #include <iostream>
 #endif
@@ -94,14 +94,16 @@ inline PropertiesGroup &PropertiesGroup::operator=(const PropertiesGroup &p)
 
 inline Property &PropertiesGroup::operator[](int i)
 {
-    assert((i >= 0) && (i < m_d->m_properties.size()));
+    //assert(i >= 0);
+    //assert(i < m_d->m_properties.size());
     beforeWrite();
     return m_d->m_properties[i];
 }
 
 inline const Property &PropertiesGroup::at(int i) const
 {
-    assert((i >= 0) && (i < m_d->m_properties.size()));
+    //assert(i >= 0);
+    //assert(i < m_d->m_properties.size());
     return m_d->m_properties.at(i);
 }
 
@@ -168,13 +170,14 @@ inline void PropertiesGroup::clear()
 
 inline void PropertiesGroup::insert(int vari, const Property &varp)
 {
-    assert((vari >= 0) && (vari < m_d->m_properties.size()));
+    //assert((vari >= 0) && (vari < m_d->m_properties.size()));
     beforeWrite();
     m_d->m_properties.insert(vari, varp);
 }
 
 inline void PropertiesGroup::removeAt(int var)
 {
+    //assert((var >= 0) && (var < m_d->m_properties.size()));
     beforeWrite();
     m_d->m_properties.removeAt(var);
 }

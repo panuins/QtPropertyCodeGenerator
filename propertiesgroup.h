@@ -69,38 +69,6 @@ public:
     void setWriteFunctionIsInline(const bool &var);
     void sort();
 
-    /*QString generateEnumsDeclear() const;
-    QString generateQPropertyDeclear() const;
-    QString generateReadDeclear() const;
-    QString generateWriteDeclear() const;
-    QString generateSignalDeclear() const;
-    QString generateMemberVariableDeclear() const;
-    QString generateDoxygenPropertiesComment() const;
-
-    QString generateReadFunctionDefine() const;
-    QString generateWriteFunctionDefine() const;
-
-    QString argumentNameOfThisClass() const;
-    QString doxygenClassComment() const;
-    QString doxygenFileHeader(const QString &fileName,
-                              const QString &version,
-                              const QString &author,
-                              const QString &brief = QString(""),
-                              const QString &detail = QString("")) const;
-    QString headerFileContent() const;
-    QString headerFileDoxygenHeader() const;
-    QString headerFileIncludeStatements() const;
-    QString headerFileMarco() const;
-    QString headerFileName() const;
-    QString qOjbectBasedParentArgumentName() const;
-    QString sourceFileAssignmentOperator() const;
-    QString sourceFileContent() const;
-    QString sourceFileCopyConstructor() const;
-    QString sourceFileDefaultConstructor() const;
-    QString sourceFileDestructor() const;
-    QString sourceFileDoxygenHeader() const;
-    QString sourceFileName() const;*/
-
 private:
     void beforeWrite();
 

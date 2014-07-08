@@ -33,6 +33,7 @@ Widget::PropertyItem::PropertyItem() :
     type(NULL),
     //typeStringName(NULL),
     docName(NULL),
+    docBrief(NULL),
     docDetail(NULL),
     defaultValue(NULL),
     enabled(NULL),
@@ -56,6 +57,7 @@ Widget::PropertyItem::PropertyItem(const Property &p) :
     type(new QTableWidgetItem(p.realTypeName())),
     //typeStringName(new QTableWidgetItem(p.typeStringName())),
     docName(new QTableWidgetItem(p.docName())),
+    docBrief(new QTableWidgetItem(p.docBrief())),
     docDetail(new QTableWidgetItem(p.docDetail())),
     defaultValue(new QTableWidgetItem(p.defaultValue().toString())),
     enabled(new QTableWidgetItem(boolToStr(p.enabled()))),
@@ -103,7 +105,7 @@ Widget::PropertyItem::~PropertyItem()
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
     m_currentFile(QString("")),
-    ui(new Ui::Widget),
+    ui(new Ui::WidgetMain),
     m_groupIndex(0),
     m_changed(false)
 {
@@ -117,6 +119,7 @@ Widget::Widget(QWidget *parent) :
         {
             Property p("height", QVariant::typeToName(QVariant::Double), "qreal");
             p.setDocName(QString("height"));
+            p.setDocBrief(QString("control's height"));
             p.setDocDetail(QString("will replot"));
             p.setDefaultValue(QString("0.0"));
             g.append(p);
@@ -124,6 +127,7 @@ Widget::Widget(QWidget *parent) :
         {
             Property p("width", QVariant::typeToName(QVariant::Double), "qreal");
             p.setDocName(QString("width"));
+            p.setDocBrief(QString("control's width"));
             p.setDocDetail(QString("will replot"));
             p.setDefaultValue(QString("0.0"));
             g.append(p);
@@ -156,9 +160,9 @@ Widget::Widget(QWidget *parent) :
         g.setReadFunctionIsInline(true);
         g.setWriteFunctionIsInline(false);
         g.setWriteFunctionEmitSignal(true);
-        g.setStatementsStartWriteProperty("        StartWrite;\n");
-        g.setStatementsMiddleWriteProperty("        MiddleWrite;\n");
-        g.setStatementsAfterWriteProperty("        AfterWrite;\n");
+        g.setStatementsStartWriteProperty("StartWrite;");
+        g.setStatementsMiddleWriteProperty("MiddleWrite;");
+        g.setStatementsAfterWriteProperty("AfterWrite;");
         m_classSettings.append(g);
     }
     {
@@ -166,6 +170,7 @@ Widget::Widget(QWidget *parent) :
         {
             Property p("backColor", QVariant::typeToName(QVariant::Color));
             p.setDocName(QString("back color"));
+            p.setDocBrief(QString("control's back color"));
             p.setDocDetail(QString("will replot"));
             p.setDefaultValue(QString("Qt::grey"));
             g.append(p);
@@ -173,6 +178,7 @@ Widget::Widget(QWidget *parent) :
         {
             Property p("bordercolor", QVariant::typeToName(QVariant::Color));
             p.setDocName(QString("border color"));
+            p.setDocBrief(QString("control's border color"));
             p.setDocDetail(QString("will replot"));
             p.setDefaultValue(QString("Qt::black"));
             g.append(p);
@@ -181,9 +187,9 @@ Widget::Widget(QWidget *parent) :
         g.setReadFunctionIsInline(true);
         g.setWriteFunctionIsInline(false);
         g.setWriteFunctionEmitSignal(true);
-        g.setStatementsStartWriteProperty("        StartWrite;\n");
-        g.setStatementsMiddleWriteProperty("        MiddleWrite;\n");
-        g.setStatementsAfterWriteProperty("        AfterWrite;\n");
+        g.setStatementsStartWriteProperty("StartWrite;");
+        g.setStatementsMiddleWriteProperty("MiddleWrite;");
+        g.setStatementsAfterWriteProperty("AfterWrite;");
         m_classSettings.append(g);
     }
     m_classSettings.setClassName("testClass");
@@ -288,12 +294,14 @@ void Widget::on_dialogEdit_rejected()
 
 void Widget::on_dialogSet_accept()
 {
+    m_classSettings = m_dialogSet->classSettings();
+    m_changed = true;
     updateUi();
 }
 
 void Widget::on_dialogSet_rejected()
 {
-    updateUi();
+    //updateUi();
 }
 
 void Widget::on_pushButtonAddProperty_clicked()
@@ -424,7 +432,7 @@ void Widget::on_pushButtonSaveProjectAs_clicked()
 
 void Widget::on_pushButtonSetProject_clicked()
 {
-    m_dialogSet->editExist(&m_classSettings);
+    m_dialogSet->editExist(m_classSettings);
 }
 
 void Widget::on_pushButtonRemoveProperty_clicked()
@@ -450,7 +458,7 @@ void Widget::generateCode()
     QString strHeaderFileContent = m_classSettings.headerFileContent();
     QString strSourceFileContent = m_classSettings.sourceFileContent();
     ui->textBrowserCppDeclares->setText(strHeaderFileContent);
-    ui->textBrowserFunctions->setText(strSourceFileContent);
+    ui->textBrowserCppDefines->setText(strSourceFileContent);
 }
 
 void Widget::updateGroupList()
@@ -499,6 +507,8 @@ void Widget::updatePropertiesTable()
         j++;*/
         ui->tableWidgetProperties->setItem(i, j, item->docName);
         j++;
+        ui->tableWidgetProperties->setItem(i, j, item->docBrief);
+        j++;
         ui->tableWidgetProperties->setItem(i, j, item->docDetail);
         j++;
         ui->tableWidgetProperties->setItem(i, j, item->defaultValue);
@@ -540,33 +550,41 @@ void Widget::updateUi()
 
 void Widget::loadProperties(const QString &fileName)
 {
-    /*QSettings settings(fileName, QSettings::IniFormat);
+    Q_UNUSED(fileName)
+}
+
+ClassSettings Widget::loadOldIniProperties(const QString &fileName)
+{
+    QSettings settings(fileName, QSettings::IniFormat);
     settings.setIniCodec("UTF-8");
-    m_classSettings.setClassName(settings.value("className").toString());
-    m_classSettings.setDocName(settings.value("docName").toString());
-    m_classSettings.setDocDetail(settings.value("docDetail").toString());
-    m_classSettings.setInherits(settings.value("Inherits").toString());
-    m_classSettings.setTypeInderitsInfomation(
-                (PropertiesGroup::TypeInheritsInformation)
+    ClassSettings var;
+    var.setClassName(settings.value("className").toString());
+    var.setDocName(settings.value("docName").toString());
+    var.setDocDetail(settings.value("docDetail").toString());
+    var.setInherits(settings.value("Inherits").toString());
+    var.setTypeInderitsInfomation(
+                (ClassSettings::TypeInheritsInformation)
                 settings.value("TypeInformation").toInt());
-    m_classSettings.setTypeOrder(settings.value("typeOrder").toStringList());
+    var.setTypeOrder(settings.value("typeOrder").toStringList());
+    PropertiesGroup g;
+    g.setName("primary");
     settings.beginGroup("FunctionsPolicy");
-    m_classSettings.setReadFunctionIsInline(
+    g.setReadFunctionIsInline(
                 settings.value("ReadFunctionIsInline").toBool());
-    m_classSettings.setWriteFunctionIsInline(
+    g.setWriteFunctionIsInline(
                 settings.value("WriteFunctionIsInline").toBool());
-    m_classSettings.setWriteFunctionEmitSignal(
+    g.setWriteFunctionEmitSignal(
                 settings.value("WriteFunctionEmitSignal").toBool());
-    m_classSettings.setStatementsStartWriteProperty(
+    g.setStatementsStartWriteProperty(
                 settings.value("WriteFunctionStart").toString());
-    m_classSettings.setStatementsMiddleWriteProperty(
+    g.setStatementsMiddleWriteProperty(
                 settings.value("WriteFunctionMiddle").toString());
-    m_classSettings.setStatementsAfterWriteProperty(
+    g.setStatementsAfterWriteProperty(
                 settings.value("WriteFunctionLast").toString());
     settings.endGroup();
     int size = settings.beginReadArray("properties");
     int i = 0;
-    m_classSettings.clear();
+    var.clear();
     for (; i < size; i++)
     {
         settings.setArrayIndex(i);
@@ -590,11 +608,11 @@ void Widget::loadProperties(const QString &fileName)
         p.setFinal(settings.value("final").toBool());
         p.setEnabled(settings.value("enabled").toBool());
         p.setDefaultValue(settings.value("defaultValue"));
-        m_classSettings.append(p);
+        g.append(p);
     }
+    var.append(g);
     settings.endArray();
-    updateUi();
-    m_changed = false;*/
+    return var;
 }
 
 void Widget::loadSettings()
@@ -607,6 +625,7 @@ void Widget::loadSettings()
 
 void Widget::saveProperties(const QString &fileName)
 {
+    Q_UNUSED(fileName)
     /*QSettings settings(fileName, QSettings::IniFormat);
     settings.setIniCodec("UTF-8");
     settings.setValue("className", m_classSettings.className());

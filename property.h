@@ -35,6 +35,7 @@ public:
     bool constant() const;
     QVariant defaultValue() const;
     bool designable() const;
+    QString docBrief() const;
     QString docDetail() const;
     QString docName() const;
     bool enabled() const;
@@ -59,6 +60,7 @@ public:
     void setConstant(bool b);
     void setDefaultValue(const QVariant &var);
     void setDesignable(bool b);
+    void setDocBrief(const QString &var);
     void setDocDetail(const QString &name);
     void setDocName(const QString &name);
     void setEnabled(bool b);
@@ -85,11 +87,22 @@ public:
     QString memberVariableName() const;
     QString preventReentrantVarName() const;
 
-    QString doxygenCommentMemberVariable() const;
-    QString doxygenCommentPreventReentrantMemberVariable() const;
-    QString doxygenCommentReadFunction() const;
-    QString doxygenCommentResetFunction() const;
-    QString doxygenCommentWriteFunction(bool emitSignal) const;
+    QString docComment(const QString &className) const;
+    QString docCommentBrief() const;
+    QString docCommentDetail() const;
+    QString docCommentMemberVariable() const;
+    QString docCommentPreventReentrantMemberVariable() const;
+    QString docCommentReadFunction(const QString &className = QString(""),
+                                   bool isInline = true) const;
+    QString docCommentResetFunction(const QString &className = QString(""),
+                                    bool isInline = true) const;
+    QString docCommentWriteFunction(const QString &className,
+                                    const QString &strBeforSetValue = QString(""),
+                                    const QString &strBetweenSetValueAndEmit = QString(""),
+                                    const QString &strAfterEmit = QString(""),
+                                    bool emitSignal = true,
+                                    bool isInline = false,
+                                    bool preventReentrant = true) const;
 
     QString qPropertyString() const;
     QString readDeclear() const;
@@ -114,8 +127,6 @@ public:
                                 bool emitSignal = true,
                                 bool isInline = false,
                                 bool preventReentrant = true) const;
-
-    QString doxygenComment(const QString &className) const;
 
 private:
     void beforeWrite();

@@ -45,6 +45,7 @@ public:
     ~PropertyData();
 
     QVariant p_defaultValue;
+    QString p_docBrief;
     QString p_docDetail;
     QString p_docName;
     QString p_name;

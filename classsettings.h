@@ -25,6 +25,7 @@ public:
     enum TypeInheritsInformation
     {
         inherits_None = 0,
+        //inherits_None_COW,
         inherits_QObject,
         inherits_QWidget,
         inherits_QQuickItem,
@@ -78,6 +79,7 @@ public:
     const PropertiesGroup &at(int i) const;
     //const_Iterator begin() const;
     QString className() const;
+    QString docBrief() const;
     QString docDetail() const;
     QString docName() const;
     QString inherits() const;
@@ -101,6 +103,7 @@ public:
     void clear();
     void removeAt(int i);
     void setClassName(const QString &var);
+    void setDocBrief(const QString &var);
     void setDocDetail(const QString &var);
     void setDocName(const QString &var);
     void setGeneratePreventReentrantCode(const bool &var);
@@ -123,7 +126,7 @@ public:
     QString generateWriteDeclear() const;
     QString generateSignalDeclear() const;
     QString generateMemberVariableDeclear() const;
-    QString generateDoxygenPropertiesComment() const;
+    QString generateDocCommentPropertiesComment() const;
 
     QString generateReadFunctionDefine() const;
     QString generateResetFunctionDefine() const;
@@ -133,20 +136,20 @@ public:
     QString generateInlineWriteFunctionDefine() const;
     QString generateInlineFunctionsDefine() const;
 
-    QString doxygenCommentAssignmentOperator() const;
-    QString doxygenCommentClass() const;
-    QString doxygenCommentCopyConstructor() const;
-    QString doxygenCommentDefaultConstructor() const;
-    QString doxygenCommentDestructor() const;
-    QString doxygenFileHeader(const QString &fileName,
-                              const QString &brief = QString(""),
-                              const QString &detail = QString("")) const;
-    QString headerFileDoxygenHeader() const;
-    QString headerFileDoxygenHeaderBrief() const;
-    QString headerFileDoxygenHeaderDetail() const;
-    QString sourceFileDoxygenHeader() const;
-    QString sourceFileDoxygenHeaderBrief() const;
-    QString sourceFileDoxygenHeaderDetail() const;
+    QString docCommentAssignmentOperator() const;
+    QString docCommentClass() const;
+    QString docCommentCopyConstructor() const;
+    QString docCommentDefaultConstructor() const;
+    QString docCommentDestructor() const;
+    QString docCommentFileHeader(const QString &fileName,
+                                 const QString &brief = QString(""),
+                                 const QString &detail = QString("")) const;
+    QString headerFileDocCommentHeader() const;
+    QString headerFileDocCommentHeaderBrief() const;
+    QString headerFileDocCommentHeaderDetail() const;
+    QString sourceFileDocCommentHeader() const;
+    QString sourceFileDocCommentHeaderBrief() const;
+    QString sourceFileDocCommentHeaderDetail() const;
 
     QString argumentNameOfThisClass() const;
     QString classDefine() const;
@@ -171,6 +174,7 @@ private:
     QList<EnumType> m_enums;
     QStringList p_typeOrder;
     QString p_className;
+    QString p_docBrief;
     QString p_docDetail;
     QString p_docName;
     QString p_inherits;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Widget</class>
- <widget class="QWidget" name="Widget">
+ <class>WidgetMain</class>
+ <widget class="QWidget" name="WidgetMain">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -23,7 +23,7 @@
       <enum>Qt::Vertical</enum>
      </property>
      <widget class="QWidget" name="layoutWidget">
-      <layout class="QVBoxLayout" name="verticalLayout">
+      <layout class="QVBoxLayout" name="verticalLayoutProperties">
        <item>
         <widget class="QLabel" name="labelProperties">
          <property name="sizePolicy">
@@ -64,6 +64,11 @@
          <column>
           <property name="text">
            <string>Doc Name</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Doc Brief</string>
           </property>
          </column>
          <column>
@@ -149,8 +154,8 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QWidget" name="layoutWidget">
-       <layout class="QVBoxLayout" name="verticalLayout_2">
+      <widget class="QWidget" name="layoutWidgetCppDeclares">
+       <layout class="QVBoxLayout" name="verticalLayoutCppDeclares">
         <item>
          <widget class="QLabel" name="labelCppDeclares">
           <property name="sizePolicy">
@@ -160,7 +165,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>C++ Declares:</string>
+           <string>C++ Header File:</string>
           </property>
          </widget>
         </item>
@@ -176,10 +181,10 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="layoutWidget">
-       <layout class="QVBoxLayout" name="verticalLayout_3">
+      <widget class="QWidget" name="layoutWidgetCppDefines">
+       <layout class="QVBoxLayout" name="verticalLayoutCppDefines">
         <item>
-         <widget class="QLabel" name="labelFunctions">
+         <widget class="QLabel" name="labelCppDefines">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -187,12 +192,12 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Functions:</string>
+           <string>C++ Source File:</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QTextBrowser" name="textBrowserFunctions">
+         <widget class="QTextBrowser" name="textBrowserCppDefines">
           <property name="undoRedoEnabled">
            <bool>true</bool>
           </property>
@@ -308,7 +313,7 @@
  <tabstops>
   <tabstop>tableWidgetProperties</tabstop>
   <tabstop>textBrowserCppDeclares</tabstop>
-  <tabstop>textBrowserFunctions</tabstop>
+  <tabstop>textBrowserCppDefines</tabstop>
   <tabstop>pushButtonOpenProject</tabstop>
   <tabstop>pushButtonNewProject</tabstop>
   <tabstop>pushButtonSaveProject</tabstop>

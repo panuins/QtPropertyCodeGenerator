@@ -74,6 +74,7 @@ private slots:
     void on_comboBoxPropertyType_currentIndexChanged(const QString &arg1);
     void on_lineEditPropertyDefaultValue_textChanged(const QString &arg1);
     void on_lineEditPropertyDocName_textChanged(const QString &arg1);
+    void on_lineEditPropertyDocBrief_textChanged(const QString &arg1);
     void on_lineEditPropertyDocDetail_textChanged(const QString &arg1);
     void on_lineEditPropertyName_textChanged(const QString &arg1);
     void on_lineEditPropertyTypeStringName_textChanged(const QString &arg1);

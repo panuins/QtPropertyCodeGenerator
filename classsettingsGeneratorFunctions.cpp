@@ -162,11 +162,11 @@ QString ClassSettings::generateMemberVariableDeclear() const
     return memberVars;
 }
 
-QString ClassSettings::generateDoxygenPropertiesComment() const
+QString ClassSettings::generateDocCommentPropertiesComment() const
 {
     //QString docs("");
     CLASSSETTINGS_FOREACH_PROPERTIES(true, true,
-                p.doxygenComment(className()) + "\n");
+                p.docComment(className()) + "\n");
     return codes;
 }
 
@@ -274,7 +274,7 @@ QString ClassSettings::generateInlineFunctionsDefine() const
     return s;
 }
 
-QString ClassSettings::doxygenCommentAssignmentOperator() const
+QString ClassSettings::docCommentAssignmentOperator() const
 {
     QString s;
     s = CODESCHEME_Doxygen_AssignmentOperator;
@@ -282,7 +282,7 @@ QString ClassSettings::doxygenCommentAssignmentOperator() const
     return s;
 }
 
-QString ClassSettings::doxygenCommentClass() const
+QString ClassSettings::docCommentClass() const
 {
     QString s;
     s = CODESCHEME_Doxygen_Class;
@@ -290,7 +290,7 @@ QString ClassSettings::doxygenCommentClass() const
     return s;
 }
 
-QString ClassSettings::doxygenCommentCopyConstructor() const
+QString ClassSettings::docCommentCopyConstructor() const
 {
     QString s;
     s = CODESCHEME_Doxygen_CopyConstructor;
@@ -298,7 +298,7 @@ QString ClassSettings::doxygenCommentCopyConstructor() const
     return s;
 }
 
-QString ClassSettings::doxygenCommentDefaultConstructor() const
+QString ClassSettings::docCommentDefaultConstructor() const
 {
     QString s;
     if (p_typeInderitsInfomation == inherits_None)
@@ -317,7 +317,7 @@ QString ClassSettings::doxygenCommentDefaultConstructor() const
     return s;
 }
 
-QString ClassSettings::doxygenCommentDestructor() const
+QString ClassSettings::docCommentDestructor() const
 {
     QString s;
     if (p_typeInderitsInfomation == inherits_None)
@@ -336,9 +336,9 @@ QString ClassSettings::doxygenCommentDestructor() const
     return s;
 }
 
-QString ClassSettings::doxygenFileHeader(const QString &fileName,
-                                         const QString &brief,
-                                         const QString &detail) const
+QString ClassSettings::docCommentFileHeader(const QString &fileName,
+                                            const QString &brief,
+                                            const QString &detail) const
 {
     QString s;
     s = CODESCHEME_Doxygen_FileHeader;
@@ -346,15 +346,15 @@ QString ClassSettings::doxygenFileHeader(const QString &fileName,
     return s;
 }
 
-QString ClassSettings::headerFileDoxygenHeader() const
+QString ClassSettings::headerFileDocCommentHeader() const
 {
-    QString str = doxygenFileHeader(headerFileName(),
-                                    headerFileDoxygenHeaderBrief(),
-                                    headerFileDoxygenHeaderDetail());
+    QString str = docCommentFileHeader(headerFileName(),
+                                       headerFileDocCommentHeaderBrief(),
+                                       headerFileDocCommentHeaderDetail());
     return str;
 }
 
-QString ClassSettings::headerFileDoxygenHeaderBrief() const
+QString ClassSettings::headerFileDocCommentHeaderBrief() const
 {
     QString s;
     s = CODESCHEME_Doxygen_FileHeader_HeaderBrief;
@@ -362,7 +362,7 @@ QString ClassSettings::headerFileDoxygenHeaderBrief() const
     return s;
 }
 
-QString ClassSettings::headerFileDoxygenHeaderDetail() const
+QString ClassSettings::headerFileDocCommentHeaderDetail() const
 {
     QString s;
     s = CODESCHEME_Doxygen_FileHeader_HeaderDetail;
@@ -370,15 +370,15 @@ QString ClassSettings::headerFileDoxygenHeaderDetail() const
     return s;
 }
 
-QString ClassSettings::sourceFileDoxygenHeader() const
+QString ClassSettings::sourceFileDocCommentHeader() const
 {
-    QString str = doxygenFileHeader(sourceFileName(),
-                                    sourceFileDoxygenHeaderBrief(),
-                                    sourceFileDoxygenHeaderDetail());
+    QString str = docCommentFileHeader(sourceFileName(),
+                                       sourceFileDocCommentHeaderBrief(),
+                                       sourceFileDocCommentHeaderDetail());
     return str;
 }
 
-QString ClassSettings::sourceFileDoxygenHeaderBrief() const
+QString ClassSettings::sourceFileDocCommentHeaderBrief() const
 {
     QString s;
     s = CODESCHEME_Doxygen_FileHeader_SourceBrief;
@@ -386,7 +386,7 @@ QString ClassSettings::sourceFileDoxygenHeaderBrief() const
     return s;
 }
 
-QString ClassSettings::sourceFileDoxygenHeaderDetail() const
+QString ClassSettings::sourceFileDocCommentHeaderDetail() const
 {
     QString s;
     s = CODESCHEME_Doxygen_FileHeader_SourceDetail;
@@ -533,7 +533,8 @@ QString ClassSettings::sourceFileAssignmentOperator() const
                 }
             }
         }
-        define = CODESCHEME_Class_Function_AssignmentOperator;
+        define = docCommentAssignmentOperator()
+                + CODESCHEME_Class_Function_AssignmentOperator;
         return define;
     }
     else
@@ -588,7 +589,8 @@ QString ClassSettings::sourceFileCopyConstructor() const
         {
             memberInit.replace(0, 1, QString(" :"));
         }
-        define = CODESCHEME_Class_Function_CopyConstructor;
+        define = docCommentCopyConstructor()
+                + CODESCHEME_Class_Function_CopyConstructor;
         return define;
     }
     else
@@ -629,15 +631,18 @@ QString ClassSettings::sourceFileDefaultConstructor() const
     }
     if (p_typeInderitsInfomation == inherits_None)
     {
-        define = CODESCHEME_Class_Function_DefaultConstructor_Inherits_None;
+        define = docCommentDefaultConstructor()
+                + CODESCHEME_Class_Function_DefaultConstructor_Inherits_None;
     }
     else if (p_typeInderitsInfomation == inherits_QWidget_AssociateWithUiFile)
     {
-        define = CODESCHEME_Class_Function_DefaultConstructor_Inherits_QObject;
+        define = docCommentDefaultConstructor()
+                + CODESCHEME_Class_Function_DefaultConstructor_Inherits_QObject;
     }
     else
     {
-        define = CODESCHEME_Class_Function_DefaultConstructor_Inherits_QWidget_AssociateWithUiFile;
+        define = docCommentDefaultConstructor()
+                + CODESCHEME_Class_Function_DefaultConstructor_Inherits_QWidget_AssociateWithUiFile;
     }
     return define;
 }
@@ -647,15 +652,18 @@ QString ClassSettings::sourceFileDestructor() const
     QString define;
     if (p_typeInderitsInfomation == inherits_None)
     {
-        define = CODESCHEME_Class_Function_Destructor_Inherits_None;
+        define = docCommentDestructor()
+                + CODESCHEME_Class_Function_Destructor_Inherits_None;
     }
     else if (p_typeInderitsInfomation == inherits_QWidget_AssociateWithUiFile)
     {
-        define = CODESCHEME_Class_Function_Destructor_Inherits_QWidget_AssociateWithUiFile;
+        define = docCommentDestructor()
+                + CODESCHEME_Class_Function_Destructor_Inherits_QWidget_AssociateWithUiFile;
     }
     else
     {
-        define = CODESCHEME_Class_Function_Destructor_Inherits_QObject;
+        define = docCommentDestructor()
+                + CODESCHEME_Class_Function_Destructor_Inherits_QObject;
     }
     return define;
 }

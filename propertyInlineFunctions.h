@@ -110,6 +110,11 @@ inline bool Property::designable() const
     return m_d->p_designable;
 }
 
+inline QString Property::docBrief() const
+{
+    return m_d->p_docBrief;
+}
+
 inline QString Property::docDetail() const
 {
     return m_d->p_docDetail;
@@ -194,7 +199,7 @@ inline bool Property::stored() const
     return m_d->p_stored;
 }
 
-inline const QString & Property::type() const
+inline const QString &Property::type() const
 {
     return m_d->p_type;
 }
@@ -228,7 +233,14 @@ inline void Property::setDesignable(bool b)
 
 inline void Property::setDefaultValue(const QVariant &var)
 {
+    beforeWrite();
     m_d->p_defaultValue = var;
+}
+
+inline void Property::setDocBrief(const QString &var)
+{
+    beforeWrite();
+    m_d->p_docBrief = var;
 }
 
 inline void Property::setDocDetail(const QString &name)
