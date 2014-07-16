@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>575</width>
-    <height>492</height>
+    <width>616</width>
+    <height>636</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -495,63 +495,125 @@
         </layout>
        </item>
        <item>
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="0" column="0">
-          <widget class="QLabel" name="labelPropertiesGroupWriteFunctionStart">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
+        <widget class="QGroupBox" name="groupBoxPropertiesGroupFunctionsAdditionalStatements">
+         <property name="title">
+          <string>Functions' additional statements</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="labelPropertiesGroupReadFunction">
+            <property name="text">
+             <string>Read Function:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="labelPropertiesGroupResetFunctionStart">
+            <property name="text">
+             <string>Reset function start:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="labelPropertiesGroupResetFunctionLast">
+            <property name="text">
+             <string>Reset function last:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPlainTextEdit" name="plainTextEditPropertiesGroupReadFunction"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QPlainTextEdit" name="plainTextEditPropertiesGroupResetFunctionLast"/>
+          </item>
+          <item row="1" column="2">
+           <widget class="QPlainTextEdit" name="plainTextEditPropertiesGroupResetFunctionStart"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="labelPropertiesGroupWriteFunctionStart">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Write function start:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLabel" name="labelPropertiesGroupWriteFunctionMiddle">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Write function middle:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QLabel" name="labelPropertiesGroupWriteFunctionLast">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Write function last:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QPlainTextEdit" name="plainTextEditPropertiesGroupWriteFunctionStart"/>
+          </item>
+          <item row="3" column="1">
+           <widget class="QPlainTextEdit" name="plainTextEditPropertiesGroupWriteFunctionMiddle"/>
+          </item>
+          <item row="3" column="2">
+           <widget class="QPlainTextEdit" name="plainTextEditPropertiesGroupWriteFunctionLast"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_12">
+         <item>
+          <widget class="QCheckBox" name="checkBoxxPropertiesGroupEnabled">
            <property name="text">
-            <string>Write function start:</string>
+            <string>Enabled</string>
            </property>
-           <property name="alignment">
-            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+           <property name="checked">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="labelPropertiesGroupWriteFunctionMiddle">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+         <item>
+          <spacer name="horizontalSpacer_14">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
            </property>
-           <property name="text">
-            <string>Write function middle:</string>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
            </property>
-           <property name="alignment">
-            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="labelPropertiesGroupWriteFunctionLast">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Write function last:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QPlainTextEdit" name="plainTextEditPropertiesGroupWriteFunctionStart"/>
-         </item>
-         <item row="1" column="1">
-          <widget class="QPlainTextEdit" name="plainTextEditPropertiesGroupWriteFunctionMiddle"/>
-         </item>
-         <item row="2" column="1">
-          <widget class="QPlainTextEdit" name="plainTextEditPropertiesGroupWriteFunctionLast"/>
+          </spacer>
          </item>
         </layout>
        </item>

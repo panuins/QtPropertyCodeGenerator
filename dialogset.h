@@ -49,6 +49,7 @@ private slots:
     /*void on_checkBoxPropertiesGroupConstant_toggled(bool checked);
     void on_checkBoxPropertiesGroupDesignable_toggled(bool checked);
     void on_checkBoxPropertiesGroupFinal_toggled(bool checked);*/
+    void on_checkBoxxPropertiesGroupEnabled_toggled(bool checked);
     void on_checkBoxPropertiesGroupReadFunctionIsInline_toggled(bool checked);
     /*void on_checkBoxPropertiesGroupScriptable_toggled(bool checked);
     void on_checkBoxPropertiesGroupStored_toggled(bool checked);
@@ -57,6 +58,9 @@ private slots:
     void on_checkBoxPropertiesGroupWriteFunctionEmitSignal_toggled(bool checked);
     void on_comboBoxPropertiesGroups_currentIndexChanged(const QString &arg1);
     void on_lineEditPropertiesGroupName_textChanged(const QString &arg1);
+    void on_plainTextEditPropertiesGroupReadFunction_textChanged();
+    void on_plainTextEditPropertiesGroupResetFunctionLast_textChanged();
+    void on_plainTextEditPropertiesGroupResetFunctionStart_textChanged();
     void on_plainTextEditPropertiesGroupWriteFunctionStart_textChanged();
     void on_plainTextEditPropertiesGroupWriteFunctionMiddle_textChanged();
     void on_plainTextEditPropertiesGroupWriteFunctionLast_textChanged();

@@ -32,6 +32,13 @@ public:
         inherits_QWidget_AssociateWithUiFile,
     };
 
+    enum DocCommentPolicy
+    {
+        use_Doxygen = 0,
+        use_Qdoc,
+        use_Custom
+    };
+
     /*class const_Iterator
     {
     public:
@@ -95,7 +102,7 @@ public:
     QStringList propertiesName() const;
     int size() const;
     bool sortAllProperties() const;
-    TypeInheritsInformation typeInderitsInfomation() const;
+    TypeInheritsInformation typeInheritsInfomation() const;
     QStringList typeOrder() const;
 
     void append(const PropertiesGroup &var);
@@ -110,7 +117,7 @@ public:
     void setInherits(const QString &var);
     void setPropertiesGroups(const QList<PropertiesGroup> &var);
     void setSortAllProperties(bool var);
-    void setTypeInderitsInfomation(const TypeInheritsInformation &var);
+    void setTypeInheritsInfomation(const TypeInheritsInformation &var);
     void setTypeOrder(const QStringList &var);
     void sort();
     void updateTypeOrder();
@@ -178,7 +185,8 @@ private:
     QString p_docDetail;
     QString p_docName;
     QString p_inherits;
-    TypeInheritsInformation p_typeInderitsInfomation;
+    DocCommentPolicy p_docCommentPolicy;
+    TypeInheritsInformation p_typeInheritsInfomation;
     bool p_generatePreventReentrantCode;
     bool p_sortAllProperties;
 };

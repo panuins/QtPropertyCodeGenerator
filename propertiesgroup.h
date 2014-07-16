@@ -46,9 +46,12 @@ public:
     bool readFunctionIsInline() const;
     bool resetFunctionIsInline() const;
     int size() const;
+    QString statementsAfterResetProperty() const;
     QString statementsAfterWriteProperty() const;
+    QString statementsBeforeResetProperty() const;
+    QString statementsBeforeWriteProperty() const;
+    QString statementsInReadProperty() const;
     QString statementsMiddleWriteProperty() const;
-    QString statementsStartWriteProperty() const;
     bool writeFunctionEmitSignal() const;
     bool writeFunctionIsInline() const;
 
@@ -62,9 +65,12 @@ public:
     void setProperties(const QList<Property> &var);
     void setReadFunctionIsInline(const bool &var);
     void setResetFunctionIsInline(const bool &var);
+    void setStatementsAfterResetProperty(const QString &var);
     void setStatementsAfterWriteProperty(const QString &var);
+    void setStatementsBeforeResetProperty(const QString &var);
+    void setStatementsBeforeWriteProperty(const QString &var);
+    void setStatementsInReadProperty(const QString &var);
     void setStatementsMiddleWriteProperty(const QString &var);
-    void setStatementsStartWriteProperty(const QString &var);
     void setWriteFunctionEmitSignal(const bool &var);
     void setWriteFunctionIsInline(const bool &var);
     void sort();

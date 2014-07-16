@@ -137,19 +137,34 @@ inline int PropertiesGroup::size() const
     return m_d->m_properties.size();
 }
 
+inline QString PropertiesGroup::statementsAfterResetProperty() const
+{
+    return m_d->p_statementsAfterResetProperty;
+}
+
 inline QString PropertiesGroup::statementsAfterWriteProperty() const
 {
     return m_d->p_statementsAfterWriteProperty;
 }
 
+inline QString PropertiesGroup::statementsBeforeResetProperty() const
+{
+    return m_d->p_statementsBeforeResetProperty;
+}
+
+inline QString PropertiesGroup::statementsBeforeWriteProperty() const
+{
+    return m_d->p_statementsBeforeWriteProperty;
+}
+
+inline QString PropertiesGroup::statementsInReadProperty() const
+{
+    return m_d->p_statementsInReadProperty;
+}
+
 inline QString PropertiesGroup::statementsMiddleWriteProperty() const
 {
     return m_d->p_statementsMiddleWriteProperty;
-}
-
-inline QString PropertiesGroup::statementsStartWriteProperty() const
-{
-    return m_d->p_statementsStartWriteProperty;
 }
 
 inline bool PropertiesGroup::writeFunctionEmitSignal() const
@@ -212,22 +227,40 @@ inline void PropertiesGroup::setResetFunctionIsInline(const bool &var)
     m_d->p_resetFunctionIsInline = var;
 }
 
+inline void PropertiesGroup::setStatementsAfterResetProperty(const QString &var)
+{
+    beforeWrite();
+    m_d->p_statementsAfterResetProperty = var;
+}
+
 inline void PropertiesGroup::setStatementsAfterWriteProperty(const QString &var)
 {
     beforeWrite();
     m_d->p_statementsAfterWriteProperty = var;
 }
 
+inline void PropertiesGroup::setStatementsBeforeResetProperty(const QString &var)
+{
+    beforeWrite();
+    m_d->p_statementsBeforeResetProperty = var;
+}
+
+inline void PropertiesGroup::setStatementsBeforeWriteProperty(const QString &var)
+{
+    beforeWrite();
+    m_d->p_statementsBeforeWriteProperty = var;
+}
+
+inline void PropertiesGroup::setStatementsInReadProperty(const QString &var)
+{
+    beforeWrite();
+    m_d->p_statementsInReadProperty = var;
+}
+
 inline void PropertiesGroup::setStatementsMiddleWriteProperty(const QString &var)
 {
     beforeWrite();
     m_d->p_statementsMiddleWriteProperty = var;
-}
-
-inline void PropertiesGroup::setStatementsStartWriteProperty(const QString &var)
-{
-    beforeWrite();
-    m_d->p_statementsStartWriteProperty = var;
 }
 
 inline void PropertiesGroup::setWriteFunctionEmitSignal(const bool &var)

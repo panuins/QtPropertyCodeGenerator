@@ -30,24 +30,30 @@
 #define CODESCHEME_Property_ReadFunctionDefine \
     QString("%1%2 %3::%4() const\n" \
             "{\n" \
-            CODESCHEME_Indent "return %5;\n" \
+            "%5" \
+            CODESCHEME_Indent "return %6;\n" \
             "}\n") \
         .arg(inlineNotation(isInline)) \
         .arg(realTypeName()) \
         .arg(className) \
         .arg(readFunctionName()) \
+        .arg(indentCode(strStatements, 1)) \
         .arg(memberVariableName())
 
 #define CODESCHEME_Property_ResetFunctionDefine \
     QString("%1void %2::%3()\n" \
             "{\n" \
-            CODESCHEME_Indent "%4(%5);\n" \
+            "%4" \
+            CODESCHEME_Indent "%5(%6);\n" \
+            "%7" \
             "}\n") \
         .arg(inlineNotation(isInline)) \
         .arg(className) \
         .arg(resetFunctionName()) \
+        .arg(indentCode(strBeforeReset, 1)) \
         .arg(writeFunctionName()) \
-        .arg(defaultValue().toString())
+        .arg(defaultValue().toString()) \
+        .arg(indentCode(strAfterReset, 1))
 
 #define CODESCHEME_Property_WriteFunction_EmitSignalStatement \
     QString("emit %1();").arg(signalName())
@@ -66,7 +72,7 @@
         .arg(writeFunctionName()) \
         .arg(realTypeName()) \
         .arg(writeFunctionArgumentName()) \
-        .arg(indentCode(strBeforSetValue, 1)) \
+        .arg(indentCode(strBeforeSetValue, 1)) \
         .arg(memberVariableName()) \
         .arg(writeFunctionArgumentName()) \
         .arg(indentCode(strBetweenSetValueAndEmit, 1)) \
@@ -93,7 +99,7 @@
         .arg(writeFunctionName()) \
         .arg(realTypeName()) \
         .arg(writeFunctionArgumentName()) \
-        .arg(indentCode(strBeforSetValue, 2)) \
+        .arg(indentCode(strBeforeSetValue, 2)) \
         .arg(memberVariableName()) \
         .arg(writeFunctionArgumentName()) \
         .arg(indentCode(strBetweenSetValueAndEmit, 2)) \

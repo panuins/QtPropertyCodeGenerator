@@ -17,7 +17,7 @@
 ClassSettings::ClassSettings() :
     p_className(),
     p_inherits(),
-    p_typeInderitsInfomation(inherits_None),
+    p_typeInheritsInfomation(inherits_None),
     p_generatePreventReentrantCode(true),
     p_sortAllProperties(true)
 {
@@ -27,7 +27,7 @@ ClassSettings::ClassSettings() :
 ClassSettings::ClassSettings(const QString &name, const QString &inheritsClass) :
     p_className(name),
     p_inherits(inheritsClass),
-    p_typeInderitsInfomation(inherits_None),
+    p_typeInheritsInfomation(inherits_None),
     p_generatePreventReentrantCode(true),
     p_sortAllProperties(true)
 {
@@ -43,7 +43,7 @@ ClassSettings::ClassSettings(const ClassSettings &v) :
     p_docDetail(v.p_docDetail),
     p_docName(v.p_docName),
     p_inherits(v.p_inherits),
-    p_typeInderitsInfomation(v.p_typeInderitsInfomation),
+    p_typeInheritsInfomation(v.p_typeInheritsInfomation),
     p_generatePreventReentrantCode(v.p_generatePreventReentrantCode),
     p_sortAllProperties(v.p_sortAllProperties)
 {
@@ -63,7 +63,7 @@ ClassSettings &ClassSettings::operator=(const ClassSettings &v)
     p_docDetail = v.p_docDetail;
     p_docName = v.p_docName;
     p_inherits = v.p_inherits;
-    p_typeInderitsInfomation = v.p_typeInderitsInfomation;
+    p_typeInheritsInfomation = v.p_typeInheritsInfomation;
     p_generatePreventReentrantCode = v.p_generatePreventReentrantCode;
     p_sortAllProperties = v.p_sortAllProperties;
     return *this;
@@ -143,13 +143,13 @@ Property ClassSettings::findProperty(const QString &name) const
             }
         }
     }
-    return Property::invalid();
+    return Property();
 }
 
 QString ClassSettings::parentClass() const
 {
     QString strParent("");
-    switch (p_typeInderitsInfomation)
+    switch (typeInheritsInfomation())
     {
     case inherits_QObject:
         strParent = "QObject";

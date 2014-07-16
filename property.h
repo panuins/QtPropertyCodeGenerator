@@ -114,18 +114,19 @@ public:
     QString initialToSpecifyValueStatement(const QString &str) const;*/
 
     QString readFunctionDefine(const QString &className,
+                               const QString &strStatements,
                                bool isInline = true) const;
     QString resetFunctionDefine(const QString &className,
+                                const QString &strBeforeReset = QString(""),
+                                const QString &strAfterReset = QString(""),
                                 bool isInline = true) const;
     QString writeFunctionDefine(const QString &className,
-                                const QString &strBeforSetValue = QString(""),
+                                const QString &strBeforeSetValue = QString(""),
                                 const QString &strBetweenSetValueAndEmit = QString(""),
                                 const QString &strAfterEmit = QString(""),
                                 bool emitSignal = true,
                                 bool isInline = false,
                                 bool preventReentrant = true) const;
-
-    static Property invalid();
 
 private:
     void beforeWrite();

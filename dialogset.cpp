@@ -56,7 +56,7 @@ void DialogSet::on_checkBoxClassSortAllProperties_toggled(bool checked)
 
 void DialogSet::on_comboBoxClassTypeInformation_currentIndexChanged(int index)
 {
-    m_current.setTypeInderitsInfomation(
+    m_current.setTypeInheritsInfomation(
                 (ClassSettings::TypeInheritsInformation)index);
 }
 
@@ -100,6 +100,11 @@ void DialogSet::on_checkBoxPropertiesGroupFinal_toggled(bool checked)
     m_current[propertiesGroupComboboxAt()].setFinal(checked);
 }*/
 
+void DialogSet::on_checkBoxxPropertiesGroupEnabled_toggled(bool checked)
+{
+    m_current[propertiesGroupComboboxAt()].setEnabled(checked);
+}
+
 void DialogSet::on_checkBoxPropertiesGroupReadFunctionIsInline_toggled(bool checked)
 {
     m_current[propertiesGroupComboboxAt()].setReadFunctionIsInline(checked);
@@ -130,9 +135,27 @@ void DialogSet::on_checkBoxPropertiesGroupWriteFunctionEmitSignal_toggled(bool c
     m_current[propertiesGroupComboboxAt()].setWriteFunctionEmitSignal(checked);
 }
 
+void DialogSet::on_plainTextEditPropertiesGroupReadFunction_textChanged()
+{
+    m_current[propertiesGroupComboboxAt()].setStatementsInReadProperty(
+                ui->plainTextEditPropertiesGroupReadFunction->toPlainText());
+}
+
+void DialogSet::on_plainTextEditPropertiesGroupResetFunctionLast_textChanged()
+{
+    m_current[propertiesGroupComboboxAt()].setStatementsAfterResetProperty(
+                ui->plainTextEditPropertiesGroupResetFunctionLast->toPlainText());
+}
+
+void DialogSet::on_plainTextEditPropertiesGroupResetFunctionStart_textChanged()
+{
+    m_current[propertiesGroupComboboxAt()].setStatementsBeforeResetProperty(
+                ui->plainTextEditPropertiesGroupResetFunctionStart->toPlainText());
+}
+
 void DialogSet::on_plainTextEditPropertiesGroupWriteFunctionStart_textChanged()
 {
-    m_current[propertiesGroupComboboxAt()].setStatementsStartWriteProperty(
+    m_current[propertiesGroupComboboxAt()].setStatementsBeforeWriteProperty(
                 ui->plainTextEditPropertiesGroupWriteFunctionStart->toPlainText());
 }
 
@@ -242,6 +265,8 @@ void DialogSet::on_comboBoxPropertiesGroups_currentIndexChanged(const QString &a
                 m_current.at(index).writeFunctionIsInline());
     ui->checkBoxPropertiesGroupWriteFunctionEmitSignal->setChecked(
                 m_current.at(index).writeFunctionEmitSignal());
+    ui->checkBoxxPropertiesGroupEnabled->setChecked(
+                m_current.at(index).enabled());
     /*ui->spinBoxPropertiesGroupRevision->setValue(
                 m_current.at(index).revision());
     ui->checkBoxPropertiesGroupDesignable->setChecked(
@@ -256,8 +281,14 @@ void DialogSet::on_comboBoxPropertiesGroups_currentIndexChanged(const QString &a
                 m_current.at(index).constant());
     ui->checkBoxPropertiesGroupFinal->setChecked(
                 m_current.at(index).final());*/
+    ui->plainTextEditPropertiesGroupReadFunction->setPlainText(
+                m_current.at(index).statementsInReadProperty());
+    ui->plainTextEditPropertiesGroupResetFunctionStart->setPlainText(
+                m_current.at(index).statementsBeforeResetProperty());
+    ui->plainTextEditPropertiesGroupResetFunctionLast->setPlainText(
+                m_current.at(index).statementsAfterResetProperty());
     ui->plainTextEditPropertiesGroupWriteFunctionStart->setPlainText(
-                m_current.at(index).statementsStartWriteProperty());
+                m_current.at(index).statementsBeforeWriteProperty());
     ui->plainTextEditPropertiesGroupWriteFunctionMiddle->setPlainText(
                 m_current.at(index).statementsMiddleWriteProperty());
     ui->plainTextEditPropertiesGroupWriteFunctionLast->setPlainText(
@@ -290,7 +321,7 @@ void DialogSet::updateUi()
     ui->lineEditClassDocDetail->setText(m_current.docDetail());
     ui->lineEditClassInherits->setText(m_current.inherits());
     ui->comboBoxClassTypeInformation->setCurrentIndex(
-                (int)(m_current.typeInderitsInfomation()));
+                (int)(m_current.typeInheritsInfomation()));
     ui->checkBoxClassGeneratePreventReentrantCode->setChecked(
                 m_current.generatePreventReentrantCode());
     ui->checkBoxClassSortAllProperties->setChecked(

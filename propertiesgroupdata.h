@@ -39,9 +39,12 @@ public:
 
     QList<Property> m_properties;
     QString p_name;
+    QString p_statementsInReadProperty;
+    QString p_statementsAfterResetProperty;
+    QString p_statementsBeforeResetProperty;
     QString p_statementsAfterWriteProperty;
+    QString p_statementsBeforeWriteProperty;
     QString p_statementsMiddleWriteProperty;
-    QString p_statementsStartWriteProperty;
     int m_used;
 #ifdef DEBUG_PROPERTIESGROUPS_COW
     int m_id;

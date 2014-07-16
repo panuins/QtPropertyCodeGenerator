@@ -174,16 +174,25 @@ QString ClassSettings::generateReadFunctionDefine() const
 {
     //QString readFunctions("");
     CLASSSETTINGS_FOREACH_PROPERTIES(
-                !g.readFunctionIsInline(), p.read(),
-                p.readFunctionDefine(className(), false) + "\n");
+                !g.readFunctionIsInline(),
+                p.read(),
+                p.readFunctionDefine(className(),
+                                     g.statementsInReadProperty(),
+                                     false)
+                + "\n");
     return codes;
 }
 
 QString ClassSettings::generateResetFunctionDefine() const
 {
     CLASSSETTINGS_FOREACH_PROPERTIES(
-                !g.resetFunctionIsInline(), p.resetIsValid(),
-                p.resetFunctionDefine(className(), false) + "\n");
+                !g.resetFunctionIsInline(),
+                p.resetIsValid(),
+                p.resetFunctionDefine(className(),
+                                      g.statementsAfterResetProperty(),
+                                      g.statementsBeforeResetProperty(),
+                                      false)
+                + "\n");
     return codes;
 }
 
@@ -193,13 +202,13 @@ QString ClassSettings::generateWriteFunctionDefine() const
     auto f = [this](const Property &p, const PropertiesGroup &g)
     {
         bool emitSignal = g.writeFunctionEmitSignal()
-                && ((p_typeInderitsInfomation == inherits_QObject)
-                    || (p_typeInderitsInfomation == inherits_QWidget)
-                    || (p_typeInderitsInfomation == inherits_QQuickItem)
-                    || (p_typeInderitsInfomation == inherits_QWidget_AssociateWithUiFile));
+                && ((typeInheritsInfomation() == inherits_QObject)
+                    || (typeInheritsInfomation() == inherits_QWidget)
+                    || (typeInheritsInfomation() == inherits_QQuickItem)
+                    || (typeInheritsInfomation() == inherits_QWidget_AssociateWithUiFile));
         return p.writeFunctionDefine(
                     className(),
-                    g.statementsStartWriteProperty(),
+                    g.statementsBeforeWriteProperty(),
                     g.statementsMiddleWriteProperty(),
                     g.statementsAfterWriteProperty(),
                     emitSignal,
@@ -207,9 +216,7 @@ QString ClassSettings::generateWriteFunctionDefine() const
                     generatePreventReentrantCode())
                 + "\n";
     };
-    CLASSSETTINGS_FOREACH_PROPERTIES(
-                !g.writeFunctionIsInline(), p.needWrite(),
-                f(p, g));
+    CLASSSETTINGS_FOREACH_PROPERTIES(!g.writeFunctionIsInline(), p.needWrite(), f(p, g));
     return codes;
 }
 
@@ -217,8 +224,12 @@ QString ClassSettings::generateInlineReadFunctionDefine() const
 {
     //QString readFunctions("");
     CLASSSETTINGS_FOREACH_PROPERTIES(
-                g.readFunctionIsInline(), p.read(),
-                p.readFunctionDefine(className(), true) + "\n");
+                g.readFunctionIsInline(),
+                p.read(),
+                p.readFunctionDefine(className(),
+                                     g.statementsInReadProperty(),
+                                     false)
+                + "\n");
     return codes;
 }
 
@@ -226,8 +237,13 @@ QString ClassSettings::generateInlineResetFunctionDefine() const
 {
     //QString readFunctions("");
     CLASSSETTINGS_FOREACH_PROPERTIES(
-                g.resetFunctionIsInline(), p.resetIsValid(),
-                p.resetFunctionDefine(className(), true) + "\n");
+                !g.resetFunctionIsInline(),
+                p.resetIsValid(),
+                p.resetFunctionDefine(className(),
+                                      g.statementsAfterResetProperty(),
+                                      g.statementsBeforeResetProperty(),
+                                      false)
+                + "\n");
     return codes;
 }
 
@@ -237,13 +253,13 @@ QString ClassSettings::generateInlineWriteFunctionDefine() const
     auto f = [this](const Property &p, const PropertiesGroup &g)
     {
         bool emitSignal = g.writeFunctionEmitSignal()
-                && ((p_typeInderitsInfomation == inherits_QObject)
-                    || (p_typeInderitsInfomation == inherits_QWidget)
-                    || (p_typeInderitsInfomation == inherits_QQuickItem)
-                    || (p_typeInderitsInfomation == inherits_QWidget_AssociateWithUiFile));
+                && ((typeInheritsInfomation() == inherits_QObject)
+                    || (typeInheritsInfomation() == inherits_QWidget)
+                    || (typeInheritsInfomation() == inherits_QQuickItem)
+                    || (typeInheritsInfomation() == inherits_QWidget_AssociateWithUiFile));
         return p.writeFunctionDefine(
                     className(),
-                    g.statementsStartWriteProperty(),
+                    g.statementsBeforeWriteProperty(),
                     g.statementsMiddleWriteProperty(),
                     g.statementsAfterWriteProperty(),
                     emitSignal,
@@ -301,11 +317,11 @@ QString ClassSettings::docCommentCopyConstructor() const
 QString ClassSettings::docCommentDefaultConstructor() const
 {
     QString s;
-    if (p_typeInderitsInfomation == inherits_None)
+    if (typeInheritsInfomation() == inherits_None)
     {
         s = CODESCHEME_Doxygen_DefaultConstructor_Inherits_None;
     }
-    else if (p_typeInderitsInfomation == inherits_QWidget_AssociateWithUiFile)
+    else if (typeInheritsInfomation() == inherits_QWidget_AssociateWithUiFile)
     {
         s = CODESCHEME_Doxygen_DefaultConstructor_Inherits_QWidget_AssociateWithUiFile;
     }
@@ -320,11 +336,11 @@ QString ClassSettings::docCommentDefaultConstructor() const
 QString ClassSettings::docCommentDestructor() const
 {
     QString s;
-    if (p_typeInderitsInfomation == inherits_None)
+    if (typeInheritsInfomation() == inherits_None)
     {
         s = CODESCHEME_Doxygen_Destructor_Inherits_None;
     }
-    else if (p_typeInderitsInfomation == inherits_QWidget_AssociateWithUiFile)
+    else if (typeInheritsInfomation() == inherits_QWidget_AssociateWithUiFile)
     {
         s = CODESCHEME_Doxygen_Destructor_Inherits_QWidget_AssociateWithUiFile;
     }
@@ -403,9 +419,9 @@ QString ClassSettings::argumentNameOfThisClass() const
 
 QString ClassSettings::classDefine() const
 {
-    if (p_typeInderitsInfomation == inherits_None)
+    if (typeInheritsInfomation() == inherits_None)
     {
-        if (p_inherits.isEmpty())
+        if (inherits().isEmpty())
         {
             QString s;
             s = CODESCHEME_Class_Define_Inherits_None;
@@ -418,7 +434,7 @@ QString ClassSettings::classDefine() const
             return s;
         }
     }
-    else if (p_typeInderitsInfomation == inherits_QWidget_AssociateWithUiFile)
+    else if (typeInheritsInfomation() == inherits_QWidget_AssociateWithUiFile)
     {
         QString s;
         s = CODESCHEME_Class_Define_Inherits_QWidget_AssociateWithUiFile;
@@ -519,7 +535,7 @@ QString ClassSettings::headerFileName() const
 QString ClassSettings::sourceFileAssignmentOperator() const
 {
     QString define;
-    if (p_typeInderitsInfomation == inherits_None)
+    if (typeInheritsInfomation() == inherits_None)
     {
         QString memberInit("");
         foreach (QString s, p_typeOrder)
@@ -546,11 +562,11 @@ QString ClassSettings::sourceFileAssignmentOperator() const
 QString ClassSettings::sourceFileContent() const
 {
     QString c("");
-    if (p_typeInderitsInfomation == inherits_None)
+    if (typeInheritsInfomation() == inherits_None)
     {
         c = CODESCHEME_File_SourceFileContent_Inherits_None;
     }
-    else if (p_typeInderitsInfomation == inherits_QWidget_AssociateWithUiFile)
+    else if (typeInheritsInfomation() == inherits_QWidget_AssociateWithUiFile)
     {
         c = CODESCHEME_File_SourceFileContent_Inherits_QWidget_AssociateWithUiFile;
     }
@@ -565,7 +581,7 @@ QString ClassSettings::sourceFileContent() const
 QString ClassSettings::sourceFileCopyConstructor() const
 {
     QString define;
-    if (p_typeInderitsInfomation == inherits_None)
+    if (typeInheritsInfomation() == inherits_None)
     {
         QString memberInit("");
         foreach (QString s, p_typeOrder)
@@ -622,19 +638,19 @@ QString ClassSettings::sourceFileDefaultConstructor() const
                     CODESCHEME_Class_Function_DefaultConstructor_PreventReentrantMemberInitStatements);
         memberInit.append(codes);
     }
-    if (p_typeInderitsInfomation == inherits_None)
+    if (typeInheritsInfomation() == inherits_None)
     {
         if (memberInit.startsWith(QString(",")))
         {
             memberInit.replace(0, 1, QString(" :"));
         }
     }
-    if (p_typeInderitsInfomation == inherits_None)
+    if (typeInheritsInfomation() == inherits_None)
     {
         define = docCommentDefaultConstructor()
                 + CODESCHEME_Class_Function_DefaultConstructor_Inherits_None;
     }
-    else if (p_typeInderitsInfomation == inherits_QWidget_AssociateWithUiFile)
+    else if (typeInheritsInfomation() == inherits_QWidget_AssociateWithUiFile)
     {
         define = docCommentDefaultConstructor()
                 + CODESCHEME_Class_Function_DefaultConstructor_Inherits_QObject;
@@ -650,12 +666,12 @@ QString ClassSettings::sourceFileDefaultConstructor() const
 QString ClassSettings::sourceFileDestructor() const
 {
     QString define;
-    if (p_typeInderitsInfomation == inherits_None)
+    if (typeInheritsInfomation() == inherits_None)
     {
         define = docCommentDestructor()
                 + CODESCHEME_Class_Function_Destructor_Inherits_None;
     }
-    else if (p_typeInderitsInfomation == inherits_QWidget_AssociateWithUiFile)
+    else if (typeInheritsInfomation() == inherits_QWidget_AssociateWithUiFile)
     {
         define = docCommentDestructor()
                 + CODESCHEME_Class_Function_Destructor_Inherits_QWidget_AssociateWithUiFile;

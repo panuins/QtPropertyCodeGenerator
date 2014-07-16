@@ -122,6 +122,7 @@ Widget::Widget(QWidget *parent) :
             p.setDocBrief(QString("control's height"));
             p.setDocDetail(QString("will replot"));
             p.setDefaultValue(QString("0.0"));
+            p.setReset(true);
             g.append(p);
         }
         {
@@ -130,6 +131,7 @@ Widget::Widget(QWidget *parent) :
             p.setDocBrief(QString("control's width"));
             p.setDocDetail(QString("will replot"));
             p.setDefaultValue(QString("0.0"));
+            p.setReset(true);
             g.append(p);
         }
         {
@@ -160,9 +162,12 @@ Widget::Widget(QWidget *parent) :
         g.setReadFunctionIsInline(true);
         g.setWriteFunctionIsInline(false);
         g.setWriteFunctionEmitSignal(true);
-        g.setStatementsStartWriteProperty("StartWrite;");
-        g.setStatementsMiddleWriteProperty("MiddleWrite;");
-        g.setStatementsAfterWriteProperty("AfterWrite;");
+        g.setStatementsInReadProperty("//Read;");
+        g.setStatementsBeforeResetProperty("//BeforeReset;");
+        g.setStatementsAfterResetProperty("//AfterReset;");
+        g.setStatementsBeforeWriteProperty("//StartWrite;");
+        g.setStatementsMiddleWriteProperty("//MiddleWrite;");
+        g.setStatementsAfterWriteProperty("//AfterWrite;");
         m_classSettings.append(g);
     }
     {
@@ -187,15 +192,18 @@ Widget::Widget(QWidget *parent) :
         g.setReadFunctionIsInline(true);
         g.setWriteFunctionIsInline(false);
         g.setWriteFunctionEmitSignal(true);
-        g.setStatementsStartWriteProperty("StartWrite;");
-        g.setStatementsMiddleWriteProperty("MiddleWrite;");
-        g.setStatementsAfterWriteProperty("AfterWrite;");
+        g.setStatementsInReadProperty("//Read;");
+        g.setStatementsBeforeResetProperty("//BeforeReset;");
+        g.setStatementsAfterResetProperty("//AfterReset;");
+        g.setStatementsBeforeWriteProperty("//StartWrite;");
+        g.setStatementsMiddleWriteProperty("//MiddleWrite;");
+        g.setStatementsAfterWriteProperty("//AfterWrite;");
         m_classSettings.append(g);
     }
     m_classSettings.setClassName("testClass");
     m_classSettings.setDocName("test class");
     m_classSettings.setInherits("QObject");
-    m_classSettings.setTypeInderitsInfomation(ClassSettings::inherits_QObject);
+    m_classSettings.setTypeInheritsInfomation(ClassSettings::inherits_QObject);
     updateUi();
     connect(m_dialogEdit, SIGNAL(accepted()),
             this, SLOT(on_dialogEdit_accept()));
@@ -267,22 +275,6 @@ void Widget::on_dialogEdit_accept()
     case DialogEdit::EditExist:
     {
         int propertyIndex = ui->tableWidgetProperties->currentRow();
-        if (m_classSettings.at(m_groupIndex).at(propertyIndex).name()
-                != m_dialogEdit->currentProperty().name())
-        {
-            Property p = m_classSettings.findProperty(
-                        m_dialogEdit->currentProperty().name());
-            if (p.name() == m_dialogEdit->currentProperty().name())
-            {
-                QMessageBox::critical(
-                            this,
-                            tr("Name already exist."),
-                            tr("Error: Name %1 already exist.")
-                            .arg(m_dialogEdit->currentProperty().name()));
-                m_dialogEdit->show();
-                return;
-            }
-        }
         m_classSettings[m_groupIndex][propertyIndex] = m_dialogEdit->currentProperty();
         //m_classSettings[m_groupIndex].sort();
         m_changed = true;
@@ -291,36 +283,21 @@ void Widget::on_dialogEdit_accept()
         break;
     }
     case DialogEdit::NewProperty:
-    {
-        Property p = m_classSettings.findProperty(
-                    m_dialogEdit->currentProperty().name());
-        if (p.name() == m_dialogEdit->currentProperty().name())
-        {
-            QMessageBox::critical(
-                        this,
-                        tr("Name already exist."),
-                        tr("Error: Name %1 already exist.")
-                        .arg(m_dialogEdit->currentProperty().name()));
-            m_dialogEdit->show();
-            return;
-        }
         m_classSettings[m_groupIndex].append(m_dialogEdit->currentProperty());
         //m_classSettings[m_groupIndex].sort();
         m_changed = true;
         updatePropertiesTable();
         generateCode();
         break;
-    }
     default:
         break;
     }
     m_classSettings.updateTypeOrder();
-    m_dialogEdit->close();
 }
 
 void Widget::on_dialogEdit_rejected()
 {
-    m_dialogEdit->close();
+    //updateUi();
 }
 
 void Widget::on_dialogSet_accept()
@@ -367,7 +344,7 @@ void Widget::on_pushButtonExportClass_clicked()
             int ret = QMessageBox::question(
                         this,
                         tr("Header file exist"),
-                        tr("Header file %1 exist, all modify of this file will be lose. "
+                        tr("Header file %1 exist, all modify of this will be lose. "
                            "Are you sure?")
                         .arg(headerFileName),
                         QMessageBox::Yes | QMessageBox::No);
@@ -381,7 +358,7 @@ void Widget::on_pushButtonExportClass_clicked()
             int ret = QMessageBox::question(
                         this,
                         tr("Source file exist"),
-                        tr("Source file %1 exist, all modify of this file will be lose. "
+                        tr("Source file %1 exist, all modify of this will be lose. "
                            "Are you sure?")
                         .arg(sourceFileName),
                         QMessageBox::Yes | QMessageBox::No);
@@ -593,7 +570,7 @@ ClassSettings Widget::loadOldIniProperties(const QString &fileName)
     var.setDocName(settings.value("docName").toString());
     var.setDocDetail(settings.value("docDetail").toString());
     var.setInherits(settings.value("Inherits").toString());
-    var.setTypeInderitsInfomation(
+    var.setTypeInheritsInfomation(
                 (ClassSettings::TypeInheritsInformation)
                 settings.value("TypeInformation").toInt());
     var.setTypeOrder(settings.value("typeOrder").toStringList());
@@ -606,7 +583,7 @@ ClassSettings Widget::loadOldIniProperties(const QString &fileName)
                 settings.value("WriteFunctionIsInline").toBool());
     g.setWriteFunctionEmitSignal(
                 settings.value("WriteFunctionEmitSignal").toBool());
-    g.setStatementsStartWriteProperty(
+    g.setStatementsBeforeWriteProperty(
                 settings.value("WriteFunctionStart").toString());
     g.setStatementsMiddleWriteProperty(
                 settings.value("WriteFunctionMiddle").toString());
@@ -664,7 +641,7 @@ void Widget::saveProperties(const QString &fileName)
     settings.setValue("docDetail", m_classSettings.docDetail());
     settings.setValue("Inherits", m_classSettings.inherits());
     settings.setValue("TypeInformation",
-                      (int)m_classSettings.typeInderitsInfomation());
+                      (int)m_classSettings.typeInheritsInfomation());
     settings.setValue("typeOrder", m_classSettings.typeOrder());
     settings.beginGroup("FunctionsPolicy");
     settings.setValue("ReadFunctionIsInline",
@@ -674,7 +651,7 @@ void Widget::saveProperties(const QString &fileName)
     settings.setValue("WriteFunctionEmitSignal",
                       m_classSettings.writeFunctionEmitSignal());
     settings.setValue("WriteFunctionStart",
-                      m_classSettings.statementsStartWriteProperty());
+                      m_classSettings.statementsBeforeWriteProperty());
     settings.setValue("WriteFunctionMiddle",
                       m_classSettings.statementsMiddleWriteProperty());
     settings.setValue("WriteFunctionLast",

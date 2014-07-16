@@ -52,9 +52,12 @@ PropertiesGroupData::PropertiesGroupData(const QString &name) :
 PropertiesGroupData::PropertiesGroupData(const PropertiesGroupData &v) :
     m_properties(v.m_properties),
     p_name(v.p_name),
+    p_statementsInReadProperty(v.p_statementsInReadProperty),
+    p_statementsAfterResetProperty(v.p_statementsAfterResetProperty),
+    p_statementsBeforeResetProperty(v.p_statementsBeforeResetProperty),
     p_statementsAfterWriteProperty(v.p_statementsAfterWriteProperty),
+    p_statementsBeforeWriteProperty(v.p_statementsBeforeWriteProperty),
     p_statementsMiddleWriteProperty(v.p_statementsMiddleWriteProperty),
-    p_statementsStartWriteProperty(v.p_statementsStartWriteProperty),
     m_used(1),
     p_enabled(v.p_enabled),
     p_readFunctionIsInline(v.p_readFunctionIsInline),
@@ -83,7 +86,7 @@ PropertiesGroupData::~PropertiesGroupData()
     p_inherits = v.p_inherits;
     p_statementsAfterWriteProperty = v.p_statementsAfterWriteProperty;
     p_statementsMiddleWriteProperty = v.p_statementsMiddleWriteProperty;
-    p_statementsStartWriteProperty = v.p_statementsStartWriteProperty;
+    p_statementsBeforeWriteProperty = v.p_statementsBeforeWriteProperty;
     p_typeInderitsInfomation = v.p_typeInderitsInfomation;
     p_readFunctionIsInline = v.p_readFunctionIsInline;
     p_writeFunctionEmitSignal = v.p_writeFunctionEmitSignal;

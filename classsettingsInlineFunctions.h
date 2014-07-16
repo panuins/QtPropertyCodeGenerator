@@ -76,9 +76,9 @@ inline bool ClassSettings::sortAllProperties() const
 }
 
 inline ClassSettings::TypeInheritsInformation
-ClassSettings::typeInderitsInfomation() const
+ClassSettings::typeInheritsInfomation() const
 {
-    return p_typeInderitsInfomation;
+    return p_typeInheritsInfomation;
 }
 
 inline QStringList ClassSettings::typeOrder() const
@@ -147,10 +147,10 @@ inline void ClassSettings::setSortAllProperties(bool var)
     p_sortAllProperties = var;
 }
 
-inline void ClassSettings::setTypeInderitsInfomation(
+inline void ClassSettings::setTypeInheritsInfomation(
         const ClassSettings::TypeInheritsInformation &var)
 {
-    p_typeInderitsInfomation = var;
+    p_typeInheritsInfomation = var;
 }
 
 inline void ClassSettings::setTypeOrder(const QStringList &var)

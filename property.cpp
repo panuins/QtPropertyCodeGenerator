@@ -287,8 +287,7 @@ QString Property::docCommentResetFunction(const QString &className,
     return s;
 }
 
-QString Property::docCommentWriteFunction(
-        const QString &className,
+QString Property::docCommentWriteFunction(const QString &className,
         bool emitSignal,
         bool isInline,
         bool preventReentrant) const
@@ -367,6 +366,7 @@ QString Property::qPropertyString() const
 }
 
 QString Property::readFunctionDefine(const QString &className,
+                                     const QString &strStatements,
                                      bool isInline) const
 {
     QString s("");
@@ -376,6 +376,8 @@ QString Property::readFunctionDefine(const QString &className,
 }
 
 QString Property::resetFunctionDefine(const QString &className,
+                                      const QString &strBeforeReset,
+                                      const QString &strAfterReset,
                                       bool isInline) const
 {
     QString s("");
@@ -385,7 +387,7 @@ QString Property::resetFunctionDefine(const QString &className,
 }
 
 QString Property::writeFunctionDefine(const QString &className,
-                                      const QString &strBeforSetValue,
+                                      const QString &strBeforeSetValue,
                                       const QString &strBetweenSetValueAndEmit,
                                       const QString &strAfterEmit,
                                       bool emitSignal,
@@ -528,15 +530,3 @@ QString Property::initialToSpecifyValueStatement(const QString &str) const
     s = CODESCHEME_Property_InitialToSpecifyValueStatement;
     return s;
 }*/
-
-Property Property::invalid()
-{
-    Property p;
-    p.setDocBrief(QString::null);
-    p.setDocDetail(QString::null);
-    p.setDocName(QString::null);
-    p.setName(QString::null);
-    p.setType(QString::null);
-    p.setTypeStringName(QString::null);
-    return p;
-}
