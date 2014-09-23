@@ -56,6 +56,7 @@ private slots:
     void on_checkBoxPropertiesGroupUser_toggled(bool checked);*/
     void on_checkBoxPropertiesGroupWriteFunctionIsInline_toggled(bool checked);
     void on_checkBoxPropertiesGroupWriteFunctionEmitSignal_toggled(bool checked);
+    void on_checkBoxPropertiesGroupResetFunctionIsInline_toggled(bool checked);
     void on_comboBoxPropertiesGroups_currentIndexChanged(const QString &arg1);
     void on_lineEditPropertiesGroupName_textChanged(const QString &arg1);
     void on_plainTextEditPropertiesGroupReadFunction_textChanged();
@@ -90,6 +91,7 @@ inline ClassSettings DialogSet::classSettings() const
 inline void DialogSet::setClassSettings(const ClassSettings &l)
 {
     m_current = l;
+    updateUi();
 }
 
 #endif // DIALOGSET_H

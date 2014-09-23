@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>616</width>
-    <height>636</height>
+    <width>810</width>
+    <height>682</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayoutDialogSet">
    <item>
     <widget class="QTabWidget" name="tabWidgetSet">
      <property name="currentIndex">
@@ -29,9 +29,9 @@
       <attribute name="title">
        <string>Class</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <layout class="QVBoxLayout" name="verticalLayoutDialogSetClassTab">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <layout class="QHBoxLayout" name="horizontalLayoutDialogSetClassTab1">
          <item>
           <widget class="QLabel" name="labelClassName">
            <property name="sizePolicy">
@@ -110,7 +110,7 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <layout class="QHBoxLayout" name="horizontalLayoutDialogSetClassTabDocName">
          <item>
           <widget class="QLabel" name="labelClassDocName">
            <property name="text">
@@ -141,7 +141,7 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_10">
+        <layout class="QHBoxLayout" name="horizontalLayoutDialogSetClassTabDocBrief">
          <item>
           <widget class="QLabel" name="labelClassDocBrief">
            <property name="text">
@@ -155,7 +155,7 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <layout class="QHBoxLayout" name="horizontalLayoutDialogSetClassTabDocDetail">
          <item>
           <widget class="QLabel" name="labelClassDocDetail">
            <property name="text">
@@ -185,7 +185,7 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <layout class="QHBoxLayout" name="horizontalLayoutDialogSetClassTabTypeInformation">
          <item>
           <widget class="QLabel" name="labelClassTypeInformation">
            <property name="sizePolicy">
@@ -217,6 +217,11 @@
            </item>
            <item>
             <property name="text">
+             <string>None(Copy on write)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
              <string>Inherits QObject</string>
             </property>
            </item>
@@ -232,7 +237,7 @@
            </item>
            <item>
             <property name="text">
-             <string>inherits QWidget and associate width ui file</string>
+             <string>Inherits QWidget and associate width ui file</string>
             </property>
            </item>
           </widget>
@@ -253,7 +258,7 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <layout class="QHBoxLayout" name="horizontalLayoutDialogSetClassTab2">
          <item>
           <widget class="QCheckBox" name="checkBoxClassGeneratePreventReentrantCode">
            <property name="text">
@@ -280,7 +285,7 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_11">
+        <layout class="QHBoxLayout" name="horizontalLayoutDialogSetClassTab3">
          <item>
           <widget class="QCheckBox" name="checkBoxClassSortAllProperties">
            <property name="text">
@@ -328,9 +333,9 @@
       <attribute name="title">
        <string>PropertiesGroup</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_8">
+      <layout class="QVBoxLayout" name="verticalLayoutDialogSetPropertiesGroupTab">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_13">
+        <layout class="QHBoxLayout" name="horizontalLayoutDialogSetPropertiesGroupTab1">
          <item>
           <widget class="QComboBox" name="comboBoxPropertiesGroups"/>
          </item>
@@ -407,7 +412,7 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <layout class="QHBoxLayout" name="horizontalLayoutDialogSetPropertiesGroupTab2">
          <item>
           <widget class="QCheckBox" name="checkBoxPropertiesGroupReadFunctionIsInline">
            <property name="sizePolicy">
@@ -491,6 +496,16 @@
             </size>
            </property>
           </spacer>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkBoxPropertiesGroupResetFunctionIsInline">
+           <property name="text">
+            <string>Reset function is inline</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -591,7 +606,7 @@
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_12">
+        <layout class="QHBoxLayout" name="horizontalLayoutDialogSetPropertiesGroupTab3">
          <item>
           <widget class="QCheckBox" name="checkBoxxPropertiesGroupEnabled">
            <property name="text">
@@ -626,9 +641,9 @@
       <attribute name="title">
        <string>Enum Type</string>
       </attribute>
-      <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <layout class="QHBoxLayout" name="horizontalLayoutDialogSetEnumTypeTab">
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_3">
+        <layout class="QVBoxLayout" name="verticalLayoutDialogSetEnumTypeTab1">
          <item>
           <widget class="QLabel" name="labelEnumTypeList">
            <property name="sizePolicy">
@@ -650,7 +665,7 @@
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <layout class="QHBoxLayout" name="horizontalLayoutDialogSetEnumTypeTab2">
            <item>
             <spacer name="horizontalSpacer_9">
              <property name="orientation">
@@ -709,9 +724,9 @@
         </layout>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_5">
+        <layout class="QVBoxLayout" name="verticalLayoutDialogSetEnumTypeTab3">
          <item>
-          <layout class="QFormLayout" name="formLayout">
+          <layout class="QFormLayout" name="formLayoutDialogSetEnumTypeTab4">
            <item row="0" column="0">
             <widget class="QLabel" name="labelEnumTypeName">
              <property name="text">
@@ -745,7 +760,7 @@
           </layout>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_4">
+          <layout class="QVBoxLayout" name="verticalLayoutDialogSetEnumTypeTab5">
            <item>
             <widget class="QLabel" name="labelEnumVars">
              <property name="text">
@@ -782,7 +797,7 @@
       <attribute name="title">
        <string>Enum Declare</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_6">
+      <layout class="QVBoxLayout" name="verticalLayoutDialogSetEnumDeclareTab">
        <item>
         <widget class="QPlainTextEdit" name="plainTextEditEnumDeclare"/>
        </item>
@@ -792,7 +807,7 @@
       <attribute name="title">
        <string>Type Order</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_7">
+      <layout class="QVBoxLayout" name="verticalLayoutDialogSetEnumOrderTab">
        <item>
         <widget class="QPlainTextEdit" name="plainTextEditTypeOrder"/>
        </item>
@@ -801,7 +816,7 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayoutDialogSetButtons">
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">

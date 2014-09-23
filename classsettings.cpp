@@ -13,6 +13,17 @@
  * GNU General Public License for more details.
  *****************************************************************************/
 #include "classsettings.h"
+#include <QDomText>
+
+static const char *inheritsInfoSettingsStrings[] =
+{
+    "inherits_None",
+    "inherits_None_COW",
+    "inherits_QObject",
+    "inherits_QWidget",
+    "inherits_QQuickItem",
+    "inherits_QWidget_AssociateWithUiFile",
+};
 
 ClassSettings::ClassSettings() :
     p_className(),
@@ -21,7 +32,7 @@ ClassSettings::ClassSettings() :
     p_generatePreventReentrantCode(true),
     p_sortAllProperties(true)
 {
-    m_propertiesGroups.append(PropertiesGroup(QString("primary")));
+    //m_propertiesGroups.append(PropertiesGroup(QString("primary")));
 }
 
 ClassSettings::ClassSettings(const QString &name, const QString &inheritsClass) :
@@ -275,5 +286,97 @@ void ClassSettings::updateTypeOrder()
                 p_typeOrder.append(p.realTypeName());
             }
         }
+    }
+}
+
+QDomElement ClassSettings::toXMLNode(QDomDocument *doc) const
+{
+    QDomElement element = doc->createElement("ClassSettings");
+#define SETATTRIBUTE(NAME) element.setAttribute(#NAME, NAME())
+#define SETATTRIBUTE_BOOL(NAME) element.setAttribute(#NAME, (NAME() ? QString("true") : QString("false")))
+    SETATTRIBUTE(className);
+    SETATTRIBUTE(inherits);
+    SETATTRIBUTE(docName);
+    SETATTRIBUTE(docBrief);
+    SETATTRIBUTE(docDetail);
+    element.setAttribute("typeInheritsInfomation",
+                         QString(inheritsInfoSettingsStrings[(int)typeInheritsInfomation()]));
+    SETATTRIBUTE_BOOL(generatePreventReentrantCode);
+    SETATTRIBUTE_BOOL(sortAllProperties);
+    {
+        QDomElement e = doc->createElement("TypeOrder");
+        foreach (QString s, p_typeOrder)
+        {
+            QDomElement eT = doc->createElement("Type");
+            QDomText t = doc->createTextNode(s);
+            //t.setTagName("Type");
+            //t.setData(s);
+            eT.appendChild(t);
+            e.appendChild(eT);
+        }
+        element.appendChild(e);
+    }
+    foreach (PropertiesGroup g, m_propertiesGroups)
+    {
+        element.appendChild(g.toXMLNode(doc));
+    }
+    return element;
+}
+
+ClassSettings ClassSettings::fromXMLNode(const QDomElement &element)
+{
+    if (element.tagName() == "ClassSettings")
+    {
+        ClassSettings c;
+        c.clear();
+        c.setClassName(element.attribute("className"));
+        c.setInherits(element.attribute("inherits"));
+        c.setDocName(element.attribute("docName"));
+        c.setDocBrief(element.attribute("docBrief"));
+        c.setDocDetail(element.attribute("docDetail"));
+        {
+            int i = 0;
+            for (; i < sizeof(inheritsInfoSettingsStrings) / sizeof(const char *); i++)
+            {
+                if (element.attribute("typeInheritsInfomation") == QString(inheritsInfoSettingsStrings[i]))
+                {
+                    c.setTypeInheritsInfomation((TypeInheritsInformation)i);
+                }
+            }
+        }
+        c.setGeneratePreventReentrantCode(stringToBool(element.attribute("generatePreventReentrantCode")));
+        c.setSortAllProperties(stringToBool(element.attribute("sortAllProperties")));
+        {
+            QStringList listType;
+            QDomNodeList list = element.elementsByTagName("TypeOrder");
+            if (list.count() > 0)
+            {
+                QDomElement e = list.at(0).toElement();
+                QDomNodeList listNodeType = e.elementsByTagName("Type");
+                int i = 0;
+                for (; i < listNodeType.count(); i++)
+                {
+                    QDomElement eT = listNodeType.at(i).toElement();
+                    if (eT.childNodes().count() > 0)
+                    {
+                        QDomText t = eT.childNodes().at(0).toText();
+                        listType.append(t.data());
+                    }
+                }
+            }
+            c.setTypeOrder(listType);
+        }
+        QDomNodeList list = element.elementsByTagName("PropertiesGroup");
+        int i = 0;
+        for (; i < list.count(); i++)
+        {
+            QDomNode node = list.at(i);
+            c.append(PropertiesGroup::fromXMLNode(node.toElement()));
+        }
+        return c;
+    }
+    else
+    {
+        return ClassSettings();
     }
 }

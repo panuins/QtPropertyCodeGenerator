@@ -530,3 +530,64 @@ QString Property::initialToSpecifyValueStatement(const QString &str) const
     s = CODESCHEME_Property_InitialToSpecifyValueStatement;
     return s;
 }*/
+
+QDomElement Property::toXMLNode(QDomDocument *doc) const
+{
+    QDomElement element = doc->createElement("Property");
+#define SETATTRIBUTE(NAME) element.setAttribute(#NAME, NAME())
+#define SETATTRIBUTE_BOOL(NAME) element.setAttribute(#NAME, (NAME() ? QString("true") : QString("false")))
+    SETATTRIBUTE(name);
+    SETATTRIBUTE(docName);
+    SETATTRIBUTE(docBrief);
+    SETATTRIBUTE(docDetail);
+    SETATTRIBUTE(type);
+    SETATTRIBUTE(typeStringName);
+    element.setAttribute("defaultValue", defaultValue().toString());
+    SETATTRIBUTE(revision);
+    SETATTRIBUTE_BOOL(member);
+    SETATTRIBUTE_BOOL(read);
+    SETATTRIBUTE_BOOL(write);
+    SETATTRIBUTE_BOOL(reset);
+    SETATTRIBUTE_BOOL(notify);
+    SETATTRIBUTE_BOOL(enabled);
+    SETATTRIBUTE_BOOL(designable);
+    SETATTRIBUTE_BOOL(scriptable);
+    SETATTRIBUTE_BOOL(stored);
+    SETATTRIBUTE_BOOL(user);
+    SETATTRIBUTE_BOOL(constant);
+    SETATTRIBUTE_BOOL(final);
+    return element;
+}
+
+Property Property::fromXMLNode(const QDomElement &element)
+{
+    if (element.tagName() == "Property")
+    {
+        Property p;
+        p.setName(element.attribute("name"));
+        p.setDocName(element.attribute("docName"));
+        p.setDocBrief(element.attribute("docBrief"));
+        p.setDocDetail(element.attribute("docDetail"));
+        p.setType(element.attribute("type"));
+        p.setTypeStringName(element.attribute("typeStringName"));
+        p.setDefaultValue(QVariant(element.attribute("defaultValue")));
+        p.setRevision(element.attribute("revision").toInt());
+        p.setMember(stringToBool(element.attribute("member")));
+        p.setRead(stringToBool(element.attribute("read")));
+        p.setWrite(stringToBool(element.attribute("write")));
+        p.setReset(stringToBool(element.attribute("reset")));
+        p.setNotify(stringToBool(element.attribute("notify")));
+        p.setEnabled(stringToBool(element.attribute("enabled")));
+        p.setDesignable(stringToBool(element.attribute("designable")));
+        p.setScriptable(stringToBool(element.attribute("scriptable")));
+        p.setStored(stringToBool(element.attribute("stored")));
+        p.setUser(stringToBool(element.attribute("user")));
+        p.setConstant(stringToBool(element.attribute("constant")));
+        p.setFinal(stringToBool(element.attribute("final")));
+        return p;
+    }
+    else
+    {
+        return Property();
+    }
+}

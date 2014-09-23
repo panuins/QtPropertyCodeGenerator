@@ -16,11 +16,11 @@
   <property name="locale">
    <locale language="C" country="AnyCountry"/>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayoutDialogEdit">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayoutDialogEditContent">
      <item>
-      <layout class="QGridLayout" name="gridLayout">
+      <layout class="QGridLayout" name="gridLayoutDialogEdit1">
        <item row="1" column="0">
         <widget class="QLabel" name="labelPropertyDocName">
          <property name="sizePolicy">
@@ -187,7 +187,7 @@
       </layout>
      </item>
      <item>
-      <layout class="QGridLayout" name="gridLayout_2">
+      <layout class="QGridLayout" name="gridLayoutDialogEdit2">
        <item row="6" column="1">
         <widget class="QCheckBox" name="checkBoxPropertyDesignable">
          <property name="sizePolicy">
@@ -494,7 +494,7 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <layout class="QHBoxLayout" name="horizontalLayoutDialogEditButtons">
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">

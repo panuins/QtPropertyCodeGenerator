@@ -16,6 +16,10 @@
 #define PROPERTY_H
 #include "propertydata.h"
 #include "sharedFunctions.h"
+#include <QDomDocument>
+#include <QDomElement>
+#include <QVariant>
+
 //#define DEBUG_PROPERTYS_COW_DETAIL
 
 class Property
@@ -127,6 +131,9 @@ public:
                                 bool emitSignal = true,
                                 bool isInline = false,
                                 bool preventReentrant = true) const;
+
+    QDomElement toXMLNode(QDomDocument *doc) const;
+    static Property fromXMLNode(const QDomElement &element);
 
 private:
     void beforeWrite();

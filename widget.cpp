@@ -15,11 +15,14 @@
 #include "paraments.h"
 #include "widget.h"
 #include "ui_widget.h"
+#include <QDomDocument>
+#include <QFile>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QModelIndex>
 #include <QSettings>
 #include <QTextCodec>
+#include <QTextStream>
 #include <QVariant>
 #include <iostream>
 
@@ -390,6 +393,7 @@ void Widget::on_pushButtonNewProject_clicked()
     {
         m_currentFile.clear();
         m_classSettings = ClassSettings();
+        m_classSettings.append(PropertiesGroup("primary"));
         updateUi();
     }
 }
@@ -400,7 +404,7 @@ void Widget::on_pushButtonOpenProject_clicked()
                 this,
                 tr("Open File"),
                 m_startPath,
-                tr("Ini File (*.ini)"));
+                tr("Supported File (*.xml *.ini)"));
     if (QFile::exists(fileName))
     {
         loadProperties(fileName);
@@ -426,12 +430,12 @@ void Widget::on_pushButtonSaveProjectAs_clicked()
                 this,
                 tr("Save File"),
                 m_startPath + QDir::separator() + m_classSettings.className(),
-                tr("Ini File (*.ini)"));
+                tr("XML File (*.xml)"));
     if (!fileName.isEmpty())
     {
-        if (!fileName.endsWith(".ini"))
+        if (!fileName.endsWith(".xml"))
         {
-            fileName.append(".ini");
+            fileName.append(".xml");
         }
         saveProperties(fileName);
         m_currentFile = fileName;
@@ -558,7 +562,36 @@ void Widget::updateUi()
 
 void Widget::loadProperties(const QString &fileName)
 {
-    Q_UNUSED(fileName)
+    QDomDocument doc(fileName);
+    QFile file(fileName);
+    file.open(QIODevice::ReadOnly | QFile::Text);
+    QString errorStr;
+    int errorLine;
+    int errorColumn;
+    if (!doc.setContent(&file, true, &errorStr, &errorLine,
+                        &errorColumn))
+    {
+        QMessageBox::critical(this, tr("Error"),
+                              tr("Parse error at line %1, column %2:\n%3")
+                              .arg(errorLine)
+                              .arg(errorColumn)
+                              .arg(errorStr));
+        return;
+    }
+    QDomElement e = doc.documentElement();
+    m_classSettings = ClassSettings::fromXMLNode(e);
+    updateUi();
+    m_changed = false;
+    /*QDomNodeList list = e.elementsByTagName("ClassSettings");
+    if (list.count() > 0)
+    {
+        m_classSettings = ClassSettings::fromXMLNode(list.at(0).toElement());
+        m_changed = false;
+    }
+    else
+    {
+        QMessageBox::critical(this, tr("Error"), tr("File format is wrong."));
+    }*/
 }
 
 ClassSettings Widget::loadOldIniProperties(const QString &fileName)
@@ -633,58 +666,15 @@ void Widget::loadSettings()
 
 void Widget::saveProperties(const QString &fileName)
 {
-    Q_UNUSED(fileName)
-    /*QSettings settings(fileName, QSettings::IniFormat);
-    settings.setIniCodec("UTF-8");
-    settings.setValue("className", m_classSettings.className());
-    settings.setValue("docName", m_classSettings.docName());
-    settings.setValue("docDetail", m_classSettings.docDetail());
-    settings.setValue("Inherits", m_classSettings.inherits());
-    settings.setValue("TypeInformation",
-                      (int)m_classSettings.typeInheritsInfomation());
-    settings.setValue("typeOrder", m_classSettings.typeOrder());
-    settings.beginGroup("FunctionsPolicy");
-    settings.setValue("ReadFunctionIsInline",
-                      m_classSettings.readFunctionIsInline());
-    settings.setValue("WriteFunctionIsInline",
-                      m_classSettings.writeFunctionIsInline());
-    settings.setValue("WriteFunctionEmitSignal",
-                      m_classSettings.writeFunctionEmitSignal());
-    settings.setValue("WriteFunctionStart",
-                      m_classSettings.statementsBeforeWriteProperty());
-    settings.setValue("WriteFunctionMiddle",
-                      m_classSettings.statementsMiddleWriteProperty());
-    settings.setValue("WriteFunctionLast",
-                      m_classSettings.statementsAfterWriteProperty());
-    settings.endGroup();
-    settings.beginWriteArray("properties");
-    int i = 0;
-    for (; i < m_classSettings.size(); i++)
-    {
-        settings.setArrayIndex(i);
-        settings.setValue("name", m_classSettings.at(i).name());
-        settings.setValue("type", m_classSettings.at(i).type());
-        settings.setValue("typeStringName",
-                          m_classSettings.at(i).typeStringName());
-        settings.setValue("docName", m_classSettings.at(i).docName());
-        settings.setValue("docDetail", m_classSettings.at(i).docDetail());
-        settings.setValue("member", m_classSettings.at(i).member());
-        settings.setValue("read", m_classSettings.at(i).read());
-        settings.setValue("write", m_classSettings.at(i).write());
-        settings.setValue("reset", m_classSettings.at(i).reset());
-        settings.setValue("notify", m_classSettings.at(i).notify());
-        settings.setValue("revision", m_classSettings.at(i).revision());
-        settings.setValue("designable", m_classSettings.at(i).designable());
-        settings.setValue("scriptable", m_classSettings.at(i).scriptable());
-        settings.setValue("stored", m_classSettings.at(i).stored());
-        settings.setValue("user", m_classSettings.at(i).user());
-        settings.setValue("constant", m_classSettings.at(i).constant());
-        settings.setValue("final", m_classSettings.at(i).final());
-        settings.setValue("enabled", m_classSettings.at(i).enabled());
-        settings.setValue("defaultValue", m_classSettings.at(i).defaultValue());
-    }
-    settings.endArray();
-    m_changed = false;*/
+    QDomDocument doc(fileName);
+    QFile file(fileName);
+    file.open(QIODevice::WriteOnly);
+    QTextStream stream(&file);
+    stream.setCodec(QTextCodec::codecForName("UTF-8"));
+    //doc.setContent(&file);
+    doc.appendChild(m_classSettings.toXMLNode(&doc));
+    doc.save(stream, 4, QDomNode::EncodingFromTextStream);
+    m_changed = false;
 }
 
 void Widget::saveSettings()

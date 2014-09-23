@@ -25,7 +25,7 @@ public:
     enum TypeInheritsInformation
     {
         inherits_None = 0,
-        //inherits_None_COW,
+        inherits_None_COW,
         inherits_QObject,
         inherits_QWidget,
         inherits_QQuickItem,
@@ -175,6 +175,9 @@ public:
     QString sourceFileDefaultConstructor() const;
     QString sourceFileDestructor() const;
     QString sourceFileName() const;
+
+    QDomElement toXMLNode(QDomDocument *doc) const;
+    static ClassSettings fromXMLNode(const QDomElement &element);
 
 private:
     QList<PropertiesGroup> m_propertiesGroups;

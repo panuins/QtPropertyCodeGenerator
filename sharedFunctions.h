@@ -159,4 +159,17 @@ inline QString replaceSepecialStringToPercent(const QString &str)
     return s;
 }
 
+inline bool stringToBool(const QString &string)
+{
+    if (string == "true")
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
 #endif // SHAREDFUNCTIONS_H

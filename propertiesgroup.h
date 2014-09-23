@@ -75,6 +75,9 @@ public:
     void setWriteFunctionIsInline(const bool &var);
     void sort();
 
+    QDomElement toXMLNode(QDomDocument *doc) const;
+    static PropertiesGroup fromXMLNode(const QDomElement &element);
+
 private:
     void beforeWrite();
 

@@ -148,3 +148,59 @@ void PropertiesGroup::sort()
         m_d->m_properties = listP;
     }
 }
+
+QDomElement PropertiesGroup::toXMLNode(QDomDocument *doc) const
+{
+    QDomElement element = doc->createElement("PropertiesGroup");
+#define SETATTRIBUTE(NAME) element.setAttribute(#NAME, NAME())
+#define SETATTRIBUTE_BOOL(NAME) element.setAttribute(#NAME, (NAME() ? QString("true") : QString("false")))
+    SETATTRIBUTE(name);
+    SETATTRIBUTE_BOOL(readFunctionIsInline);
+    SETATTRIBUTE_BOOL(writeFunctionIsInline);
+    SETATTRIBUTE_BOOL(writeFunctionEmitSignal);
+    SETATTRIBUTE_BOOL(resetFunctionIsInline);
+    SETATTRIBUTE_BOOL(enabled);
+    SETATTRIBUTE(statementsInReadProperty);
+    SETATTRIBUTE(statementsBeforeResetProperty);
+    SETATTRIBUTE(statementsAfterResetProperty);
+    SETATTRIBUTE(statementsBeforeWriteProperty);
+    SETATTRIBUTE(statementsMiddleWriteProperty);
+    SETATTRIBUTE(statementsAfterWriteProperty);
+    foreach (Property p, m_d->m_properties)
+    {
+        element.appendChild(p.toXMLNode(doc));
+    }
+    return element;
+}
+
+PropertiesGroup PropertiesGroup::fromXMLNode(const QDomElement &element)
+{
+    if (element.tagName() == "PropertiesGroup")
+    {
+        PropertiesGroup g;
+        g.setName(element.attribute("name"));
+        g.setReadFunctionIsInline(stringToBool(element.attribute("readFunctionIsInline")));
+        g.setWriteFunctionIsInline(stringToBool(element.attribute("writeFunctionIsInline")));
+        g.setWriteFunctionEmitSignal(stringToBool(element.attribute("writeFunctionEmitSignal")));
+        g.setResetFunctionIsInline(stringToBool(element.attribute("resetFunctionIsInline")));
+        g.setEnabled(stringToBool(element.attribute("enabled")));
+        g.setStatementsInReadProperty(element.attribute("statementsInReadProperty"));
+        g.setStatementsBeforeResetProperty(element.attribute("statementsBeforeResetProperty"));
+        g.setStatementsAfterResetProperty(element.attribute("statementsAfterResetProperty"));
+        g.setStatementsBeforeWriteProperty(element.attribute("statementsBeforeWriteProperty"));
+        g.setStatementsMiddleWriteProperty(element.attribute("statementsMiddleWriteProperty"));
+        g.setStatementsAfterWriteProperty(element.attribute("statementsAfterWriteProperty"));
+        QDomNodeList list = element.elementsByTagName("Property");
+        int i = 0;
+        for (; i < list.count(); i++)
+        {
+            QDomNode node = list.at(i);
+            g.append(Property::fromXMLNode(node.toElement()));
+        }
+        return g;
+    }
+    else
+    {
+        return PropertiesGroup();
+    }
+}

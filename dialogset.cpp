@@ -135,6 +135,11 @@ void DialogSet::on_checkBoxPropertiesGroupWriteFunctionEmitSignal_toggled(bool c
     m_current[propertiesGroupComboboxAt()].setWriteFunctionEmitSignal(checked);
 }
 
+void DialogSet::on_checkBoxPropertiesGroupResetFunctionIsInline_toggled(bool checked)
+{
+    m_current[propertiesGroupComboboxAt()].setResetFunctionIsInline(checked);
+}
+
 void DialogSet::on_plainTextEditPropertiesGroupReadFunction_textChanged()
 {
     m_current[propertiesGroupComboboxAt()].setStatementsInReadProperty(
@@ -265,6 +270,8 @@ void DialogSet::on_comboBoxPropertiesGroups_currentIndexChanged(const QString &a
                 m_current.at(index).writeFunctionIsInline());
     ui->checkBoxPropertiesGroupWriteFunctionEmitSignal->setChecked(
                 m_current.at(index).writeFunctionEmitSignal());
+    ui->checkBoxPropertiesGroupResetFunctionIsInline->setChecked(
+                m_current.at(index).resetFunctionIsInline());
     ui->checkBoxxPropertiesGroupEnabled->setChecked(
                 m_current.at(index).enabled());
     /*ui->spinBoxPropertiesGroupRevision->setValue(
@@ -361,6 +368,7 @@ void DialogSet::updateUi()
         /*on_comboBoxPropertiesGroups_currentIndexChanged(
                     ui->comboBoxPropertiesGroups->currentText());*/
     }
+    on_comboBoxPropertiesGroups_currentIndexChanged(ui->comboBoxPropertiesGroups->currentText());
     ui->comboBoxPropertiesGroups->blockSignals(false);
 }
 
