@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClassSettings typeInheritsInfomation="inherits_None" docDetail="" generatePreventReentrantCode="true" className="EnumType" docBrief="" sortAllProperties="true" docName="" inherits="">
+    <TypeOrder>
+        <Type>QString</Type>
+        <Type>QStringList</Type>
+    </TypeOrder>
+    <PropertiesGroup writeFunctionIsInline="true" statementsInReadProperty="" statementsBeforeWriteProperty="" readFunctionIsInline="true" name="primary" resetFunctionIsInline="false" statementsAfterResetProperty="" writeFunctionEmitSignal="false" statementsBeforeResetProperty="" enabled="true" statementsMiddleWriteProperty="" statementsAfterWriteProperty="">
+        <Property type="QString" stored="true" enabled="true" member="false" final="false" typeStringName="QString" name="name" notify="true" reset="false" scriptable="true" revision="0" designable="true" defaultValue="" docBrief="" user="false" docDetail="" constant="false" read="true" docName="" write="true"/>
+        <Property type="QString" stored="true" enabled="true" member="false" final="false" typeStringName="QString" name="prefix" notify="true" reset="false" scriptable="true" revision="0" designable="true" defaultValue="" docBrief="" user="false" docDetail="" constant="false" read="true" docName="" write="true"/>
+        <Property type="QString" stored="true" enabled="true" member="false" final="false" typeStringName="QString" name="suffix" notify="true" reset="false" scriptable="true" revision="0" designable="true" defaultValue="" docBrief="" user="false" docDetail="" constant="false" read="true" docName="" write="true"/>
+        <Property type="QStringList" stored="true" enabled="true" member="false" final="false" typeStringName="" name="vars" notify="true" reset="false" scriptable="true" revision="0" designable="true" defaultValue="" docBrief="" user="false" docDetail="" constant="false" read="true" docName="" write="true"/>
+    </PropertiesGroup>
+</ClassSettings>

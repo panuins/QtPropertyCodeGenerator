@@ -54,14 +54,13 @@ HEADERS  += widget.h \
     enumtype.h \
     paraments.h \
     classsettingsInlineFunctions.h \
-    paraments_DocComment_Doxygen.h \
-    paraments_NameScheme.h \
-    paraments_CodeFormat.h \
-    codescheme/paraments_CodeFormat.h \
-    codescheme/paraments_DocComment_Doxygen.h \
-    codescheme/paraments_NameScheme.h \
     paraments.h \
-    codescheme/paraments_Base.h
+    paraments_DocComment_PublicParams.h \
+    codescheme/paraments_Base.h \
+    publicType.h \
+    codescheme/paraments_CodeFormat.h \
+    codescheme/paraments_NameScheme.h \
+    codescheme/paraments_DocComment_Content.h
 
 FORMS    += widget.ui \
     dialogset.ui \

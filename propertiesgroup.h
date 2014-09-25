@@ -44,6 +44,12 @@ public:
     const QList<Property> &properties() const;
     QStringList propertiesName() const;
     bool readFunctionIsInline() const;
+    QString replacedStatementsAfterResetProperty() const;
+    QString replacedStatementsAfterWriteProperty() const;
+    QString replacedStatementsBeforeResetProperty() const;
+    QString replacedStatementsBeforeWriteProperty() const;
+    QString replacedStatementsInReadProperty() const;
+    QString replacedStatementsMiddleWriteProperty() const;
     bool resetFunctionIsInline() const;
     int size() const;
     QString statementsAfterResetProperty() const;

@@ -15,10 +15,10 @@
 #ifndef PROPERTY_H
 #define PROPERTY_H
 #include "propertydata.h"
+#include "publicType.h"
 #include "sharedFunctions.h"
 #include <QDomDocument>
 #include <QDomElement>
-#include <QVariant>
 
 //#define DEBUG_PROPERTYS_COW_DETAIL
 
@@ -48,8 +48,11 @@ public:
     QString name() const;
     bool needWrite() const;
     bool notify() const;
-    QString realTypeName() const;
     bool read() const;
+    QString realTypeName() const;
+    QString replacedDocBrief() const;
+    QString replacedDocDetail() const;
+    QString replacedDocName() const;
     bool reset() const;
     bool resetIsValid() const;
     int revision() const;
@@ -94,11 +97,11 @@ public:
     QString docComment(const QString &className) const;
     QString docCommentBrief() const;
     QString docCommentDetail() const;
-    QString docCommentMemberVariable() const;
-    QString docCommentPreventReentrantMemberVariable() const;
-    QString docCommentReadFunction(const QString &className = QString(""),
+    QString docCommentMemberVariable(const QString &className) const;
+    QString docCommentPreventReentrantMemberVariable(const QString &className) const;
+    QString docCommentReadFunction(const QString &className,
                                    bool isInline = true) const;
-    QString docCommentResetFunction(const QString &className = QString(""),
+    QString docCommentResetFunction(const QString &className,
                                     bool isInline = true) const;
     QString docCommentWriteFunction(const QString &className,
                                     bool emitSignal = true,

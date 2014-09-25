@@ -15,6 +15,7 @@
 #ifndef CLASSSETTINGS_H
 #define CLASSSETTINGS_H
 #include "propertiesgroup.h"
+#include "publicType.h"
 #include <QPair>
 #include <QString>
 #include <QStringList>
@@ -25,18 +26,11 @@ public:
     enum TypeInheritsInformation
     {
         inherits_None = 0,
-        inherits_None_COW,
         inherits_QObject,
         inherits_QWidget,
         inherits_QQuickItem,
         inherits_QWidget_AssociateWithUiFile,
-    };
-
-    enum DocCommentPolicy
-    {
-        use_Doxygen = 0,
-        use_Qdoc,
-        use_Custom
+        inherits_None_COW,
     };
 
     /*class const_Iterator
@@ -100,6 +94,9 @@ public:
     QList<Property> propertiesIsType(const QString &var) const;
     QStringList propertiesGroupsName() const;
     QStringList propertiesName() const;
+    QString replacedDocBrief() const;
+    QString replacedDocDetail() const;
+    QString replacedDocName() const;
     int size() const;
     bool sortAllProperties() const;
     TypeInheritsInformation typeInheritsInfomation() const;
@@ -133,11 +130,14 @@ public:
     QString generateWriteDeclear() const;
     QString generateSignalDeclear() const;
     QString generateMemberVariableDeclear() const;
-    QString generateDocCommentPropertiesComment() const;
+    QString generateDetachedDocCommentFunctions() const;
+    QString generateDetachedDocCommentMemberVariable() const;
+    QString generateDetachedDocCommentProperties() const;
 
     QString generateReadFunctionDefine() const;
     QString generateResetFunctionDefine() const;
     QString generateWriteFunctionDefine() const;
+    QString generateFunctionsDefine() const;
     QString generateInlineReadFunctionDefine() const;
     QString generateInlineResetFunctionDefine() const;
     QString generateInlineWriteFunctionDefine() const;
@@ -188,7 +188,7 @@ private:
     QString p_docDetail;
     QString p_docName;
     QString p_inherits;
-    DocCommentPolicy p_docCommentPolicy;
+    //DocCommentPolicy p_docCommentPolicy;
     TypeInheritsInformation p_typeInheritsInfomation;
     bool p_generatePreventReentrantCode;
     bool p_sortAllProperties;

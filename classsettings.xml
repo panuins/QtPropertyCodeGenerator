@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClassSettings typeInheritsInfomation="inherits_None" docDetail="" generatePreventReentrantCode="true" className="ClassSettings" docBrief="" sortAllProperties="true" docName="" inherits="">
+    <TypeOrder>
+        <Type>QString</Type>
+        <Type>QStringList</Type>
+        <Type>TypeInheritsInformation</Type>
+        <Type>bool</Type>
+    </TypeOrder>
+    <PropertiesGroup writeFunctionIsInline="true" statementsInReadProperty="" statementsBeforeWriteProperty="    beforeWrite();&#xa;" readFunctionIsInline="true" name="primary" resetFunctionIsInline="false" statementsAfterResetProperty="" writeFunctionEmitSignal="false" statementsBeforeResetProperty="" enabled="true" statementsMiddleWriteProperty="" statementsAfterWriteProperty="">
+        <Property type="QString" stored="true" enabled="true" member="false" final="false" typeStringName="" name="ClassName" notify="false" reset="false" scriptable="true" revision="0" designable="true" defaultValue="" docBrief="" user="false" docDetail="" constant="false" read="true" docName="" write="true"/>
+        <Property type="QString" stored="true" enabled="true" member="false" final="false" typeStringName="" name="DocDetail" notify="false" reset="false" scriptable="true" revision="0" designable="true" defaultValue="" docBrief="" user="false" docDetail="" constant="false" read="true" docName="" write="true"/>
+        <Property type="QString" stored="true" enabled="true" member="false" final="false" typeStringName="" name="DocName" notify="false" reset="false" scriptable="true" revision="0" designable="true" defaultValue="" docBrief="" user="false" docDetail="" constant="false" read="true" docName="" write="true"/>
+        <Property type="QString" stored="true" enabled="true" member="false" final="false" typeStringName="" name="Inherits" notify="false" reset="false" scriptable="true" revision="0" designable="true" defaultValue="" docBrief="" user="false" docDetail="" constant="false" read="true" docName="" write="true"/>
+        <Property type="bool" stored="true" enabled="true" member="false" final="false" typeStringName="" name="ReadFunctionIsInline" notify="false" reset="false" scriptable="true" revision="0" designable="true" defaultValue="true" docBrief="" user="false" docDetail="" constant="false" read="true" docName="" write="true"/>
+        <Property type="QString" stored="true" enabled="true" member="false" final="false" typeStringName="" name="StatementsAfterWriteProperty" notify="false" reset="false" scriptable="true" revision="0" designable="true" defaultValue="" docBrief="" user="false" docDetail="" constant="false" read="true" docName="" write="true"/>
+        <Property type="QString" stored="true" enabled="true" member="false" final="false" typeStringName="" name="StatementsMiddleWriteProperty" notify="false" reset="false" scriptable="true" revision="0" designable="true" defaultValue="" docBrief="" user="false" docDetail="" constant="false" read="true" docName="" write="true"/>
+        <Property type="QString" stored="true" enabled="true" member="false" final="false" typeStringName="" name="StatementsStartWriteProperty" notify="false" reset="false" scriptable="true" revision="0" designable="true" defaultValue="" docBrief="" user="false" docDetail="" constant="false" read="true" docName="" write="true"/>
+        <Property type="" stored="true" enabled="true" member="false" final="false" typeStringName="TypeInheritsInformation" name="TypeInderitsInfomation" notify="false" reset="false" scriptable="true" revision="0" designable="true" defaultValue="0" docBrief="" user="false" docDetail="" constant="false" read="true" docName="" write="true"/>
+        <Property type="QStringList" stored="true" enabled="true" member="false" final="false" typeStringName="" name="TypeOrder" notify="false" reset="false" scriptable="true" revision="0" designable="true" defaultValue="" docBrief="" user="false" docDetail="" constant="false" read="true" docName="" write="true"/>
+        <Property type="bool" stored="true" enabled="true" member="false" final="false" typeStringName="" name="WriteFunctionEmitSignal" notify="false" reset="false" scriptable="true" revision="0" designable="true" defaultValue="true" docBrief="" user="false" docDetail="" constant="false" read="true" docName="" write="true"/>
+        <Property type="bool" stored="true" enabled="true" member="false" final="false" typeStringName="" name="WriteFunctionIsInline" notify="false" reset="false" scriptable="true" revision="0" designable="true" defaultValue="false" docBrief="" user="false" docDetail="" constant="false" read="true" docName="" write="true"/>
+    </PropertiesGroup>
+</ClassSettings>

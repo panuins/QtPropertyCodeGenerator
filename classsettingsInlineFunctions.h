@@ -65,6 +65,21 @@ inline const QList<PropertiesGroup> &ClassSettings::propertiesGroups() const
     return m_propertiesGroups;
 }
 
+inline QString ClassSettings::replacedDocBrief() const
+{
+    return replacePercentToSepecialString(docBrief());
+}
+
+inline QString ClassSettings::replacedDocDetail() const
+{
+    return replacePercentToSepecialString(docDetail());
+}
+
+inline QString ClassSettings::replacedDocName() const
+{
+    return replacePercentToSepecialString(docName());
+}
+
 inline int ClassSettings::size() const
 {
     return m_propertiesGroups.size();

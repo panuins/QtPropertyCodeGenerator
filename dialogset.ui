@@ -217,11 +217,6 @@
            </item>
            <item>
             <property name="text">
-             <string>None(Copy on write)</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
              <string>Inherits QObject</string>
             </property>
            </item>
@@ -238,6 +233,11 @@
            <item>
             <property name="text">
              <string>Inherits QWidget and associate width ui file</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>None(Copy on write)</string>
             </property>
            </item>
           </widget>

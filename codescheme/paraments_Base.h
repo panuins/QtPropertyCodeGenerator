@@ -21,7 +21,7 @@
 #define CODESCHEME_DocComment_WriteFunction_SignalDetail \
     QString("and send signal %1").arg(signalName())
 
-#include "paraments_DocComment_Doxygen.h"
+#include "paraments_DocComment_Content.h"
 #include "paraments_NameScheme.h"
 #include "paraments_CodeFormat.h"
 

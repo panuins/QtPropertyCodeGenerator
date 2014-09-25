@@ -152,7 +152,7 @@ inline QString replacePercentToSepecialString(const QString &str)
     return s;
 }
 
-inline QString replaceSepecialStringToPercent(const QString &str)
+inline QString replaceSpecialStringToPercent(const QString &str)
 {
     QString s = str;
     s.replace(QString("_____PercentNotation_____"), QString("%"));
@@ -171,5 +171,28 @@ inline bool stringToBool(const QString &string)
     }
 }
 
+inline QString addNewLineIfNotEmpty(const QString &s)
+{
+    if (s.isEmpty())
+    {
+        return QString();
+    }
+    else
+    {
+        return s + "\n";
+    }
+}
+
+inline QString addIndentAndNewLineIfNotEmpty(const QString &s)
+{
+    if (s.isEmpty())
+    {
+        return QString();
+    }
+    else
+    {
+        return QString(CODESCHEME_Indent) + s + "\n";
+    }
+}
 
 #endif // SHAREDFUNCTIONS_H

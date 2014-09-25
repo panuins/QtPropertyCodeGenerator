@@ -407,8 +407,18 @@ void Widget::on_pushButtonOpenProject_clicked()
                 tr("Supported File (*.xml *.ini)"));
     if (QFile::exists(fileName))
     {
-        loadProperties(fileName);
-        m_currentFile = fileName;
+        if (fileName.endsWith(".ini"))
+        {
+            m_classSettings = loadOldIniProperties(fileName);
+            updateUi();
+            m_currentFile = fileName.replace(QString(".ini"), QString(".xml"));
+            m_changed = true;
+        }
+        else
+        {
+            loadProperties(fileName);
+            m_currentFile = fileName;
+        }
     }
 }
 
@@ -426,10 +436,19 @@ void Widget::on_pushButtonSaveProject_clicked()
 
 void Widget::on_pushButtonSaveProjectAs_clicked()
 {
+    QString dir;
+    if (m_currentFile.isEmpty())
+    {
+        dir = m_startPath + QDir::separator() + m_classSettings.className();
+    }
+    else
+    {
+        dir = m_currentFile;
+    }
     QString fileName = QFileDialog::getSaveFileName(
                 this,
                 tr("Save File"),
-                m_startPath + QDir::separator() + m_classSettings.className(),
+                dir,
                 tr("XML File (*.xml)"));
     if (!fileName.isEmpty())
     {

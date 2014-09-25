@@ -18,16 +18,17 @@
 static const char *inheritsInfoSettingsStrings[] =
 {
     "inherits_None",
-    "inherits_None_COW",
     "inherits_QObject",
     "inherits_QWidget",
     "inherits_QQuickItem",
     "inherits_QWidget_AssociateWithUiFile",
+    "inherits_None_COW",
 };
 
 ClassSettings::ClassSettings() :
     p_className(),
     p_inherits(),
+    //p_docCommentPolicy(DocComment_Use_Doxygen),
     p_typeInheritsInfomation(inherits_None),
     p_generatePreventReentrantCode(true),
     p_sortAllProperties(true)
@@ -38,6 +39,7 @@ ClassSettings::ClassSettings() :
 ClassSettings::ClassSettings(const QString &name, const QString &inheritsClass) :
     p_className(name),
     p_inherits(inheritsClass),
+    //p_docCommentPolicy(DocComment_Use_Doxygen),
     p_typeInheritsInfomation(inherits_None),
     p_generatePreventReentrantCode(true),
     p_sortAllProperties(true)
@@ -54,6 +56,7 @@ ClassSettings::ClassSettings(const ClassSettings &v) :
     p_docDetail(v.p_docDetail),
     p_docName(v.p_docName),
     p_inherits(v.p_inherits),
+    //p_docCommentPolicy(v.p_docCommentPolicy),
     p_typeInheritsInfomation(v.p_typeInheritsInfomation),
     p_generatePreventReentrantCode(v.p_generatePreventReentrantCode),
     p_sortAllProperties(v.p_sortAllProperties)
@@ -74,6 +77,7 @@ ClassSettings &ClassSettings::operator=(const ClassSettings &v)
     p_docDetail = v.p_docDetail;
     p_docName = v.p_docName;
     p_inherits = v.p_inherits;
+    //p_docCommentPolicy = v.p_docCommentPolicy;
     p_typeInheritsInfomation = v.p_typeInheritsInfomation;
     p_generatePreventReentrantCode = v.p_generatePreventReentrantCode;
     p_sortAllProperties = v.p_sortAllProperties;
@@ -336,7 +340,7 @@ ClassSettings ClassSettings::fromXMLNode(const QDomElement &element)
         c.setDocDetail(element.attribute("docDetail"));
         {
             int i = 0;
-            for (; i < sizeof(inheritsInfoSettingsStrings) / sizeof(const char *); i++)
+            for (; i < (int)(sizeof(inheritsInfoSettingsStrings) / sizeof(const char *)); i++)
             {
                 if (element.attribute("typeInheritsInfomation") == QString(inheritsInfoSettingsStrings[i]))
                 {

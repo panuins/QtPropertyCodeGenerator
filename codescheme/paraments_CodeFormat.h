@@ -1,6 +1,18 @@
 #ifndef PARAMENTS_CODEFORMAT_H
 #define PARAMENTS_CODEFORMAT_H
 
+#define CODESCHEME_Format_Declare(Content, DocComment) \
+    QString(CODESCHEME_Indent "%1" CODESCHEME_Indent "%2\n").arg(Content).arg(DocComment)
+
+#define CODESCHEME_Format_DeclareWithOutDocComment(Content, DocComment) \
+    QString(CODESCHEME_Indent "%1\n").arg(Content)
+
+#define CODESCHEME_Format_Define(Content, DocComment) \
+    QString("%2%1\n").arg(Content).arg(DocComment)
+
+#define CODESCHEME_Format_DefineWithOutDocComment(Content, DocComment) \
+    QString("%1").arg(Content)
+
 #define CODESCHEME_Property_ReadDeclear \
     QString("%1 %2() const;").arg(realTypeName()).arg(readFunctionName())
 
@@ -9,23 +21,18 @@
 
 #define CODESCHEME_Property_WriteDeclear \
     QString("void %1(const %2 &%3);") \
-                .arg(writeFunctionName()) \
-                .arg(realTypeName()) \
-                .arg(writeFunctionArgumentName())
+        .arg(writeFunctionName()) \
+        .arg(realTypeName()) \
+        .arg(writeFunctionArgumentName())
 
 #define CODESCHEME_Property_SignalDeclear \
     QString("void %1();").arg(signalName())
 
 #define CODESCHEME_Property_MemberVariableDeclear \
-    QString("%1 %2;" CODESCHEME_Indent "%3") \
-                    .arg(realTypeName()) \
-                    .arg(memberVariableName()) \
-                    .arg(docCommentMemberVariable())
+    QString("%1 %2;").arg(realTypeName()).arg(memberVariableName())
 
 #define CODESCHEME_Property_PreventReentrantVarDeclear \
-    QString("bool %1;" CODESCHEME_Indent "%2") \
-                .arg(preventReentrantVarName()) \
-                .arg(docCommentPreventReentrantMemberVariable())
+    QString("bool %1;").arg(preventReentrantVarName())
 
 #define CODESCHEME_Property_ReadFunctionDefine \
     QString("%1%2 %3::%4() const\n" \
@@ -37,7 +44,7 @@
         .arg(realTypeName()) \
         .arg(className) \
         .arg(readFunctionName()) \
-        .arg(indentCode(strStatements, 1)) \
+        .arg(indentCode(strInRead, 1)) \
         .arg(memberVariableName())
 
 #define CODESCHEME_Property_ResetFunctionDefine \
@@ -50,10 +57,10 @@
         .arg(inlineNotation(isInline)) \
         .arg(className) \
         .arg(resetFunctionName()) \
-        .arg(indentCode(strBeforeReset, 1)) \
+        .arg(indentCode(strBefore, 1)) \
         .arg(writeFunctionName()) \
         .arg(defaultValue().toString()) \
-        .arg(indentCode(strAfterReset, 1))
+        .arg(indentCode(strAfter, 1))
 
 #define CODESCHEME_Property_WriteFunction_EmitSignalStatement \
     QString("emit %1();").arg(signalName())
@@ -72,13 +79,13 @@
         .arg(writeFunctionName()) \
         .arg(realTypeName()) \
         .arg(writeFunctionArgumentName()) \
-        .arg(indentCode(strBeforeSetValue, 1)) \
+        .arg(indentCode(strBefore, 1)) \
         .arg(memberVariableName()) \
         .arg(writeFunctionArgumentName()) \
-        .arg(indentCode(strBetweenSetValueAndEmit, 1)) \
+        .arg(indentCode(strMiddle, 1)) \
         .arg(emitSignalStatement.isEmpty() ? \
              "" : (QString(CODESCHEME_Indent "%1\n").arg(emitSignalStatement))) \
-        .arg(indentCode(strAfterEmit, 1))
+        .arg(indentCode(strAfter, 1))
 
 #define CODESCHEME_Property_WriteFunctionDefine_PreventReentrant \
     QString("%1void %2::%3(const %4 &%5)\n" \
@@ -99,13 +106,13 @@
         .arg(writeFunctionName()) \
         .arg(realTypeName()) \
         .arg(writeFunctionArgumentName()) \
-        .arg(indentCode(strBeforeSetValue, 2)) \
+        .arg(indentCode(strBefore, 2)) \
         .arg(memberVariableName()) \
         .arg(writeFunctionArgumentName()) \
-        .arg(indentCode(strBetweenSetValueAndEmit, 2)) \
+        .arg(indentCode(strMiddle, 2)) \
         .arg(emitSignalStatement.isEmpty() ? \
              "" : (QString(CODESCHEME_Indent CODESCHEME_Indent "%1\n").arg(emitSignalStatement))) \
-        .arg(indentCode(strAfterEmit, 2)) \
+        .arg(indentCode(strAfter, 2)) \
         .arg(preventReentrantVarName())
 
 #define CODESCHEME_Class_Define_Inherits_None \
@@ -315,60 +322,40 @@
             "%3\n" \
             "%4\n" \
             "%5" \
-            "%6" \
-            "%7" \
             "#endif // %2") \
         .arg(headerFileDocCommentHeader()) \
         .arg(headerFileMarco()) \
         .arg(headerFileIncludeStatements()) \
         .arg(classDefine()) \
-        .arg(generateInlineReadFunctionDefine()) \
-        .arg(generateInlineWriteFunctionDefine()) \
-        .arg(generateInlineResetFunctionDefine())
+        .arg(generateInlineFunctionsDefine())
 
 #define CODESCHEME_File_SourceFileContent_Inherits_None \
     QString("%1" \
             "#include \"%2\"\n\n" \
             "%3" \
             "%4" \
-            "%5\n" \
-            "%6\n" \
-            "%7\n" \
-            "%8\n" \
-            "%9" \
-            "%10" \
-            "%11") \
+            "%5" \
+            "%6") \
         .arg(sourceFileDocCommentHeader()) \
         .arg(headerFileName()) \
         .arg(docCommentClass()) \
-        .arg(generateDocCommentPropertiesComment()) \
-        .arg(sourceFileDefaultConstructor()) \
-        .arg(sourceFileCopyConstructor()) \
-        .arg(sourceFileAssignmentOperator()) \
-        .arg(sourceFileDestructor()) \
-        .arg(generateReadFunctionDefine()) \
-        .arg(generateWriteFunctionDefine()) \
-        .arg(generateResetFunctionDefine())
+        .arg(generateDetachedDocCommentProperties()) \
+        .arg(generateDetachedDocCommentMemberVariable()) \
+        .arg(generateFunctionsDefine())
 
 #define CODESCHEME_File_SourceFileContent_Inherits_QObject \
     QString("%1" \
             "#include \"%2\"\n\n" \
             "%3" \
             "%4" \
-            "%5\n" \
-            "%6\n" \
-            "%7" \
-            "%8" \
-            "%9") \
+            "%5" \
+            "%6") \
         .arg(sourceFileDocCommentHeader()) \
         .arg(headerFileName()) \
         .arg(docCommentClass()) \
-        .arg(generateDocCommentPropertiesComment()) \
-        .arg(sourceFileDefaultConstructor()) \
-        .arg(sourceFileDestructor()) \
-        .arg(generateReadFunctionDefine()) \
-        .arg(generateWriteFunctionDefine()) \
-        .arg(generateResetFunctionDefine())
+        .arg(generateDetachedDocCommentProperties()) \
+        .arg(generateDetachedDocCommentMemberVariable()) \
+        .arg(generateFunctionsDefine())
 
 #define CODESCHEME_File_SourceFileContent_Inherits_QWidget_AssociateWithUiFile \
     QString("%1" \
@@ -376,20 +363,14 @@
             "#include \"ui_%3\"\n\n" \
             "%4" \
             "%5" \
-            "%6\n" \
-            "%7\n" \
-            "%8" \
-            "%9" \
-            "%10") \
+            "%6" \
+            "%7") \
         .arg(sourceFileDocCommentHeader()) \
         .arg(headerFileName()) \
         .arg(headerFileName().toLower()) \
         .arg(docCommentClass()) \
-        .arg(generateDocCommentPropertiesComment()) \
-        .arg(sourceFileDefaultConstructor()) \
-        .arg(sourceFileDestructor()) \
-        .arg(generateReadFunctionDefine()) \
-        .arg(generateWriteFunctionDefine()) \
-        .arg(generateResetFunctionDefine())
+        .arg(generateDetachedDocCommentProperties()) \
+        .arg(generateDetachedDocCommentMemberVariable()) \
+        .arg(generateFunctionsDefine())
 
 #endif // PARAMENTS_CODEFORMAT_H

@@ -127,6 +127,36 @@ inline bool PropertiesGroup::readFunctionIsInline() const
     return m_d->p_readFunctionIsInline;
 }
 
+inline QString PropertiesGroup::replacedStatementsAfterResetProperty() const
+{
+    return replacePercentToSepecialString(statementsAfterResetProperty());
+}
+
+inline QString PropertiesGroup::replacedStatementsAfterWriteProperty() const
+{
+    return replacePercentToSepecialString(statementsAfterWriteProperty());
+}
+
+inline QString PropertiesGroup::replacedStatementsBeforeResetProperty() const
+{
+    return replacePercentToSepecialString(statementsBeforeResetProperty());
+}
+
+inline QString PropertiesGroup::replacedStatementsBeforeWriteProperty() const
+{
+    return replacePercentToSepecialString(statementsBeforeWriteProperty());
+}
+
+inline QString PropertiesGroup::replacedStatementsInReadProperty() const
+{
+    return replacePercentToSepecialString(statementsInReadProperty());
+}
+
+inline QString PropertiesGroup::replacedStatementsMiddleWriteProperty() const
+{
+    return replacePercentToSepecialString(statementsMiddleWriteProperty());
+}
+
 inline bool PropertiesGroup::resetFunctionIsInline() const
 {
     return m_d->p_resetFunctionIsInline;

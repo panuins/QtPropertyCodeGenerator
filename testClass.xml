@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClassSettings inherits="QObject" docDetail="" typeInheritsInfomation="inherits_QObject" sortAllProperties="true" docName="test class" generatePreventReentrantCode="true" className="testClass" docBrief="">
+    <TypeOrder>
+        <Type>QColor</Type>
+        <Type>qreal</Type>
+    </TypeOrder>
+    <PropertiesGroup writeFunctionIsInline="false" statementsInReadProperty="//Read;" statementsAfterWriteProperty="//AfterWrite;" statementsBeforeWriteProperty="//StartWrite;" resetFunctionIsInline="false" writeFunctionEmitSignal="true" readFunctionIsInline="true" enabled="true" statementsAfterResetProperty="//AfterReset;" statementsBeforeResetProperty="//BeforeReset;" name="size" statementsMiddleWriteProperty="//MiddleWrite;">
+        <Property docName="height" notify="true" docDetail="will replot" write="true" revision="0" user="false" enabled="true" final="false" read="true" reset="true" constant="false" docBrief="control's height" scriptable="true" defaultValue="0.0" type="double" stored="true" typeStringName="qreal" designable="true" member="false" name="height"/>
+        <Property docName="nn" notify="false" docDetail="not notify property test" write="true" revision="0" user="false" enabled="true" final="false" read="true" reset="false" constant="false" docBrief="" scriptable="true" defaultValue="0.0" type="double" stored="true" typeStringName="qreal" designable="true" member="false" name="nn"/>
+        <Property docName="pro" notify="true" docDetail="read only property test" write="false" revision="0" user="false" enabled="true" final="false" read="true" reset="false" constant="false" docBrief="" scriptable="true" defaultValue="0.0" type="double" stored="true" typeStringName="qreal" designable="true" member="false" name="pro"/>
+        <Property docName="pwo" notify="true" docDetail="write only property test" write="true" revision="0" user="false" enabled="true" final="false" read="false" reset="false" constant="false" docBrief="" scriptable="true" defaultValue="0.0" type="double" stored="true" typeStringName="qreal" designable="true" member="false" name="pwo"/>
+        <Property docName="width" notify="true" docDetail="will replot" write="true" revision="0" user="false" enabled="true" final="false" read="true" reset="true" constant="false" docBrief="control's width" scriptable="true" defaultValue="0.0" type="double" stored="true" typeStringName="qreal" designable="true" member="false" name="width"/>
+    </PropertiesGroup>
+    <PropertiesGroup writeFunctionIsInline="false" statementsInReadProperty="//Read;" statementsAfterWriteProperty="//AfterWrite;" statementsBeforeWriteProperty="//StartWrite;" resetFunctionIsInline="false" writeFunctionEmitSignal="true" readFunctionIsInline="true" enabled="true" statementsAfterResetProperty="//AfterReset;" statementsBeforeResetProperty="//BeforeReset;" name="style" statementsMiddleWriteProperty="//MiddleWrite;">
+        <Property docName="back color" notify="true" docDetail="will replot" write="true" revision="0" user="false" enabled="true" final="false" read="true" reset="false" constant="false" docBrief="control's back color" scriptable="true" defaultValue="Qt::grey" type="QColor" stored="true" typeStringName="" designable="true" member="false" name="backColor"/>
+        <Property docName="border color" notify="true" docDetail="will replot" write="true" revision="0" user="false" enabled="true" final="false" read="true" reset="false" constant="false" docBrief="control's border color" scriptable="true" defaultValue="Qt::black" type="QColor" stored="true" typeStringName="" designable="true" member="false" name="bordercolor"/>
+    </PropertiesGroup>
+</ClassSettings>

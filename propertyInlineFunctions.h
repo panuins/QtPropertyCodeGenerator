@@ -172,6 +172,21 @@ inline QString Property::realTypeName() const
     }
 }
 
+inline QString Property::replacedDocBrief() const
+{
+    return replacePercentToSepecialString(docBrief());
+}
+
+inline QString Property::replacedDocDetail() const
+{
+    return replacePercentToSepecialString(docDetail());
+}
+
+inline QString Property::replacedDocName() const
+{
+    return replacePercentToSepecialString(docName());
+}
+
 inline bool Property::reset() const
 {
     return m_d->p_reset;
