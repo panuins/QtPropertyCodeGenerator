@@ -108,7 +108,7 @@ QString ClassSettings::generateQPropertyDeclear() const
         }
         else
         {
-            return addIndentAndNewLineIfNotEmpty(p.qPropertyString());
+            return addIndentAndNewLineIfNotEmpty(p.qPropertyString(), 1);
         }
     };
     QString codes;
@@ -127,7 +127,7 @@ QString ClassSettings::generateReadDeclear() const
         }
         else
         {
-            return addIndentAndNewLineIfNotEmpty(p.readDeclear());
+            return addIndentAndNewLineIfNotEmpty(p.readDeclear(), 1);
         }
     };
     QString codes;
@@ -147,7 +147,7 @@ QString ClassSettings::generateResetDeclear() const
         }
         else
         {
-            return addIndentAndNewLineIfNotEmpty(p.resetDeclear());
+            return addIndentAndNewLineIfNotEmpty(p.resetDeclear(), 1);
         }
     };
     QString codes;
@@ -170,7 +170,7 @@ QString ClassSettings::generateWriteDeclear() const
         }
         else
         {
-            return addIndentAndNewLineIfNotEmpty(p.writeDeclear());
+            return addIndentAndNewLineIfNotEmpty(p.writeDeclear(), 1);
         }
     };
     QString codes;
@@ -182,7 +182,7 @@ QString ClassSettings::generateSignalDeclear() const
 {
     auto f = [this](const Property &p, const PropertiesGroup &g)
     {
-        return addIndentAndNewLineIfNotEmpty(p.signalDeclear());
+        return addIndentAndNewLineIfNotEmpty(p.signalDeclear(), 1);
         /*if (CODESCHEME_DocCommentContent_Function_Attachment == CODESCHEME_DocComment_Function_InDeclare)
         {
             return CODESCHEME_Format_Declare(
@@ -191,7 +191,7 @@ QString ClassSettings::generateSignalDeclear() const
         }
         else
         {
-            return addIndentAndNewLineIfNotEmpty(p.signalDeclear());
+            return addIndentAndNewLineIfNotEmpty(p.signalDeclear(), 1);
         }*/
     };
     QString codes;
@@ -216,7 +216,7 @@ QString ClassSettings::generateMemberVariableDeclear() const
                 }
                 else
                 {
-                    memberVars.append(addIndentAndNewLineIfNotEmpty(p.memberVariableDeclear()));
+                    memberVars.append(addIndentAndNewLineIfNotEmpty(p.memberVariableDeclear(), 1));
                 }
             }
         }
@@ -232,7 +232,7 @@ QString ClassSettings::generateMemberVariableDeclear() const
             }
             else
             {
-                return addIndentAndNewLineIfNotEmpty(p.preventReentrantVarDeclear());
+                return addIndentAndNewLineIfNotEmpty(p.preventReentrantVarDeclear(), 1);
             }
         };
         QString codes;

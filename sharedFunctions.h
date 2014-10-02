@@ -54,6 +54,10 @@ inline QString currentDateTimeString()
 
 inline QString indentCode(const QString &source, int indentCount)
 {
+    if (source.isEmpty())
+    {
+        return QString();
+    }
     QStringList list = source.split(QChar('\n'));
     QString indented("");
     foreach (QString code, list)
@@ -183,7 +187,7 @@ inline QString addNewLineIfNotEmpty(const QString &s)
     }
 }
 
-inline QString addIndentAndNewLineIfNotEmpty(const QString &s)
+inline QString addIndentAndNewLineIfNotEmpty(const QString &s, int indentCount)
 {
     if (s.isEmpty())
     {
@@ -191,7 +195,13 @@ inline QString addIndentAndNewLineIfNotEmpty(const QString &s)
     }
     else
     {
-        return QString(CODESCHEME_Indent) + s + "\n";
+        QString r;
+        int i = 0;
+        for (; i < indentCount; i++)
+        {
+            r += QString(CODESCHEME_Indent);
+        }
+        return r + s + "\n";
     }
 }
 
