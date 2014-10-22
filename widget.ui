@@ -314,6 +314,7 @@
   <tabstop>tableWidgetProperties</tabstop>
   <tabstop>textBrowserCppDeclares</tabstop>
   <tabstop>textBrowserCppDefines</tabstop>
+  <tabstop>comboBoxSelectPropertiesGroups</tabstop>
   <tabstop>pushButtonOpenProject</tabstop>
   <tabstop>pushButtonNewProject</tabstop>
   <tabstop>pushButtonSaveProject</tabstop>
@@ -322,6 +323,7 @@
   <tabstop>pushButtonAddProperty</tabstop>
   <tabstop>pushButtonRemoveProperty</tabstop>
   <tabstop>pushButtonSetProject</tabstop>
+  <tabstop>pushButtonExportClass</tabstop>
  </tabstops>
  <resources/>
  <connections/>

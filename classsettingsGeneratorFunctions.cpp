@@ -16,6 +16,7 @@
 #include "paraments.h"
 #include "sharedFunctions.h"
 #include <QMap>
+#include <iostream>
 
 #define CLASSSETTINGS_FOREACH_PROPERTIES(CONDITIONGROUP, CONDITIONPROPERTY, CODES) \
 if (!sortAllProperties()) \
@@ -108,7 +109,7 @@ QString ClassSettings::generateQPropertyDeclear() const
         }
         else
         {
-            return addIndentAndNewLineIfNotEmpty(p.qPropertyString(), 1);
+            return addIndentAndNewLineIfNotEmpty(p.qPropertyString());
         }
     };
     QString codes;
@@ -127,7 +128,7 @@ QString ClassSettings::generateReadDeclear() const
         }
         else
         {
-            return addIndentAndNewLineIfNotEmpty(p.readDeclear(), 1);
+            return addIndentAndNewLineIfNotEmpty(p.readDeclear());
         }
     };
     QString codes;
@@ -147,7 +148,7 @@ QString ClassSettings::generateResetDeclear() const
         }
         else
         {
-            return addIndentAndNewLineIfNotEmpty(p.resetDeclear(), 1);
+            return addIndentAndNewLineIfNotEmpty(p.resetDeclear());
         }
     };
     QString codes;
@@ -170,7 +171,7 @@ QString ClassSettings::generateWriteDeclear() const
         }
         else
         {
-            return addIndentAndNewLineIfNotEmpty(p.writeDeclear(), 1);
+            return addIndentAndNewLineIfNotEmpty(p.writeDeclear());
         }
     };
     QString codes;
@@ -182,7 +183,7 @@ QString ClassSettings::generateSignalDeclear() const
 {
     auto f = [this](const Property &p, const PropertiesGroup &g)
     {
-        return addIndentAndNewLineIfNotEmpty(p.signalDeclear(), 1);
+        return addIndentAndNewLineIfNotEmpty(p.signalDeclear());
         /*if (CODESCHEME_DocCommentContent_Function_Attachment == CODESCHEME_DocComment_Function_InDeclare)
         {
             return CODESCHEME_Format_Declare(
@@ -191,7 +192,7 @@ QString ClassSettings::generateSignalDeclear() const
         }
         else
         {
-            return addIndentAndNewLineIfNotEmpty(p.signalDeclear(), 1);
+            return addIndentAndNewLineIfNotEmpty(p.signalDeclear());
         }*/
     };
     QString codes;
@@ -216,7 +217,7 @@ QString ClassSettings::generateMemberVariableDeclear() const
                 }
                 else
                 {
-                    memberVars.append(addIndentAndNewLineIfNotEmpty(p.memberVariableDeclear(), 1));
+                    memberVars.append(addIndentAndNewLineIfNotEmpty(p.memberVariableDeclear()));
                 }
             }
         }
@@ -232,7 +233,7 @@ QString ClassSettings::generateMemberVariableDeclear() const
             }
             else
             {
-                return addIndentAndNewLineIfNotEmpty(p.preventReentrantVarDeclear(), 1);
+                return addIndentAndNewLineIfNotEmpty(p.preventReentrantVarDeclear());
             }
         };
         QString codes;
@@ -244,7 +245,7 @@ QString ClassSettings::generateMemberVariableDeclear() const
 
 QString ClassSettings::generateDetachedDocCommentFunctions() const
 {
-    if (CODESCHEME_DocCommentContent_Function_Attachment != CODESCHEME_DocComment_Function_Detached)
+    if (CODESCHEME_DocCommentContent_Function_Attachment == CODESCHEME_DocComment_Function_Detached)
     {
         QString codes;
         codes += docCommentDefaultConstructor();
@@ -832,7 +833,7 @@ QString ClassSettings::sourceFileAssignmentOperator() const
                 }
             }
         }
-        if (CODESCHEME_DocCommentContent_Function_Attachment != CODESCHEME_DocComment_Function_Detached)
+        if (CODESCHEME_DocCommentContent_Function_Attachment == CODESCHEME_DocComment_Function_Detached)
         {
         }
         else if (CODESCHEME_DocCommentContent_Function_Attachment == CODESCHEME_DocComment_Function_InDeclare)
@@ -908,7 +909,7 @@ QString ClassSettings::sourceFileCopyConstructor() const
         {
             memberInit.replace(0, 1, QString(" :"));
         }
-        if (CODESCHEME_DocCommentContent_Function_Attachment != CODESCHEME_DocComment_Function_Detached)
+        if (CODESCHEME_DocCommentContent_Function_Attachment == CODESCHEME_DocComment_Function_Detached)
         {
         }
         else if (CODESCHEME_DocCommentContent_Function_Attachment == CODESCHEME_DocComment_Function_InDeclare)
@@ -968,24 +969,29 @@ QString ClassSettings::sourceFileDefaultConstructor() const
             memberInit.replace(0, 1, QString(" :"));
         }
     }
-    if (CODESCHEME_DocCommentContent_Function_Attachment != CODESCHEME_DocComment_Function_Detached)
+    if (CODESCHEME_DocCommentContent_Function_Attachment == CODESCHEME_DocComment_Function_Detached)
     {
+        //std::cout << "ClassSettings::sourceFileDefaultConstructor: CODESCHEME_DocComment_Function_Detached" << std::endl;
     }
     else if (CODESCHEME_DocCommentContent_Function_Attachment == CODESCHEME_DocComment_Function_InDeclare)
     {
+        //std::cout << "ClassSettings::sourceFileDefaultConstructor: CODESCHEME_DocComment_Function_InDeclare" << std::endl;
     }
     else if (CODESCHEME_DocCommentContent_Function_Attachment == CODESCHEME_DocComment_Function_InDefine)
     {
         if (CODESCHEME_DocCommentContent_Function_Pos == CODESCHEME_DocComment_Function_Any)
         {
             define += docCommentDefaultConstructor();
+            //std::cout << "ClassSettings::sourceFileDefaultConstructor: CODESCHEME_DocComment_Function_Any" << std::endl;
         }
         else if (CODESCHEME_DocCommentContent_Function_Pos == CODESCHEME_DocComment_Function_InHeaderFileOnly)
         {
+            //std::cout << "ClassSettings::sourceFileDefaultConstructor: CODESCHEME_DocComment_Function_InHeaderFileOnly" << std::endl;
         }
         else if (CODESCHEME_DocCommentContent_Function_Pos == CODESCHEME_DocComment_Function_InSourceFileOnly)
         {
             define += docCommentDefaultConstructor();
+            //std::cout << "ClassSettings::sourceFileDefaultConstructor: CODESCHEME_DocComment_Function_InSourceFileOnly" << std::endl;
         }
     }
     if (typeInheritsInfomation() == inherits_None)
@@ -1006,7 +1012,7 @@ QString ClassSettings::sourceFileDefaultConstructor() const
 QString ClassSettings::sourceFileDestructor() const
 {
     QString define;
-    if (CODESCHEME_DocCommentContent_Function_Attachment != CODESCHEME_DocComment_Function_Detached)
+    if (CODESCHEME_DocCommentContent_Function_Attachment == CODESCHEME_DocComment_Function_Detached)
     {
     }
     else if (CODESCHEME_DocCommentContent_Function_Attachment == CODESCHEME_DocComment_Function_InDeclare)

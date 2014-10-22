@@ -56,7 +56,7 @@ inline QString indentCode(const QString &source, int indentCount)
 {
     if (source.isEmpty())
     {
-        return QString();
+        return QString("");
     }
     QStringList list = source.split(QChar('\n'));
     QString indented("");
@@ -187,7 +187,7 @@ inline QString addNewLineIfNotEmpty(const QString &s)
     }
 }
 
-inline QString addIndentAndNewLineIfNotEmpty(const QString &s, int indentCount)
+inline QString addIndentAndNewLineIfNotEmpty(const QString &s)
 {
     if (s.isEmpty())
     {
@@ -195,13 +195,7 @@ inline QString addIndentAndNewLineIfNotEmpty(const QString &s, int indentCount)
     }
     else
     {
-        QString r;
-        int i = 0;
-        for (; i < indentCount; i++)
-        {
-            r += QString(CODESCHEME_Indent);
-        }
-        return r + s + "\n";
+        return QString(CODESCHEME_Indent) + s + "\n";
     }
 }
 

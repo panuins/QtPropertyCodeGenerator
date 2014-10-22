@@ -317,7 +317,6 @@ void Widget::on_dialogSet_rejected()
 
 void Widget::on_pushButtonAddProperty_clicked()
 {
-    m_dialogEdit->setWindowTitle(tr("Add New Property"));
     m_dialogEdit->editNew(m_dialogEdit->currentProperty());
 }
 
@@ -326,7 +325,6 @@ void Widget::on_pushButtonEditProperty_clicked()
     if (!ui->tableWidgetProperties->selectedItems().isEmpty())
     {
         int propertyIndex = ui->tableWidgetProperties->currentRow();
-        m_dialogEdit->setWindowTitle(tr("Edit Property"));
         m_dialogEdit->editExist(m_classSettings.at(m_groupIndex).at(propertyIndex));
     }
 }
@@ -441,7 +439,7 @@ void Widget::on_pushButtonSaveProjectAs_clicked()
     QString dir;
     if (m_currentFile.isEmpty())
     {
-        dir = m_startPath + QDir::separator() + m_classSettings.className();
+        dir = m_startPath;// + QDir::separator() + m_classSettings.className();
     }
     else
     {
@@ -683,6 +681,7 @@ void Widget::loadSettings()
                        + QString("settings.ini"),
                        QSettings::IniFormat);
     m_startPath = settings.value("StartPath", START_DIR).toString();*/
+    m_startPath = QString(START_DIR);
 }
 
 void Widget::saveProperties(const QString &fileName)
