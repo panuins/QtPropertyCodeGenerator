@@ -80,6 +80,15 @@ inline QString ClassSettings::replacedDocName() const
     return replacePercentToSepecialString(docName());
 }
 
+inline bool ClassSettings::signalIsValid() const
+{
+    return (p_typeInheritsInfomation == inherits_QObject)
+            || (p_typeInheritsInfomation == inherits_QWidget)
+            || (p_typeInheritsInfomation == inherits_QQuickItem)
+            || (p_typeInheritsInfomation == inherits_QWidget_AssociateWithUiFile)
+            || (p_typeInheritsInfomation == inherits_QWindow);
+}
+
 inline int ClassSettings::size() const
 {
     return m_propertiesGroups.size();

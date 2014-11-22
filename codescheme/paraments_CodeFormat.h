@@ -259,10 +259,8 @@
 
 #define CODESCHEME_Class_Function_DefaultConstructor_Inherits_QObject \
     QString("%1::%1(%2 *%3) :\n" \
-            CODESCHEME_Indent "%4(%3),\n" \
-            CODESCHEME_Indent "ui(new Ui::%1)%5\n" \
+            CODESCHEME_Indent "%4(%3)%5\n" \
             "{\n" \
-            CODESCHEME_Indent "ui->setupUi(this);\n" \
             "}\n") \
         .arg(className()) \
         .arg(parentClass()) \
@@ -272,8 +270,10 @@
 
 #define CODESCHEME_Class_Function_DefaultConstructor_Inherits_QWidget_AssociateWithUiFile \
     QString("%1::%1(%2 *%3) :\n" \
-            CODESCHEME_Indent "%4(%3)%5\n" \
+            CODESCHEME_Indent "%4(%3),\n" \
+            CODESCHEME_Indent "ui(new Ui::%1)%5\n" \
             "{\n" \
+            CODESCHEME_Indent "ui->setupUi(this);\n" \
             "}\n") \
         .arg(className()) \
         .arg(parentClass()) \

@@ -124,8 +124,9 @@ inline QString replaceFisrtLetterToLower(const QString &str)
     if (!str.isEmpty())
     {
         QString dest = str;
-        QString firstLetter = QString(dest.at(0).toLower());
-        dest.replace(0, 1, firstLetter);
+        //QString firstLetter = QString(dest.at(0).toLower());
+        //dest.replace(0, 1, firstLetter);
+        dest[0] = dest.at(0).toLower();
         return dest;
     }
     else
@@ -139,8 +140,9 @@ inline QString replaceFisrtLetterToUpper(const QString &str)
     if (!str.isEmpty())
     {
         QString dest = str;
-        QString firstLetter = QString(dest.at(0).toUpper());
-        dest.replace(0, 1, firstLetter);
+        //QString firstLetter = QString(dest.at(0).toUpper());
+        //dest.replace(0, 1, firstLetter);
+        dest[0] = dest.at(0).toUpper();
         return dest;
     }
     else

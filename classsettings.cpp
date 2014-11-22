@@ -22,6 +22,7 @@ static const char *inheritsInfoSettingsStrings[] =
     "inherits_QWidget",
     "inherits_QQuickItem",
     "inherits_QWidget_AssociateWithUiFile",
+    "inherits_QWindow",
     "inherits_None_COW",
 };
 
@@ -175,6 +176,9 @@ QString ClassSettings::parentClass() const
         break;
     case inherits_QQuickItem:
         strParent = "QQuickItem";
+        break;
+    case inherits_QWindow:
+        strParent = "QWindow";
         break;
     default:
         break;

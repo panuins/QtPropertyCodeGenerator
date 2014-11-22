@@ -246,6 +246,11 @@
            </item>
            <item>
             <property name="text">
+             <string>Inherits QWindow</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
              <string>None(Copy on write)</string>
             </property>
            </item>

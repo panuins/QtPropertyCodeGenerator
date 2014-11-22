@@ -30,6 +30,7 @@ public:
         inherits_QWidget,
         inherits_QQuickItem,
         inherits_QWidget_AssociateWithUiFile,
+        inherits_QWindow,
         inherits_None_COW,
     };
 
@@ -97,6 +98,7 @@ public:
     QString replacedDocBrief() const;
     QString replacedDocDetail() const;
     QString replacedDocName() const;
+    bool signalIsValid() const;
     int size() const;
     bool sortAllProperties() const;
     TypeInheritsInformation typeInheritsInfomation() const;

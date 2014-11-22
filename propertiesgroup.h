@@ -20,15 +20,6 @@
 class PropertiesGroup
 {
 public:
-    enum TypeInheritsInformation
-    {
-        inherits_None = 0,
-        inherits_QObject,
-        inherits_QWidget,
-        inherits_QQuickItem,
-        inherits_QWidget_associateWidthUiFile,
-    };
-
     PropertiesGroup();
     PropertiesGroup(const QString &name);
     PropertiesGroup(const PropertiesGroup &v);

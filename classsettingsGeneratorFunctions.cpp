@@ -162,10 +162,11 @@ QString ClassSettings::generateWriteDeclear() const
     {
         if (CODESCHEME_DocCommentContent_Function_Attachment == CODESCHEME_DocComment_Function_InDeclare)
         {
+            bool emitSignal = g.writeFunctionEmitSignal() && signalIsValid();
             return CODESCHEME_Format_Declare(
                         p.writeDeclear(),
                         p.docCommentWriteFunction(className(),
-                                                  g.writeFunctionEmitSignal(),
+                                                  emitSignal,
                                                   g.writeFunctionIsInline(),
                                                   generatePreventReentrantCode()));
         }
@@ -247,6 +248,7 @@ QString ClassSettings::generateDetachedDocCommentFunctions() const
 {
     if (CODESCHEME_DocCommentContent_Function_Attachment == CODESCHEME_DocComment_Function_Detached)
     {
+        //bool emitSignal = g.writeFunctionEmitSignal() && signalIsValid();
         QString codes;
         codes += docCommentDefaultConstructor();
         if (typeInheritsInfomation() == inherits_None)
@@ -264,7 +266,7 @@ QString ClassSettings::generateDetachedDocCommentFunctions() const
                     addNewLineIfNotEmpty(p.docCommentResetFunction(className(), g.resetFunctionIsInline())));
         CLASSSETTINGS_FOREACH_PROPERTIES(true, p.needWrite(),
                     addNewLineIfNotEmpty(p.docCommentWriteFunction(className(),
-                                                                   g.writeFunctionEmitSignal(),
+                                                                   g.writeFunctionEmitSignal() && signalIsValid(),
                                                                    g.writeFunctionIsInline(),
                                                                    generatePreventReentrantCode())));
         return codes;
@@ -281,6 +283,7 @@ QString ClassSettings::generateDetachedDocCommentFunctions() const
         }
         else if (CODESCHEME_DocCommentContent_Function_Pos == CODESCHEME_DocComment_Function_InHeaderFileOnly)
         {
+            //bool emitSignal = g.writeFunctionEmitSignal() && signalIsValid();
             QString codes;
             codes += docCommentDefaultConstructor();
             if (typeInheritsInfomation() == inherits_None)
@@ -298,13 +301,14 @@ QString ClassSettings::generateDetachedDocCommentFunctions() const
                         addNewLineIfNotEmpty(p.docCommentResetFunction(className(), g.resetFunctionIsInline())));
             CLASSSETTINGS_FOREACH_PROPERTIES(!g.writeFunctionIsInline(), p.needWrite(),
                         addNewLineIfNotEmpty(p.docCommentWriteFunction(className(),
-                                                                       g.writeFunctionEmitSignal(),
+                                                                       g.writeFunctionEmitSignal() && signalIsValid(),
                                                                        g.writeFunctionIsInline(),
                                                                        generatePreventReentrantCode())));
             return codes;
         }
         else if (CODESCHEME_DocCommentContent_Function_Pos == CODESCHEME_DocComment_Function_InSourceFileOnly)
         {
+            //bool emitSignal = g.writeFunctionEmitSignal() && signalIsValid();
             QString codes;
             CLASSSETTINGS_FOREACH_PROPERTIES(g.readFunctionIsInline(), true,
                         addNewLineIfNotEmpty(p.docCommentReadFunction(className(), g.readFunctionIsInline())));
@@ -312,7 +316,7 @@ QString ClassSettings::generateDetachedDocCommentFunctions() const
                         addNewLineIfNotEmpty(p.docCommentResetFunction(className(), g.resetFunctionIsInline())));
             CLASSSETTINGS_FOREACH_PROPERTIES(g.writeFunctionIsInline(), p.needWrite(),
                         addNewLineIfNotEmpty(p.docCommentWriteFunction(className(),
-                                                                       g.writeFunctionEmitSignal(),
+                                                                       g.writeFunctionEmitSignal() && signalIsValid(),
                                                                        g.writeFunctionIsInline(),
                                                                        generatePreventReentrantCode())));
             return codes;
@@ -408,11 +412,7 @@ QString ClassSettings::generateWriteFunctionDefine() const
 {
     auto f = [this](const Property &p, const PropertiesGroup &g)
     {
-        bool emitSignal = g.writeFunctionEmitSignal()
-                && ((typeInheritsInfomation() == inherits_QObject)
-                    || (typeInheritsInfomation() == inherits_QWidget)
-                    || (typeInheritsInfomation() == inherits_QQuickItem)
-                    || (typeInheritsInfomation() == inherits_QWidget_AssociateWithUiFile));
+        bool emitSignal = g.writeFunctionEmitSignal() && signalIsValid();
         if (CODESCHEME_DocCommentContent_Function_Attachment == CODESCHEME_DocComment_Function_InDefine)
         {
             if (CODESCHEME_DocCommentContent_Function_Pos != CODESCHEME_DocComment_Function_InHeaderFileOnly)
@@ -426,7 +426,7 @@ QString ClassSettings::generateWriteFunctionDefine() const
                                                   false,
                                                   generatePreventReentrantCode()),
                             p.docCommentWriteFunction(className(),
-                                                      g.writeFunctionEmitSignal(),
+                                                      emitSignal,
                                                       g.writeFunctionIsInline(),
                                                       generatePreventReentrantCode()));
             }
@@ -520,11 +520,7 @@ QString ClassSettings::generateInlineWriteFunctionDefine() const
 {
     auto f = [this](const Property &p, const PropertiesGroup &g)
     {
-        bool emitSignal = g.writeFunctionEmitSignal()
-                && ((typeInheritsInfomation() == inherits_QObject)
-                    || (typeInheritsInfomation() == inherits_QWidget)
-                    || (typeInheritsInfomation() == inherits_QQuickItem)
-                    || (typeInheritsInfomation() == inherits_QWidget_AssociateWithUiFile));
+        bool emitSignal = g.writeFunctionEmitSignal() && signalIsValid();
         if (CODESCHEME_DocCommentContent_Function_Attachment == CODESCHEME_DocComment_Function_InDefine)
         {
             if (CODESCHEME_DocCommentContent_Function_Pos != CODESCHEME_DocComment_Function_InSourceFileOnly)
@@ -538,7 +534,7 @@ QString ClassSettings::generateInlineWriteFunctionDefine() const
                                                   true,
                                                   generatePreventReentrantCode()),
                             p.docCommentWriteFunction(className(),
-                                                      g.writeFunctionEmitSignal(),
+                                                      emitSignal,
                                                       g.writeFunctionIsInline(),
                                                       generatePreventReentrantCode()));
             }
@@ -955,6 +951,7 @@ QString ClassSettings::sourceFileDefaultConstructor() const
             }
         }
     }
+    if (p_generatePreventReentrantCode)
     {
         QString codes;
         CLASSSETTINGS_FOREACH_PROPERTIES(
@@ -1000,11 +997,11 @@ QString ClassSettings::sourceFileDefaultConstructor() const
     }
     else if (typeInheritsInfomation() == inherits_QWidget_AssociateWithUiFile)
     {
-        define += CODESCHEME_Class_Function_DefaultConstructor_Inherits_QObject;
+        define += CODESCHEME_Class_Function_DefaultConstructor_Inherits_QWidget_AssociateWithUiFile;
     }
     else
     {
-        define += CODESCHEME_Class_Function_DefaultConstructor_Inherits_QWidget_AssociateWithUiFile;
+        define += CODESCHEME_Class_Function_DefaultConstructor_Inherits_QObject;
     }
     return define;
 }
@@ -1022,14 +1019,14 @@ QString ClassSettings::sourceFileDestructor() const
     {
         if (CODESCHEME_DocCommentContent_Function_Pos == CODESCHEME_DocComment_Function_Any)
         {
-            define += docCommentDefaultConstructor();
+            define += docCommentDestructor();
         }
         else if (CODESCHEME_DocCommentContent_Function_Pos == CODESCHEME_DocComment_Function_InHeaderFileOnly)
         {
         }
         else if (CODESCHEME_DocCommentContent_Function_Pos == CODESCHEME_DocComment_Function_InSourceFileOnly)
         {
-            define += docCommentDefaultConstructor();
+            define += docCommentDestructor();
         }
     }
     if (typeInheritsInfomation() == inherits_None)

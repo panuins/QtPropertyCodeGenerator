@@ -17,28 +17,6 @@
 #include "sharedFunctions.h"
 #include <QDateTime>
 
-/*QStringList PropertiesGroup::enumsName() const
-{
-    QStringList list;
-    foreach (EnumType e, m_d->m_enums)
-    {
-        list.append(e.name());
-    }
-    return list;
-}
-
-QStringList PropertiesGroup::existType() const
-{
-    QStringList list;
-    foreach (Property p, m_d->m_properties)
-    {
-        list.append(p.realTypeName());
-    }
-    list.sort();
-    list.removeDuplicates();
-    return list;
-}*/
-
 int PropertiesGroup::find(const QString &name) const
 {
     int i = 0;
@@ -51,40 +29,6 @@ int PropertiesGroup::find(const QString &name) const
     }
     return -1;
 }
-
-/*QString PropertiesGroup::parentClass() const
-{
-    QString strParent("");
-    switch (m_d->p_typeInderitsInfomation)
-    {
-    case 1:
-        strParent = "QObject";
-        break;
-    case 2:
-    case 4:
-        strParent = "QWidget";
-        break;
-    case 3:
-        strParent = "QQuickItem";
-        break;
-    default:
-        break;
-    }
-    return strParent;
-}
-
-QList<Property> PropertiesGroup::propertiesIsType(const QString &var) const
-{
-    QList<Property> listP;
-    foreach (Property p, m_d->m_properties)
-    {
-        if (p.realTypeName() == var)
-        {
-            listP.append(p);
-        }
-    }
-    return listP;
-}*/
 
 QStringList PropertiesGroup::propertiesName() const
 {

@@ -203,6 +203,51 @@ Widget::Widget(QWidget *parent) :
         g.setStatementsAfterWriteProperty("//AfterWrite;");
         m_classSettings.append(g);
     }
+    {
+        PropertiesGroup g;
+        {
+            Property p("complex1", QVariant::typeToName(QVariant::Int));
+            p.setTypeStringName(QString("Qt::Corner"));
+            p.setDocName(QString("complex1"));
+            p.setDocBrief(QString("complex property 1"));
+            p.setDefaultValue(QString("Qt::TopLeftCorner"));
+            g.append(p);
+        }
+        {
+            Property p("complex2", QVariant::typeToName(QVariant::UserType));
+            p.setTypeStringName(QString("Qt::Corner *"));
+            p.setDocName(QString("complex2"));
+            p.setDocBrief(QString("complex property 2"));
+            p.setDefaultValue(QString("NULL"));
+            g.append(p);
+        }
+        {
+            Property p("complex3", QVariant::typeToName(QVariant::List));
+            p.setTypeStringName(QString("QList<Qt::Corner *>"));
+            p.setDocName(QString("complex3"));
+            p.setDocBrief(QString("complex property 3"));
+            g.append(p);
+        }
+        {
+            Property p("complex4", QVariant::typeToName(QVariant::UserType));
+            p.setTypeStringName(QString("std::list<std::list<Qt::Corner *> >"));
+            p.setDocName(QString("complex4"));
+            p.setDocBrief(QString("complex property 4"));
+            g.append(p);
+        }
+        {
+            Property p("complex5", QVariant::typeToName(QVariant::UserType));
+            p.setTypeStringName(QString("char *"));
+            p.setDocName(QString("complex5"));
+            p.setDocBrief(QString("complex property 5"));
+            g.append(p);
+        }
+        g.setName("complex");
+        g.setReadFunctionIsInline(true);
+        g.setWriteFunctionIsInline(false);
+        g.setWriteFunctionEmitSignal(true);
+        m_classSettings.append(g);
+    }
     m_classSettings.setClassName("testClass");
     m_classSettings.setDocName("test class");
     m_classSettings.setInherits("QObject");
@@ -351,9 +396,21 @@ void Widget::on_pushButtonExportClass_clicked()
                            "Are you sure?")
                         .arg(headerFileName),
                         QMessageBox::Yes | QMessageBox::No);
-            if (ret != QMessageBox::Yes)
+            if (ret == QMessageBox::Yes)
             {
-                return;
+                QFile f(exportDir.filePath(headerFileName));
+                if (f.open(QIODevice::WriteOnly))
+                {
+                    f.write(m_classSettings.headerFileContent().toUtf8());
+                }
+            }
+        }
+        else
+        {
+            QFile f(exportDir.filePath(headerFileName));
+            if (f.open(QIODevice::WriteOnly))
+            {
+                f.write(m_classSettings.headerFileContent().toUtf8());
             }
         }
         if (exportDir.exists(sourceFileName))
@@ -365,18 +422,16 @@ void Widget::on_pushButtonExportClass_clicked()
                            "Are you sure?")
                         .arg(sourceFileName),
                         QMessageBox::Yes | QMessageBox::No);
-            if (ret != QMessageBox::Yes)
+            if (ret == QMessageBox::Yes)
             {
-                return;
+                QFile f(exportDir.filePath(sourceFileName));
+                if (f.open(QIODevice::WriteOnly))
+                {
+                    f.write(m_classSettings.sourceFileContent().toUtf8());
+                }
             }
         }
-        {
-            QFile f(exportDir.filePath(headerFileName));
-            if (f.open(QIODevice::WriteOnly))
-            {
-                f.write(m_classSettings.headerFileContent().toUtf8());
-            }
-        }
+        else
         {
             QFile f(exportDir.filePath(sourceFileName));
             if (f.open(QIODevice::WriteOnly))
@@ -419,6 +474,8 @@ void Widget::on_pushButtonOpenProject_clicked()
             loadProperties(fileName);
             m_currentFile = fileName;
         }
+        QDir dir(".");
+        m_startPath = dir.absoluteFilePath(fileName);
     }
 }
 
@@ -439,7 +496,7 @@ void Widget::on_pushButtonSaveProjectAs_clicked()
     QString dir;
     if (m_currentFile.isEmpty())
     {
-        dir = m_startPath;// + QDir::separator() + m_classSettings.className();
+        dir = m_startPath + QDir::separator() + m_classSettings.className();
     }
     else
     {
@@ -458,6 +515,8 @@ void Widget::on_pushButtonSaveProjectAs_clicked()
         }
         saveProperties(fileName);
         m_currentFile = fileName;
+        QDir dir(".");
+        m_startPath = dir.absoluteFilePath(fileName);
     }
 }
 

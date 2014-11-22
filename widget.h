@@ -34,14 +34,6 @@ class Widget : public QWidget
 {
     Q_OBJECT
 public:
-    /*enum TypeInheritsInformation
-    {
-        inherits_None,
-        inherits_QObject,
-        inherits_QWidget,
-        inherits_QQuickItem,
-    };*/
-
     explicit Widget(QWidget *parent = 0);
     ~Widget();
 

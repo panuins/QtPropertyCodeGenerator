@@ -80,6 +80,30 @@ QString Property::typePrefix() const
     QVariant::Type typeId = QVariant::nameToType(typeName);
     QString s = m_d->p_typeStringName.isEmpty()
             ? m_d->p_type : m_d->p_typeStringName;
+    auto f = [this](const QString &s)
+    {
+        QString ret = s;
+        QString pointerPrefix;
+        int posSmallerThan = ret.indexOf(QChar('<'));
+        if (posSmallerThan > 0)
+        {
+            ret = ret.left(posSmallerThan);
+        }
+        while (ret.endsWith("*") || ret.endsWith(" "))
+        {
+            if (ret.endsWith("*"))
+            {
+                pointerPrefix.append("p");
+            }
+            ret.chop(1);
+        }
+        int posColon = ret.lastIndexOf(QString("::"));
+        if (posColon >= 0)
+        {
+            ret = ret.mid(posColon + 2);
+        }
+        return pointerPrefix + replaceFisrtLetterToLower(ret);
+    };
     if (typeId == QVariant::Bool)
     {
         s = QString("b");
@@ -96,7 +120,7 @@ QString Property::typePrefix() const
         }
         else
         {
-            s = replaceFisrtLetterToLower(s);
+            s = f(s);
         }
     }
     else if (typeId == QVariant::Int)
@@ -143,7 +167,7 @@ QString Property::typePrefix() const
         }
         else
         {
-            s = replaceFisrtLetterToLower(s);
+            s = f(s);
         }
     }
     else if (typeId == QVariant::List)
@@ -160,20 +184,7 @@ QString Property::typePrefix() const
     }
     else
     {
-        if (s.endsWith("*"))
-        {
-            s.chop(1);
-        }
-        if (s.endsWith(" "))
-        {
-            s.chop(1);
-        }
-        int seat = s.indexOf(QChar('<'));
-        if (seat > 0)
-        {
-            s = s.left(seat);
-        }
-        s = replaceFisrtLetterToLower(s);
+        s = f(s);
     }
     return s;
 }
@@ -344,11 +355,10 @@ QString Property::qPropertyString() const
     {
         str += QString(" WRITE ") + writeFunctionName();
     }
-    if (reset() != PropertyDefaultReset)
+    if (reset())
     {
-        str += QString(" RESET ") + ((reset()) ? "true" : "false");
+        str += QString(" RESET ") + resetFunctionName();
     }
-    //AddBoolProperty(reset, Reset, RESET);
     if (notify())
     {
         str += QString(" NOTIFY ") + signalName();
